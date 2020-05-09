@@ -6,6 +6,8 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import image1 from '../images/abstract.jpg'
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const StyledButton = withStyles({
     root: {
@@ -36,12 +38,12 @@ const CssTextField = withStyles({
             //   borderColor: '#5F7B86',
             // },
             '&:hover fieldset': {
-              borderColor: '#5F7B86',
+                borderColor: '#5F7B86',
             },
             '&.Mui-focused fieldset': {
-              borderColor: '#5F7B86',
+                borderColor: '#5F7B86',
             },
-          },
+        },
     },
 })(TextField);
 
@@ -76,18 +78,24 @@ export default function AdvSettings(props) {
                         <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Botname1</Typography>
                     </div>
                     <div>
-                        <CssTextField id="outlined-full-width"
-                            placeholder=""
+                        <CssTextField
+                            id="outlined-full-width"
+                            select
                             fullWidth
                             margin="dense"
+                            value=""
+                            variant="outlined"
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            variant="outlined"
-                        />
+                        >
+                            <MenuItem value={"auto_generate_synonyms"}>Auto Generate Synonyms</MenuItem>
+                            <MenuItem value={"custom_synonyms"}>Custom Synonyms</MenuItem>
+                            <MenuItem value={"apply_global synonyms"}>Apply Global Synonyms</MenuItem>
+                        </CssTextField>
                     </div>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={6} >
                     <div>
                         <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Botname2</Typography>
                     </div>
@@ -183,7 +191,7 @@ export default function AdvSettings(props) {
                         />
                     </div>
                 </Grid>
-                
+
                 <br></br>
                 <div>
                     <StyledButton onClick={() => { props.onClick() }}>Save</StyledButton>

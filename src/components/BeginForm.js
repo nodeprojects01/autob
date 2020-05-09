@@ -110,8 +110,6 @@ export default function BeginForm(props) {
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            accept="*.xlsx" 
-                            type="file"
                             variant="outlined"
                         />
                     </div>

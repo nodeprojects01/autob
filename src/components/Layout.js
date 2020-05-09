@@ -47,10 +47,12 @@ export default function Layout() {
             backgroundSize: "cover",
             backgroundAttachment: "fixed",
             minHeight: "100vh",
-            padding: "3em 0 0 0"
+            padding: "3em 0 0 0",
         }}>
             <Grid item xs={12} sm={6}>
-                <Box bgcolor="rgba(79, 84, 87, 0)" color="primary.contrastText" style={{ minHeight: "100%" }}>
+                <Box color="primary.contrastText" style={{
+                    // background: "rgba(79, 84, 87, 0.8)", 
+                    minHeight: "100%" }}>
                     <div style={{ padding: "2em" }}>
                         <div style={{
                             position: "fixed",
@@ -67,9 +69,8 @@ export default function Layout() {
                     background: "rgba(255, 255, 255, 0.9)",
                     minHeight: "100%",
                     textAlign: "left"
+                    // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
                 }}>
-
-
                     {checked ?
                         <Fade in={checked}>
                             {/* <Paper elevation={4} className={classes.paper} style={{ height: "90%", width: "50%", borderRadius: "32px 0 0 0" }}> */}
