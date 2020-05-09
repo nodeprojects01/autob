@@ -58,6 +58,10 @@ export default function ExcelUpdate(){
             setValues({...values, customSynonymsJSON : content, uploadJsonFile : value})
             }
         }
+        if(name==="uploadExcelFileHidden"){
+            const filename = e.target.files[0].name;
+            values.uploadExcelFile=filename;
+        }
         setValues({...values, [name]: value})
     }
     const handleClose = (event, reason) => {
@@ -93,10 +97,24 @@ export default function ExcelUpdate(){
 
                             <Typography>Bot Name</Typography>
                             <Input className={classes.Input} type-="text" name="botName" value={values.botName} onChange={handleInputchange} />
+                            
+                            <Box display="flex" p={1} style={{padding:'0px',width:'80%'}}>
+                                <Box p={1} flexGrow={1} style={{padding:'0px'}}>
+                                    <Typography >Upload Excel File</Typography>
+                                </Box>
+                                <Box p={1} style={{padding:'0px'}}>
+                                    
+                                            
+                                    <Input className={classes.input} id="contained-button-Excelfile"  name="uploadExcelFileHidden" type="file" onChange={handleInputchange}/>
+                                    <Label htmlFor="contained-button-Excelfile">
+                                        <Button  style={{ backgroundColor:'Transparent'}} component="span">Excel</Button>
+                                    </Label>
+                                </Box>
+                            </Box>
+                            <Input className={classes.Input} accept="*.xlsx" type="text" name="uploadExcelFile" value={values.uploadExcelFile} onChange={handleInputchange}/>
 
-                            <Typography >Upload Excel File</Typography>
-                            <Input className={classes.Input} accept="*.xlsx" type="file" name="uploadExcelFile" value={values.uploadExcelFile} onChange={handleInputchange}/>
-                    
+
+
                             <Typography onClick={()=> setVisible(visible => !visible)} >Advanced Setting</Typography>
                         </Box>
                         <Grid item xs={12}>
@@ -129,7 +147,7 @@ export default function ExcelUpdate(){
                                         <Box p={1} style={{padding:'0px'}}>
                                             <Input className={classes.input} id="contained-button-file"  name="uploadJsonFile" type="file" onChange={handleInputchange}/>
                                             <Label htmlFor="contained-button-file">
-                                                <Button variant="contained" component="span">
+                                                <Button variant="contained" style={{ backgroundColor:'Transparent'}} component="span">
                                                     JSON
                                                 </Button>
                                             </Label>

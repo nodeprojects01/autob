@@ -59,7 +59,10 @@ const useStyles = makeStyles((theme) => ({
             color: "orange"
         }
     },
-    inputFocused: {}
+    inputFocused: {},
+    hiddenInput :{
+         display: 'none'
+    }
 }));
 
 
@@ -99,9 +102,20 @@ export default function BeginForm(props) {
                                         }} />
                                 </div>
                                 <br></br> */}
-                    <div>
-                        <Typography style={{color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em"}}>Upload Excel</Typography>
-                    </div>
+                    <Box display="flex" p={1} style={{padding:'0px'}}>
+                        <Box p={1} flexGrow={1} style={{padding:'0px'}}>
+                            <Typography style={{color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em"}}>Upload Excel</Typography>
+                        </Box>
+                        <Box p={1} style={{padding:'0px'}}>
+                            <CssTextField className={classes.hiddenInput} id="contained-button-Excelfile"  name="uploadExcelFileHidden" type="file"/>
+                                <label htmlFor="contained-button-Excelfile">
+                                    <Button  style={{ backgroundColor:'Transparent',padding:"0px"}} component="span">
+                                        <Typography style={{color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em"}}>Upload Excel</Typography>
+                                    </Button>
+                                </label>
+                        </Box>
+                    </Box>
+                   
                     <div>
                         <CssTextField id="outlined-full-width"
                             placeholder=""
