@@ -13,4 +13,11 @@ code {
 }
 
 
-
+#file-upload-button {
+  border: 1px solid #85A2A8;
+  background: #85A2A8;
+  font-size: 0.8em;
+  padding: 2px 10px;
+  border-radius: 15px;
+  color: #fff;
+}

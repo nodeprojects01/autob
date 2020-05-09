@@ -54,7 +54,7 @@ export default function Layout() {
                     <div style={{ padding: "2em" }}>
                         <div style={{
                             position: "fixed",
-                            top: "-12%", margin: "25% 15%", border: "2px solid #fff", padding: "1em"
+                            top: "-12%", margin: "25% 9%", border: "2px solid #fff", padding: "1em 7em"
                         }}>
                             <Typography variant="h5" className="text-flicker-in-glow" style={{ color: "#FFF", fontWeight: "bold", letterSpacing: "5px" }}>AUTOB</Typography>
                         </div>

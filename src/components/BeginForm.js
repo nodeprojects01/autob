@@ -6,6 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import image1 from '../images/abstract.jpg'
+import '../index.css'
 
 const StyledButton = withStyles({
     root: {
@@ -109,6 +110,8 @@ export default function BeginForm(props) {
                             InputLabelProps={{
                                 shrink: true,
                             }}
+                            accept="*.xlsx" 
+                            type="file"
                             variant="outlined"
                         />
                     </div>
