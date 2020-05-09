@@ -2,23 +2,19 @@ import React from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import image1 from '../images/abstract.jpg'
-import Slide from "@material-ui/core/Slide";
+import image1 from '../../images/abstract_1.jpg'
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
-import AdvSettings from './AdvSettings';
-import BeginForm from './BeginForm';
+import AdvSettings from '../AdvSettings';
+import BeginForm from '../BeginForm';
 
 
 const useStyles = makeStyles((theme) => ({
     paper: {
         zIndex: 1,
         position: 'absolute',
-        top: "3em",
-        // margin: theme.spacing(1),
+        top: "3em"
     },
     inputLabel: {
         color: "lightgray",
@@ -58,7 +54,7 @@ export default function Layout() {
                             position: "fixed",
                             top: "-12%", margin: "25% 9%", border: "2px solid #fff", padding: "1em 7em"
                         }}>
-                            <Typography variant="h5" className="text-flicker-in-glow" style={{ color: "#FFF", fontWeight: "bold", letterSpacing: "5px" }}>AUTOB</Typography>
+                            <Typography variant="h5" style={{ color: "#FFF", fontWeight: "bold", letterSpacing: "5px" }}>AUTOB</Typography>
                         </div>
                     </div>
                 </Box>
@@ -73,9 +69,7 @@ export default function Layout() {
                 }}>
                     {checked ?
                         <Fade in={checked}>
-                            {/* <Paper elevation={4} className={classes.paper} style={{ height: "90%", width: "50%", borderRadius: "32px 0 0 0" }}> */}
                             <AdvSettings onClick={handleChange}></AdvSettings>
-                            {/* </Paper> */}
                         </Fade>
                         :
                         <Fade in={!checked}>

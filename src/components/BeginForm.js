@@ -88,17 +88,6 @@ export default function BeginForm(props) {
                         />
                     </div>
                     <br></br>
-                    {/* <div>
-                                    <CssTextField
-                                        id="standard-full-width"
-                                        label="Multiline"
-                                        multiline
-                                        rows={4}
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }} />
-                                </div>
-                                <br></br> */}
                     <div>
                         <Typography style={{color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em"}}>Upload Excel</Typography>
                     </div>
