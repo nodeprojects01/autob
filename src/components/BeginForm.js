@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import image1 from '../images/abstract.jpg'
 import '../index.css'
 import { StylesProvider } from '@material-ui/styles';
+import { appStyle, appTheme } from '../styles/global'
 
 {/* <StylesProvider injectFirst>
     content goes here
@@ -15,16 +16,7 @@ import { StylesProvider } from '@material-ui/styles';
 
 
 const StyledButton = withStyles({
-    root: {
-        //   background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-        background: 'linear-gradient(65deg, #85A2A8 100%, #CFCCB9 90%)',
-        borderRadius: 40,
-        border: 0,
-        color: 'white',
-        height: 44,
-        padding: '0 40px',
-        boxShadow: '0 3px 5px 2px rgba(79, 84, 87, 0.3)',
-    },
+    root: appTheme.buttonDefault,
     label: {
         textTransform: 'capitalize',
     },
@@ -33,20 +25,20 @@ const StyledButton = withStyles({
 const CssTextField = withStyles({
     root: {
         '& label.Mui-focused': {
-            color: '#5F7B86',
+            color: appStyle.colorBlueGreyDark,
         },
         '& .MuiInput-underline:after': {
-            borderBottomColor: '#5F7B86',
+            borderBottomColor: appStyle.colorBlueGreyDark,
         },
         '& .MuiOutlinedInput-root': {
             // '& fieldset': {
-            //   borderColor: '#5F7B86',
+            //   borderColor: appStyle.colorBlueGreyDark,
             // },
             '&:hover fieldset': {
-                borderColor: '#5F7B86',
+                borderColor: appStyle.colorBlueGreyDark,
             },
             '&.Mui-focused fieldset': {
-                borderColor: '#5F7B86',
+                borderColor: appStyle.colorBlueGreyDark,
             },
         },
     },
@@ -79,13 +71,13 @@ export default function BeginForm(props) {
     return (
         <div style={{ padding: "2em", height: "80vh" }}>
             <div>
-                <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Let's Begin</Typography>
+                <Typography variant="h5" style={appTheme.textHeader}>Let's Begin</Typography>
             </div>
 
             <div style={{ margin: "2em 2em" }}>
                 <form className={classes.root} noValidate autoComplete="off">
                     <div>
-                        <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Botname</Typography>
+                        <Typography style={appTheme.textSmall}>Botname</Typography>
                     </div>
                     <div>
                         <CssTextField id="outlined-full-width"
@@ -100,7 +92,7 @@ export default function BeginForm(props) {
                     </div>
                     <br></br>
                     <div>
-                        <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Upload Excel</Typography>
+                        <Typography style={appTheme.textSmall}>Upload Excel</Typography>
                     </div>
                     <div>
                         <CssTextField id="outlined-full-width"

@@ -5,18 +5,10 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
+import { appStyle, appTheme } from '../styles/global'
 
 const StyledButton = withStyles({
-    root: {
-        //   background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-        background: 'linear-gradient(65deg, #85A2A8 100%, #CFCCB9 90%)',
-        borderRadius: 40,
-        border: 0,
-        color: 'white',
-        height: 44,
-        padding: '0 40px',
-        boxShadow: '0 3px 5px 2px rgba(79, 84, 87, 0.3)',
-    },
+    root: appTheme.buttonDefault,
     label: {
         textTransform: 'capitalize',
     },
@@ -25,20 +17,20 @@ const StyledButton = withStyles({
 const CssTextField = withStyles({
     root: {
         '& label.Mui-focused': {
-            color: '#5F7B86',
+            color: appStyle.colorBlueGreyDark,
         },
         '& .MuiInput-underline:after': {
-            borderBottomColor: '#5F7B86',
+            borderBottomColor: appStyle.colorBlueGreyDark,
         },
         '& .MuiOutlinedInput-root': {
             // '& fieldset': {
-            //   borderColor: '#5F7B86',
+            //   borderColor: appStyle.colorBlueGreyDark,
             // },
             '&:hover fieldset': {
-                borderColor: '#5F7B86',
+                borderColor: appStyle.colorBlueGreyDark,
             },
             '&.Mui-focused fieldset': {
-                borderColor: '#5F7B86',
+                borderColor: appStyle.colorBlueGreyDark,
             },
         },
     },
