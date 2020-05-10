@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -7,6 +7,10 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import image1 from '../images/abstract.jpg'
 import '../index.css'
+import MuiAlert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
+
+
 
 const StyledButton = withStyles({
     root: {
@@ -68,6 +72,40 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BeginForm(props) {
     const classes = useStyles();
+    const [values, setValues] = useState({botName: "", uploadExcelFile: ""})
+    const [errorMessage, setErrorMessage] = React.useState('');
+    const [open, setOpen] = React.useState(false);
+    const handleInputchange = (e) => {
+        const {name, value} = e.target
+        console.log(name,"+",value);
+        if(name==="uploadExcelFileHidden"){
+            const filename = e.target.files[0].name;
+            values.uploadExcelFile=filename;
+        }
+        setValues({...values, [name]: value})
+    }
+    //Error Handling Snackbar
+    const handleClose = (event, reason) => {
+        if (reason=== 'clickaway') {return;}
+        setOpen(false);
+        setErrorMessage('');
+    };
+    function Alert(props) {
+        return <MuiAlert elevation={6} variant="filled" {...props} />;
+    }
+    //Onsubmit action
+    const handleSubmit = e => {
+        e.preventDefault();
+        let errorstatus = validateInput (values);
+        if(errorstatus){
+            setErrorMessage(errorstatus);
+            setOpen(true);}
+        else{
+           //Or go to next page or any other operation
+            props.onClick();
+        }
+    }
+
     return (
         <div style={{ padding: "2em", height:"80vh" }}>
             <div>
@@ -83,6 +121,7 @@ export default function BeginForm(props) {
                         <CssTextField id="outlined-full-width"
                             placeholder=""
                             fullWidth
+                            name="botName" value={values.botName} onChange={handleInputchange}
                             margin="dense"
                             InputLabelProps={{
                                 shrink: true,
@@ -107,7 +146,7 @@ export default function BeginForm(props) {
                             <Typography style={{color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em"}}>Upload Excel</Typography>
                         </Box>
                         <Box p={1} style={{padding:'0px'}}>
-                            <CssTextField className={classes.hiddenInput} id="contained-button-Excelfile"  name="uploadExcelFileHidden" type="file"/>
+                            <CssTextField className={classes.hiddenInput} id="contained-button-Excelfile"  name="uploadExcelFileHidden" type="file" onChange={handleInputchange}/>
                                 <label htmlFor="contained-button-Excelfile">
                                     <Button  style={{ backgroundColor:'Transparent',padding:"0px"}} component="span">
                                         <Typography style={{color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em"}}>Upload Excel</Typography>
@@ -121,19 +160,54 @@ export default function BeginForm(props) {
                             placeholder=""
                             fullWidth
                             margin="dense"
+                            name="uploadExcelFile"
+                            value={values.uploadExcelFile}
                             InputLabelProps={{
                                 shrink: true,
                             }}
                             variant="outlined"
+                            onChange={handleInputchange}
                         />
                     </div>
                     <br></br>
                     <br></br>
                     <div>
-                        <StyledButton onClick={() => { props.onClick() }}>Next</StyledButton>
+                        <StyledButton onClick={handleSubmit} >Next</StyledButton>
+                            {/* onClick={() => { props.onClick() }} */}
+                        {(errorMessage.length>0)?
+                                <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
+                                    <Alert onClose={handleClose} severity="error">
+                                        {errorMessage}
+                                    </Alert>
+                                </Snackbar>
+                                :null}
                     </div>
                 </form>
             </div>
         </div>
     );
+}
+
+
+
+//Validation of botname and ExcelFileUpload
+function validateInput (values){
+    if(values.botName)
+    {
+        if(((values.botName).search(" ")>-1) || (!((values.botName).search("_")>0))) {
+            return "Botname is alphanumeric with underscores. Must not contain any space. ex- myfirst_bot 01";
+            }
+    }
+    else{
+        return "Botname is required";
+    }
+
+    if(values.uploadExcelFile){
+        if(!(/\.(xls[mx]?)$/i).test(values.uploadExcelFile)){
+            return "Please upload file in Excel format."
+        }
+    }
+    else{
+        return "Excel File is required.";
+    }
 }
