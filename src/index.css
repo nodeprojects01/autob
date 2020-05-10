@@ -22,3 +22,6 @@ input[type="file" i]::-webkit-file-upload-button {
   color: #fff;
 }
 
+div .MuiSnackbarContent-root{
+  border-radius: 35px;
+}

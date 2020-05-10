@@ -127,11 +127,11 @@ export default function BeginForm(props) {
                         />
                     </div>
                     <br></br>
-                    <Box display="flex" p={1} style={{ padding: '0px' }}>
-                        <Box p={1} flexGrow={1} style={{ padding: '0px' }}>
+                    <Box display="flex">
+                        <Box flexGrow={1}>
                             <Typography style={appTheme.textSmall}>Upload Excel</Typography>
                         </Box>
-                        <Box p={1} style={{ padding: '0px' }}>
+                        <Box>
                             <CssTextField className={classes.hiddenInput} id="contained-button-Excelfile"
                                 name="uploadExcelFileHidden" type="file" onChange={handleInputchange} />
                             <label htmlFor="contained-button-Excelfile">
