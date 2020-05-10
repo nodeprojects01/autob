@@ -4,34 +4,26 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import image1 from '../../images/abstract_1.jpg'
-import Fade from '@material-ui/core/Fade';
-import Paper from '@material-ui/core/Paper';
-import AdvSettings from '../AdvSettings';
-import BeginForm from '../BeginForm';
+import Chip from '@material-ui/core/Chip';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import SlotCard from '../SlotCard';
 
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        flexGrow: 1,
+    },
     paper: {
-        zIndex: 1,
-        position: 'absolute',
-        top: "3em"
+        padding: theme.spacing(2),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
     },
-    inputLabel: {
-        color: "lightgray",
-        "&$inputFocused": {
-            color: "orange"
-        }
-    },
-    inputFocused: {}
 }));
 
-export default function Intents() {
-    const classes = useStyles();
-    const [checked, setChecked] = React.useState(false);
 
-    const handleChange = () => {
-        setChecked((prev) => !prev);
-    };
+export default function Slots() {
+    const classes = useStyles();
 
     return (
         <Grid container style={{
@@ -45,17 +37,29 @@ export default function Intents() {
             minHeight: "100vh",
             padding: "3em 0 0 0",
         }}>
+            <Box display="flex" justifyContent="flex-end" style={{ width: "100%" }}>
+                <Box style={{
+                    background: "rgba(255, 255, 255, 0.9)",
+                    borderRadius: "32px 0 0 0",
+                    minHeight: "100%",
+                    width: "96%",
+                    textAlign: "left"
+                    // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
+                }}>
 
-            <Box color="secondary.contrastText" style={{
-                borderRadius: "32px 0 0 0",
-                background: "rgba(255, 255, 255, 0.9)",
-                minHeight: "100%",
-                textAlign: "left"
-                // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
-            }}>
-                <Grid>
-                    
-                </Grid>
+                    <Grid item xs={12}>
+                        <div style={{ padding: "1.7em 2em", height: "80vh" }}>
+                            <div>
+                                <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Identify Intents</Typography>
+                            </div>
+
+                            <div style={{ margin: "2em 2em" }}>
+                                <Grid container justify="left" spacing={2}>
+                                </Grid>
+                            </div>
+                        </div>
+                    </Grid>
+                </Box>
             </Box>
         </Grid>
     );
