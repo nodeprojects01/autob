@@ -8,8 +8,7 @@ import Button from '@material-ui/core/Button';
 import image1 from '../images/abstract.jpg'
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+import SnackBarComponent from './SnackBarComponent'
 
 const StyledButton = withStyles({
     root: {
@@ -81,9 +80,7 @@ export default function AdvSettings(props) {
         uploadJSONFileHidden: ''
     })
     const [customVisible, setCustomVisible] = useState(false);
-    const [errorMessage, setErrorMessage] = React.useState('');
-    const [open, setOpen] = React.useState(false);
-
+    
     const handleInputchange = (e) => {
         const { name, value } = e.target
         console.log(name, "+", value);
@@ -106,21 +103,18 @@ export default function AdvSettings(props) {
     }
 
     //Error Handling Snackbar
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') { return; }
-        setOpen(false);
-        setErrorMessage('');
+    //Error Handling Snackbar
+    const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
+    //Error Handling Snackbar
+    const handleCloseSnackBar = () => {
+    setSnackBar({ type: "error", show: false, message: "" })
     };
-    function Alert(props) {
-        return <MuiAlert elevation={6} variant="filled" {...props} />;
-    }
     //Onsubmit action
     const handleSubmit = e => {
         e.preventDefault();
         let errorstatus = validateInput(values, customVisible);
         if (errorstatus) {
-            setErrorMessage(errorstatus);
-            setOpen(true);
+            setSnackBar({show:true,message:errorstatus});
         }
         else {
             //Or go to next page or any other operation
@@ -284,14 +278,12 @@ export default function AdvSettings(props) {
                 <br></br>
                 <div>
                     <StyledButton onClick={handleSubmit} >Save</StyledButton>
-                    {/* onClick={() => { props.onClick() }} */}
-                    {(errorMessage.length > 0) ?
-                        <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
-                            <Alert onClose={handleClose} severity="error">
-                                {errorMessage}
-                            </Alert>
-                        </Snackbar>
-                        : null}
+                    {snackBar.show?
+                        <SnackBarComponent open={snackBar.show}
+                         type={snackBar.type}
+                        message={snackBar.message}
+                        callBack={handleCloseSnackBar} />
+                        :null}
                 </div>
             </Grid>
 

@@ -7,8 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import image1 from '../images/abstract.jpg'
 import '../index.css'
-import MuiAlert from '@material-ui/lab/Alert';
-import Snackbar from '@material-ui/core/Snackbar';
+import SnackBarComponent from './SnackBarComponent'
 
 
 
@@ -73,8 +72,7 @@ const useStyles = makeStyles((theme) => ({
 export default function BeginForm(props) {
     const classes = useStyles();
     const [values, setValues] = useState({ botName: "", uploadExcelFile: "" })
-    const [errorMessage, setErrorMessage] = React.useState('');
-    const [open, setOpen] = React.useState(false);
+    
     const handleInputchange = (e) => {
         const { name, value } = e.target
         console.log(name, "+", value);
@@ -85,24 +83,22 @@ export default function BeginForm(props) {
         setValues({ ...values, [name]: value })
     }
     //Error Handling Snackbar
-    const handleClose = (event, reason) => {
-        if (reason === 'clickaway') { return; }
-        setOpen(false);
-        setErrorMessage('');
+    const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
+    //Error Handling Snackbar
+    const handleCloseSnackBar = () => {
+    setSnackBar({ type: "error", show: false, message: "" })
     };
-    function Alert(props) {
-        return <MuiAlert elevation={6} variant="filled" {...props} />;
-    }
+
     //Onsubmit action
     const handleSubmit = e => {
         e.preventDefault();
-        let errorstatus = validateInput(values);
-        if (errorstatus) {
-            setErrorMessage(errorstatus);
-            setOpen(true);
+        let errorstatus = validateInput (values);
+        if(errorstatus){
+            setSnackBar({show:true,message:errorstatus});
+            // setOpen(true);}
         }
-        else {
-            //Or go to next page or any other operation
+        else{
+           //Or go to next page or any other operation
             props.onClick();
         }
     }
@@ -164,13 +160,12 @@ export default function BeginForm(props) {
                     <div>
                         <StyledButton onClick={handleSubmit} >Next</StyledButton>
                         {/* onClick={() => { props.onClick() }} */}
-                        {(errorMessage.length > 0) ?
-                            <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
-                                <Alert onClose={handleClose} severity="error">
-                                    {errorMessage}
-                                </Alert>
-                            </Snackbar>
-                            : null}
+                        {snackBar.show?
+                        <SnackBarComponent open={snackBar.show}
+                         type={snackBar.type}
+                        message={snackBar.message}
+                        callBack={handleCloseSnackBar} />
+                        :null}
                     </div>
                 </form>
             </div>
