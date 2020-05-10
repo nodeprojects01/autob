@@ -7,6 +7,12 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import image1 from '../images/abstract.jpg'
 import '../index.css'
+import { StylesProvider } from '@material-ui/styles';
+
+{/* <StylesProvider injectFirst>
+    content goes here
+</StylesProvider> */}
+
 
 const StyledButton = withStyles({
     root: {
@@ -37,12 +43,12 @@ const CssTextField = withStyles({
             //   borderColor: '#5F7B86',
             // },
             '&:hover fieldset': {
-              borderColor: '#5F7B86',
+                borderColor: '#5F7B86',
             },
             '&.Mui-focused fieldset': {
-              borderColor: '#5F7B86',
+                borderColor: '#5F7B86',
             },
-          },
+        },
     },
 })(TextField);
 
@@ -65,8 +71,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BeginForm(props) {
     const classes = useStyles();
+
+    const onChangeHandler = (event) => {
+        console.log(event.target.files[0])
+    }
+
     return (
-        <div style={{ padding: "2em", height:"80vh" }}>
+        <div style={{ padding: "2em", height: "80vh" }}>
             <div>
                 <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Let's Begin</Typography>
             </div>
@@ -74,7 +85,7 @@ export default function BeginForm(props) {
             <div style={{ margin: "2em 2em" }}>
                 <form className={classes.root} noValidate autoComplete="off">
                     <div>
-                        <Typography style={{color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em"}}>Botname</Typography>
+                        <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Botname</Typography>
                     </div>
                     <div>
                         <CssTextField id="outlined-full-width"
@@ -89,15 +100,20 @@ export default function BeginForm(props) {
                     </div>
                     <br></br>
                     <div>
-                        <Typography style={{color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em"}}>Upload Excel</Typography>
+                        <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Upload Excel</Typography>
                     </div>
                     <div>
                         <CssTextField id="outlined-full-width"
-                            placeholder=""
+                            placeholder="Tasdfsdfasdfsdfdsfest"
                             fullWidth
+                            type="file"
+                            inputProps={{
+                                style: { fontSize: 15 }
+                            }}
                             margin="dense"
                             InputLabelProps={{
                                 shrink: true,
+                                style: { fontSize: 40 }
                             }}
                             variant="outlined"
                         />

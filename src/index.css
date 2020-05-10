@@ -13,7 +13,7 @@ code {
 }
 
 
-#file-upload-button {
+input[type="file" i]::-webkit-file-upload-button {
   border: 1px solid #85A2A8;
   background: #85A2A8;
   font-size: 0.8em;
@@ -21,3 +21,4 @@ code {
   border-radius: 15px;
   color: #fff;
 }
+
