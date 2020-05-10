@@ -10,7 +10,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        width: 300,
+        width: 352,
         '& > * + *': {
             marginTop: theme.spacing(3),
         },
@@ -46,9 +46,6 @@ export default function SlotValueChip(props) {
                     options={props.enumVal.synonyms}
                     defaultValue={props.enumVal.synonyms}
                     freeSolo
-                    inputProps={{
-                        style: { fontSize: 5 }
-                    }}
                     renderTags={(value, getTagProps) =>
                         value.map((option, index) => (
                             <Chip key={option} variant="outlined" label={option} {...getTagProps({ index })} />

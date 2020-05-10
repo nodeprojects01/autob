@@ -29,6 +29,14 @@ const slotValues = [
   {
     "value": "bank",
     "synonyms": ["hdfc", "axis", "citi", "indus"]
+  },
+  {
+    "value": "action",
+    "synonyms": ["add", "remove", "register", "signup"]
+  },
+  {
+    "value": "bank",
+    "synonyms": ["hdfc", "axis", "citi", "indus"]
   }
 ]
 
