@@ -80,10 +80,10 @@ export default function BeginForm(props) {
         setValues({ ...values, [name]: value })
     }
     //Error Handling Snackbar
-    const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
+    const [snackBar, setSnackBar] = useState({ type:"error", show: false, message: "" });
     //Error Handling Snackbar
     const handleCloseSnackBar = () => {
-        setSnackBar({ type: "error", show: false, message: "" })
+        setSnackBar({ type:"error", show: false, message: "" })
     };
 
     //Onsubmit action
@@ -91,7 +91,7 @@ export default function BeginForm(props) {
         e.preventDefault();
         let errorstatus = validateInput(values);
         if (errorstatus) {
-            setSnackBar({ show: true, message: errorstatus });
+            setSnackBar({ type:"error", show: true, message: errorstatus });
             // setOpen(true);}
         }
         else {
@@ -127,11 +127,11 @@ export default function BeginForm(props) {
                         />
                     </div>
                     <br></br>
-                    <Box display="flex" p={1} style={{ padding: '0px' }}>
-                        <Box p={1} flexGrow={1} style={{ padding: '0px' }}>
+                    <Box display="flex">
+                        <Box flexGrow={1}>
                             <Typography style={appTheme.textSmall}>Upload Excel</Typography>
                         </Box>
-                        <Box p={1} style={{ padding: '0px' }}>
+                        <Box>
                             <CssTextField className={classes.hiddenInput} id="contained-button-Excelfile"
                                 name="uploadExcelFileHidden" type="file" onChange={handleInputchange} />
                             <label htmlFor="contained-button-Excelfile">
