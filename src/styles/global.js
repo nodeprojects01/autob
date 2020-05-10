@@ -4,6 +4,9 @@ const appStyle = {
     colorGreyLight: "#6D6E6F",
     colorBlueGreyDark: "#5F7B86",
     colorBlueGrey: "#85A2A8",
+    colorRed: "#EB7077",
+    colorGreen: "#2BBBAD",
+
     fontSizeSmall: "0.8rem",
     fontSizeDefault: "0.88rem",
     fontSizeHeader: "1.5rem"

@@ -106,7 +106,7 @@ export default function AdvSettings(props) {
         e.preventDefault();
         let errorstatus = validateInput(values, customVisible);
         if (errorstatus) {
-            setSnackBar({ show: true, message: errorstatus });
+            setSnackBar({ type:"error", show: true, message: errorstatus });
         }
         else {
             //Or go to next page or any other operation
