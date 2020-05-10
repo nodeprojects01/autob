@@ -10,6 +10,7 @@ import '../index.css'
 import { StylesProvider } from '@material-ui/styles';
 import { appStyle, appTheme } from '../styles/global';
 import SnackBarComponent from './SnackbarComponent';
+import SettingsIcon from '@material-ui/icons/Settings';
 
 {/* <StylesProvider injectFirst>
     content goes here
@@ -80,10 +81,10 @@ export default function BeginForm(props) {
         setValues({ ...values, [name]: value })
     }
     //Error Handling Snackbar
-    const [snackBar, setSnackBar] = useState({ type:"error", show: false, message: "" });
+    const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
     //Error Handling Snackbar
     const handleCloseSnackBar = () => {
-        setSnackBar({ type:"error", show: false, message: "" })
+        setSnackBar({ type: "error", show: false, message: "" })
     };
 
     //Onsubmit action
@@ -91,7 +92,7 @@ export default function BeginForm(props) {
         e.preventDefault();
         let errorstatus = validateInput(values);
         if (errorstatus) {
-            setSnackBar({ type:"error", show: true, message: errorstatus });
+            setSnackBar({ type: "error", show: true, message: errorstatus });
             // setOpen(true);}
         }
         else {
@@ -131,7 +132,7 @@ export default function BeginForm(props) {
                         <Box flexGrow={1}>
                             <Typography style={appTheme.textSmall}>Upload Excel</Typography>
                         </Box>
-                        <Box>
+                        <Box alignSelf="center">
                             <CssTextField className={classes.hiddenInput} id="contained-button-Excelfile"
                                 name="uploadExcelFileHidden" type="file" onChange={handleInputchange} />
                             <label htmlFor="contained-button-Excelfile">
@@ -161,7 +162,16 @@ export default function BeginForm(props) {
                     </div>
                     <br></br>
                     <div>
-                        <StyledButton onClick={handleSubmit} >Next</StyledButton>
+                        <Box display="flex">
+                            <Box flexGrow={1}>
+                                <StyledButton onClick={handleSubmit}>Next</StyledButton>
+                            </Box>
+                            <Box alignSelf="center" onClick={props.advSettings}>
+                                <SettingsIcon 
+                                    style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
+                                    fontSize="small"></SettingsIcon>
+                            </Box>
+                        </Box>
                         {/* onClick={() => { props.onClick() }} */}
                         {snackBar.show ?
                             <SnackBarComponent open={snackBar.show}
@@ -172,6 +182,8 @@ export default function BeginForm(props) {
                     </div>
                 </form>
             </div>
+
+
         </div>
     );
 }

@@ -48,7 +48,8 @@ export default function Layout() {
             <Grid item xs={12} sm={6}>
                 <Box color="primary.contrastText" style={{
                     // background: "rgba(79, 84, 87, 0.8)", 
-                    minHeight: "100%" }}>
+                    minHeight: "100%"
+                }}>
                     <div style={{ padding: "2em" }}>
                         <div style={{
                             position: "fixed",
@@ -73,8 +74,13 @@ export default function Layout() {
                         </Fade>
                         :
                         <Fade in={!checked}>
-                            <Paper elevation={40} className={classes.paper} style={{ width: "50%", background: "rgba(255, 255, 255, 0.1)", borderRadius: "32px 0 0 0" }}>
-                                <BeginForm onClick={handleChange}></BeginForm>
+                            <Paper elevation={40} className={classes.paper}
+                                style={{
+                                    width: "50%", background: "rgba(255, 255, 255, 0.1)",
+                                    borderRadius: "32px 0 0 0"
+                                }}>
+                                <BeginForm advSettings={() => { setChecked(true) }} onClick={handleChange}>
+                                </BeginForm>
                             </Paper>
                         </Fade>
                     }
