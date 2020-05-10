@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -8,7 +8,8 @@ import Button from '@material-ui/core/Button';
 import image1 from '../images/abstract.jpg'
 import '../index.css'
 import { StylesProvider } from '@material-ui/styles';
-import { appStyle, appTheme } from '../styles/global'
+import { appStyle, appTheme } from '../styles/global';
+import SnackBarComponent from './SnackbarComponent';
 
 {/* <StylesProvider injectFirst>
     content goes here
@@ -57,15 +58,46 @@ const useStyles = makeStyles((theme) => ({
             color: "orange"
         }
     },
-    inputFocused: {}
+    inputFocused: {},
+    hiddenInput: {
+        display: 'none'
+    }
 }));
 
 
 export default function BeginForm(props) {
     const classes = useStyles();
 
-    const onChangeHandler = (event) => {
-        console.log(event.target.files[0])
+    const [values, setValues] = useState({ botName: "", uploadExcelFile: "" })
+
+    const handleInputchange = (e) => {
+        const { name, value } = e.target
+        console.log(name, "+", value);
+        if (name === "uploadExcelFileHidden") {
+            const filename = e.target.files[0].name;
+            values.uploadExcelFile = filename;
+        }
+        setValues({ ...values, [name]: value })
+    }
+    //Error Handling Snackbar
+    const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
+    //Error Handling Snackbar
+    const handleCloseSnackBar = () => {
+        setSnackBar({ type: "error", show: false, message: "" })
+    };
+
+    //Onsubmit action
+    const handleSubmit = e => {
+        e.preventDefault();
+        let errorstatus = validateInput(values);
+        if (errorstatus) {
+            setSnackBar({ show: true, message: errorstatus });
+            // setOpen(true);}
+        }
+        else {
+            //Or go to next page or any other operation
+            props.onClick();
+        }
     }
 
     return (
@@ -84,6 +116,10 @@ export default function BeginForm(props) {
                             placeholder=""
                             fullWidth
                             margin="dense"
+                            name="botName" value={values.botName} onChange={handleInputchange}
+                            InputProps={{
+                                style: appTheme.textDefault
+                            }}
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -91,32 +127,73 @@ export default function BeginForm(props) {
                         />
                     </div>
                     <br></br>
-                    <div>
-                        <Typography style={appTheme.textSmall}>Upload Excel</Typography>
-                    </div>
+                    <Box display="flex" p={1} style={{ padding: '0px' }}>
+                        <Box p={1} flexGrow={1} style={{ padding: '0px' }}>
+                            <Typography style={appTheme.textSmall}>Upload Excel</Typography>
+                        </Box>
+                        <Box p={1} style={{ padding: '0px' }}>
+                            <CssTextField className={classes.hiddenInput} id="contained-button-Excelfile"
+                                name="uploadExcelFileHidden" type="file" onChange={handleInputchange} />
+                            <label htmlFor="contained-button-Excelfile">
+                                <Button style={{ backgroundColor: 'Transparent', padding: "0px" }} component="span">
+                                    <Typography style={appTheme.textSmall}>Browse File</Typography>
+                                </Button>
+                            </label>
+                        </Box>
+                    </Box>
+
                     <div>
                         <CssTextField id="outlined-full-width"
-                            placeholder="Tasdfsdfasdfsdfdsfest"
+                            placeholder=""
                             fullWidth
-                            type="file"
-                            inputProps={{
-                                style: { fontSize: 15 }
-                            }}
                             margin="dense"
+                            name="uploadExcelFile"
+                            value={values.uploadExcelFile}
+                            InputProps={{
+                                style: appTheme.textDefault
+                            }}
                             InputLabelProps={{
                                 shrink: true,
-                                style: { fontSize: 40 }
                             }}
                             variant="outlined"
+                            onChange={handleInputchange}
                         />
                     </div>
                     <br></br>
-                    <br></br>
                     <div>
-                        <StyledButton onClick={() => { props.onClick() }}>Next</StyledButton>
+                        <StyledButton onClick={handleSubmit} >Next</StyledButton>
+                        {/* onClick={() => { props.onClick() }} */}
+                        {snackBar.show ?
+                            <SnackBarComponent open={snackBar.show}
+                                type={snackBar.type}
+                                message={snackBar.message}
+                                callBack={handleCloseSnackBar} />
+                            : null}
                     </div>
                 </form>
             </div>
         </div>
     );
+}
+
+
+//Validation of botname and ExcelFileUpload
+function validateInput(values) {
+    if (values.botName) {
+        if ((values.botName).search(" ") > -1) {
+            return "Botname is alphanumeric, must not contain any spaces. ex- myfirst_bot";
+        }
+    }
+    else {
+        return "Botname is required";
+    }
+
+    if (values.uploadExcelFile) {
+        if (!(/\.(xls[mx]?)$/i).test(values.uploadExcelFile)) {
+            return "Please upload only excel file"
+        }
+    }
+    else {
+        return "Excel file is required";
+    }
 }

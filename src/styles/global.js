@@ -5,7 +5,7 @@ const appStyle = {
     colorBlueGreyDark: "#5F7B86",
     colorBlueGrey: "#85A2A8",
     fontSizeSmall: "0.8rem",
-    fontSizeDefault: "1rem",
+    fontSizeDefault: "0.88rem",
     fontSizeHeader: "1.5rem"
 }
 
@@ -22,7 +22,8 @@ const appTheme = {
     },
     textSmall:{
         color: appStyle.colorGreyLight, 
-        fontSize: appStyle.fontSizeSmall
+        fontSize: appStyle.fontSizeSmall,
+        textTransform: 'capitalize'
     },
     textDefault:{
         color: appStyle.colorOffBlack, 
