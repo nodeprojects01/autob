@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -41,12 +41,12 @@ const CssTextField = withStyles({
             //   borderColor: '#5F7B86',
             // },
             '&:hover fieldset': {
-              borderColor: '#5F7B86',
+                borderColor: '#5F7B86',
             },
             '&.Mui-focused fieldset': {
-              borderColor: '#5F7B86',
+                borderColor: '#5F7B86',
             },
-          },
+        },
     },
 })(TextField);
 
@@ -64,29 +64,29 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     inputFocused: {},
-    hiddenInput :{
-         display: 'none'
+    hiddenInput: {
+        display: 'none'
     }
 }));
 
 
 export default function BeginForm(props) {
     const classes = useStyles();
-    const [values, setValues] = useState({botName: "", uploadExcelFile: ""})
+    const [values, setValues] = useState({ botName: "", uploadExcelFile: "" })
     const [errorMessage, setErrorMessage] = React.useState('');
     const [open, setOpen] = React.useState(false);
     const handleInputchange = (e) => {
-        const {name, value} = e.target
-        console.log(name,"+",value);
-        if(name==="uploadExcelFileHidden"){
+        const { name, value } = e.target
+        console.log(name, "+", value);
+        if (name === "uploadExcelFileHidden") {
             const filename = e.target.files[0].name;
-            values.uploadExcelFile=filename;
+            values.uploadExcelFile = filename;
         }
-        setValues({...values, [name]: value})
+        setValues({ ...values, [name]: value })
     }
     //Error Handling Snackbar
     const handleClose = (event, reason) => {
-        if (reason=== 'clickaway') {return;}
+        if (reason === 'clickaway') { return; }
         setOpen(false);
         setErrorMessage('');
     };
@@ -96,18 +96,19 @@ export default function BeginForm(props) {
     //Onsubmit action
     const handleSubmit = e => {
         e.preventDefault();
-        let errorstatus = validateInput (values);
-        if(errorstatus){
+        let errorstatus = validateInput(values);
+        if (errorstatus) {
             setErrorMessage(errorstatus);
-            setOpen(true);}
-        else{
-           //Or go to next page or any other operation
+            setOpen(true);
+        }
+        else {
+            //Or go to next page or any other operation
             props.onClick();
         }
     }
 
     return (
-        <div style={{ padding: "2em", height:"80vh" }}>
+        <div style={{ padding: "2em", height: "80vh" }}>
             <div>
                 <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Let's Begin</Typography>
             </div>
@@ -115,7 +116,7 @@ export default function BeginForm(props) {
             <div style={{ margin: "2em 2em" }}>
                 <form className={classes.root} noValidate autoComplete="off">
                     <div>
-                        <Typography style={{color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em"}}>Botname</Typography>
+                        <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Botname</Typography>
                     </div>
                     <div>
                         <CssTextField id="outlined-full-width"
@@ -130,31 +131,20 @@ export default function BeginForm(props) {
                         />
                     </div>
                     <br></br>
-                    {/* <div>
-                                    <CssTextField
-                                        id="standard-full-width"
-                                        label="Multiline"
-                                        multiline
-                                        rows={4}
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }} />
-                                </div>
-                                <br></br> */}
-                    <Box display="flex" p={1} style={{padding:'0px'}}>
-                        <Box p={1} flexGrow={1} style={{padding:'0px'}}>
-                            <Typography style={{color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em"}}>Upload Excel</Typography>
+                    <Box display="flex" p={1} style={{ padding: '0px' }}>
+                        <Box p={1} flexGrow={1} style={{ padding: '0px' }}>
+                            <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Upload Excel</Typography>
                         </Box>
-                        <Box p={1} style={{padding:'0px'}}>
-                            <CssTextField className={classes.hiddenInput} id="contained-button-Excelfile"  name="uploadExcelFileHidden" type="file" onChange={handleInputchange}/>
-                                <label htmlFor="contained-button-Excelfile">
-                                    <Button  style={{ backgroundColor:'Transparent',padding:"0px"}} component="span">
-                                        <Typography style={{color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em"}}>Upload Excel</Typography>
-                                    </Button>
-                                </label>
+                        <Box p={1} style={{ padding: '0px' }}>
+                            <CssTextField className={classes.hiddenInput} id="contained-button-Excelfile" name="uploadExcelFileHidden" type="file" onChange={handleInputchange} />
+                            <label htmlFor="contained-button-Excelfile">
+                                <Button style={{ backgroundColor: 'Transparent', padding: "0px" }} component="span">
+                                    <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Upload Excel</Typography>
+                                </Button>
+                            </label>
                         </Box>
                     </Box>
-                   
+
                     <div>
                         <CssTextField id="outlined-full-width"
                             placeholder=""
@@ -173,14 +163,14 @@ export default function BeginForm(props) {
                     <br></br>
                     <div>
                         <StyledButton onClick={handleSubmit} >Next</StyledButton>
-                            {/* onClick={() => { props.onClick() }} */}
-                        {(errorMessage.length>0)?
-                                <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
-                                    <Alert onClose={handleClose} severity="error">
-                                        {errorMessage}
-                                    </Alert>
-                                </Snackbar>
-                                :null}
+                        {/* onClick={() => { props.onClick() }} */}
+                        {(errorMessage.length > 0) ?
+                            <Snackbar open={open} autoHideDuration={4000} onClose={handleClose}>
+                                <Alert onClose={handleClose} severity="error">
+                                    {errorMessage}
+                                </Alert>
+                            </Snackbar>
+                            : null}
                     </div>
                 </form>
             </div>
@@ -191,23 +181,22 @@ export default function BeginForm(props) {
 
 
 //Validation of botname and ExcelFileUpload
-function validateInput (values){
-    if(values.botName)
-    {
-        if(((values.botName).search(" ")>-1) || (!((values.botName).search("_")>0))) {
-            return "Botname is alphanumeric with underscores. Must not contain any space. ex- myfirst_bot 01";
-            }
+function validateInput(values) {
+    if (values.botName) {
+        if ((values.botName).search(" ") > -1)  {
+            return "Botname is alphanumeric. Must not contain any space. ex- myfirst_bot 01";
+        }
     }
-    else{
+    else {
         return "Botname is required";
     }
 
-    if(values.uploadExcelFile){
-        if(!(/\.(xls[mx]?)$/i).test(values.uploadExcelFile)){
+    if (values.uploadExcelFile) {
+        if (!(/\.(xls[mx]?)$/i).test(values.uploadExcelFile)) {
             return "Please upload file in Excel format."
         }
     }
-    else{
+    else {
         return "Excel File is required.";
     }
 }
