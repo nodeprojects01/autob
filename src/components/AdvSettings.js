@@ -83,13 +83,18 @@ export default function AdvSettings(props) {
             else
                 setCustomVisible(false);
         }
-        if ((name === "uploadJSONFileHidden") && ((/\.(json)$/i).test(value))) {
-            let file = e.target.files[0];
-            var reader = new FileReader();
-            reader.readAsText(file);
-            reader.onload = function (e) {
+        if ((name === "uploadJSONFileHidden")){
+            if((/\.(json)$/i).test(value)){
+                let file = e.target.files[0];
+                var reader = new FileReader();
+                reader.readAsText(file);
+                reader.onload = function (e) {
                 const content = reader.result;
                 setValues({ ...values, customSynonymsJSON: content, uploadJSONFileHidden: value })
+                }
+            }
+            else{
+                values.customSynonymsJSON='';
             }
         }
         setValues({ ...values, [name]: value })
@@ -306,14 +311,14 @@ export default function AdvSettings(props) {
 
 function validateInput(values, customVisible) {
     if (customVisible) {
-        if (values.uploadJSONFileHidden && (!(/\.(json)$/i).test(values.uploadJSONFileHidden))) {
-            return "Please upload only json file"
+        if(values.customSynonymsJSON)
+        {
+            if(!isDict(values.customSynonymsJSON)){
+                return "Please upload file in JSON format."
+            }
         }
-        if ((!values.customSynonymsJSON)) {
+        else{
             return "Please enter json file.";
-        }
-        if (!isDict(values.customSynonymsJSON)) {
-            return "Please upload only json file";
         }
     }
     if ((values.removeUnimportantWords) && (!checkisArray(values.removeUnimportantWords))) {

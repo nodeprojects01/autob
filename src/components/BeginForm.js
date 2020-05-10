@@ -80,10 +80,10 @@ export default function BeginForm(props) {
         setValues({ ...values, [name]: value })
     }
     //Error Handling Snackbar
-    const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
+    const [snackBar, setSnackBar] = useState({ type:"error", show: false, message: "" });
     //Error Handling Snackbar
     const handleCloseSnackBar = () => {
-        setSnackBar({ type: "error", show: false, message: "" })
+        setSnackBar({ type:"error", show: false, message: "" })
     };
 
     //Onsubmit action
@@ -91,7 +91,7 @@ export default function BeginForm(props) {
         e.preventDefault();
         let errorstatus = validateInput(values);
         if (errorstatus) {
-            setSnackBar({ show: true, message: errorstatus });
+            setSnackBar({ type:"error", show: true, message: errorstatus });
             // setOpen(true);}
         }
         else {
