@@ -250,7 +250,7 @@ export default function AdvSettings(props) {
                         />
                     </div>
                 </Grid>
-
+                <br></br>
                 <br></br>
                 <div>
                     <StyledButton onClick={handleSubmit} >Save</StyledButton>

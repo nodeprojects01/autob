@@ -85,7 +85,7 @@ export default function BeginForm(props) {
         }
         else {
             //Or go to next page or any other operation
-            props.onClick();
+            // props.onClick();
         }
     }
 
@@ -104,7 +104,7 @@ export default function BeginForm(props) {
                         <CssTextField id="outlined-full-width"
                             placeholder=""
                             fullWidth
-                            name="botName" value={values.botName} onChange={handleInputchange}
+                            name="botName" value={props.values.botName} onChange={props.handleInputchange}
                             margin="dense"
                             name="botName" value={props.values.botName} onChange={props.setValues}
                             InputProps={{
@@ -155,7 +155,7 @@ export default function BeginForm(props) {
                             <Box flexGrow={1}>
                                 <StyledButton onClick={handleSubmit}>Next</StyledButton>
                             </Box>
-                            <Box alignSelf="center" onClick={props.advSettings}>
+                            <Box alignSelf="center" onClick={props.onClick}>
                                 <SettingsIcon 
                                     style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
                                     fontSize="small"></SettingsIcon>
