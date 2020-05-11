@@ -1,12 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { Route, Link, BrowserRouter as Router } from 'react-router-dom';
+import Home from './components/layouts/Home';
+import Slots from './components/layouts/Slots';
+import Intents from './components/layouts/Intents';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <Route exact path="/" component={Home} />
+      <Route path="/slots" component={Slots} />
+      <Route path="/intents" component={Intents} />
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );

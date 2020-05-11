@@ -5,22 +5,13 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import image1 from '../images/abstract.jpg'
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-import SnackBarComponent from './SnackBarComponent'
+import SnackBarComponent from './SnackbarComponent';
+import { appStyle, appTheme } from '../styles/global';
+
 
 const StyledButton = withStyles({
-    root: {
-        //   background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-        background: 'linear-gradient(65deg, #85A2A8 100%, #CFCCB9 90%)',
-        borderRadius: 40,
-        border: 0,
-        color: 'white',
-        height: 44,
-        padding: '0 40px',
-        boxShadow: '0 3px 5px 2px rgba(79, 84, 87, 0.3)',
-    },
+    root: appTheme.buttonDefault,
     label: {
         textTransform: 'capitalize',
     },
@@ -29,20 +20,20 @@ const StyledButton = withStyles({
 const CssTextField = withStyles({
     root: {
         '& label.Mui-focused': {
-            color: '#5F7B86',
+            color: appStyle.colorBlueGreyDark,
         },
         '& .MuiInput-underline:after': {
-            borderBottomColor: '#5F7B86',
+            borderBottomColor: appStyle.colorBlueGreyDark,
         },
         '& .MuiOutlinedInput-root': {
             // '& fieldset': {
-            //   borderColor: '#5F7B86',
+            //   borderColor: appStyle.colorBlueGreyDark,
             // },
             '&:hover fieldset': {
-                borderColor: '#5F7B86',
+                borderColor: appStyle.colorBlueGreyDark,
             },
             '&.Mui-focused fieldset': {
-                borderColor: '#5F7B86',
+                borderColor: appStyle.colorBlueGreyDark,
             },
         },
     },
@@ -70,51 +61,18 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AdvSettings(props) {
     const classes = useStyles();
-    const [values, setValues] = useState({
-        synonymGenerating: 'auto_generate_synonyms',
-        customSynonymsJSON: '{}',
-        autoGenerateSynonymMode: 'moderate',
-        removeUnimportantWords: '',
-        outputUtterance: 'alphanumeric',
-        maxMinLengthCluster: '0.6/0.2',
-        uploadJSONFileHidden: ''
-    })
-    const [customVisible, setCustomVisible] = useState(false);
-    
-    const handleInputchange = (e) => {
-        const { name, value } = e.target
-        console.log(name, "+", value);
-        if (name === "synonymGenerating") {
-            if (value === "custom_synonyms")
-                setCustomVisible(true);
-            else
-                setCustomVisible(false);
-        }
-        if ((name === "uploadJSONFileHidden") && ((/\.(json)$/i).test(value))) {
-            let file = e.target.files[0];
-            var reader = new FileReader();
-            reader.readAsText(file);
-            reader.onload = function (e) {
-                const content = reader.result;
-                setValues({ ...values, customSynonymsJSON: content, uploadJSONFileHidden: value })
-            }
-        }
-        setValues({ ...values, [name]: value })
-    }
-
-    //Error Handling Snackbar
     //Error Handling Snackbar
     const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
-    //Error Handling Snackbar
     const handleCloseSnackBar = () => {
-    setSnackBar({ type: "error", show: false, message: "" })
+        setSnackBar({ type: "error", show: false, message: "" })
     };
+
     //Onsubmit action
     const handleSubmit = e => {
         e.preventDefault();
-        let errorstatus = validateInput(values, customVisible);
+        let errorstatus = validateInput(props.values);
         if (errorstatus) {
-            setSnackBar({show:true,message:errorstatus});
+            setSnackBar({ type:"error", show: true, message: errorstatus });
         }
         else {
             //Or go to next page or any other operation
@@ -126,13 +84,13 @@ export default function AdvSettings(props) {
     return (
         <div style={{ padding: "2em" }}>
             <div>
-                <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Settings</Typography>
+                <Typography variant="h5" style={appTheme.textHeader}>Settings</Typography>
             </div>
 
             <Grid container spacing={2} style={{ margin: "2em 2em", width: "90%" }}>
                 <Grid item xs={12} sm={6}>
                     <div>
-                        <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Synonym Generating Type</Typography>
+                        <Typography style={appTheme.textSmall}>Synonym Generating Type</Typography>
                     </div>
                     <div>
                         <CssTextField
@@ -142,8 +100,11 @@ export default function AdvSettings(props) {
                             margin="dense"
                             variant="outlined"
                             name="synonymGenerating"
-                            value={values.synonymGenerating}
-                            onChange={handleInputchange}
+                            value={props.values.synonymGenerating}
+                            onChange={props.setValues}
+                            InputProps={{
+                                style: appTheme.textDefault
+                            }}
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -156,7 +117,7 @@ export default function AdvSettings(props) {
                 </Grid>
                 <Grid item xs={12} sm={6} >
                     <div>
-                        <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Auto Generate Synonym Mode</Typography>
+                        <Typography style={appTheme.textSmall}>Auto Generate Synonym Mode</Typography>
                     </div>
                     <div>
                         <CssTextField id="outlined-full-width"
@@ -165,8 +126,11 @@ export default function AdvSettings(props) {
                             margin="dense"
                             variant="outlined"
                             name="autoGenerateSynonymMode"
-                            value={values.autoGenerateSynonymMode}
-                            onChange={handleInputchange}
+                            value={props.values.autoGenerateSynonymMode}
+                            onChange={props.setValues}
+                            InputProps={{
+                                style: appTheme.textDefault
+                            }}
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -177,36 +141,39 @@ export default function AdvSettings(props) {
                         </CssTextField>
                     </div>
                 </Grid>
-                {customVisible &&
+                {props.values.customVisible &&
                     <Grid item xs={12} sm={12}>
                         <div>
-                            <Box display="flex" p={1} style={{ padding: '0px' }}>
-                                <Box p={1} flexGrow={1} style={{ padding: '0px' }}>
-                                    <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Custom Synonyms</Typography>
+                            <Box display="flex">
+                                <Box flexGrow={1}>
+                                    <Typography style={appTheme.textSmall}>Custom Synonyms</Typography>
                                 </Box>
-                                <Box p={1} style={{ padding: '0px' }}>
-                                    <CssTextField className={classes.hiddenInput} id="contained-button-JSONfile" name="uploadJSONFileHidden" type="file" onChange={handleInputchange} />
+                                <Box>
+                                    <CssTextField className={classes.hiddenInput} id="contained-button-JSONfile" name="uploadJSONFileHidden" type="file" onChange={props.setValues} />
                                     <label htmlFor="contained-button-JSONfile">
                                         <Button style={{ backgroundColor: 'Transparent', padding: "0px" }} component="span">
-                                            <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Upload JSON</Typography>
+                                            <Typography style={appTheme.textSmall}>Browse Json</Typography>
                                         </Button>
                                     </label>
                                 </Box>
                             </Box>
                             <div>
                                 <CssTextField id="outlined-multiline-static"
-                                    placeholder=""
+                                    placeholder="Paste the json or upload json file"
                                     fullWidth
                                     multiline
                                     rows={4}
                                     margin="dense"
+                                    InputProps={{
+                                        style: appTheme.textDefault
+                                    }}
                                     InputLabelProps={{
                                         shrink: true,
                                     }}
                                     variant="outlined"
                                     name="customSynonymsJSON"
-                                    value={values.customSynonymsJSON}
-                                    onChange={handleInputchange}
+                                    value={props.values.customSynonymsJSON}
+                                    onChange={props.setValues}
                                 />
                             </div>
                         </div>
@@ -215,16 +182,19 @@ export default function AdvSettings(props) {
                 }
                 <Grid item xs={12} sm={12}>
                     <div>
-                        <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Remove Unimportant Words</Typography>
+                        <Typography style={appTheme.textSmall}>Remove Unimportant Words</Typography>
                     </div>
                     <div>
                         <CssTextField id="outlined-full-width"
                             placeholder="Require comma separated values"
                             name="removeUnimportantWords"
-                            value={values.removeUnimportantWords}
-                            onChange={handleInputchange}
+                            value={props.values.removeUnimportantWords}
+                            onChange={props.setValues}
                             fullWidth
                             margin="dense"
+                            InputProps={{
+                                style: appTheme.textDefault
+                            }}
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -235,7 +205,7 @@ export default function AdvSettings(props) {
 
                 <Grid item xs={12} sm={6}>
                     <div>
-                        <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Output Utterance Type</Typography>
+                        <Typography style={appTheme.textSmall}>Output Utterance Type</Typography>
                     </div>
                     <div>
                         <CssTextField id="outlined-full-width"
@@ -244,8 +214,11 @@ export default function AdvSettings(props) {
                             margin="dense"
                             variant="outlined"
                             name="outputUtterance"
-                            value={values.outputUtterance}
-                            onChange={handleInputchange}
+                            value={props.values.outputUtterance}
+                            onChange={props.setValues}
+                            InputProps={{
+                                style: appTheme.textDefault
+                            }}
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -257,20 +230,23 @@ export default function AdvSettings(props) {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <div>
-                        <Typography style={{ color: "rgba(0, 0, 0, 0.54)", fontSize: "0.8em" }}>Max/Min Length of each cluster</Typography>
+                        <Typography style={appTheme.textSmall}>Max/Min Length of each cluster</Typography>
                     </div>
                     <div>
                         <CssTextField id="outlined-full-width"
                             placeholder=""
                             fullWidth
                             margin="dense"
+                            InputProps={{
+                                style: appTheme.textDefault
+                            }}
                             InputLabelProps={{
                                 shrink: true,
                             }}
                             variant="outlined"
                             name="maxMinLengthCluster"
-                            value={values.maxMinLengthCluster}
-                            onChange={handleInputchange}
+                            value={props.values.maxMinLengthCluster}
+                            onChange={props.setValues}
                         />
                     </div>
                 </Grid>
@@ -278,12 +254,12 @@ export default function AdvSettings(props) {
                 <br></br>
                 <div>
                     <StyledButton onClick={handleSubmit} >Save</StyledButton>
-                    {snackBar.show?
+                    {snackBar.show ?
                         <SnackBarComponent open={snackBar.show}
-                         type={snackBar.type}
-                        message={snackBar.message}
-                        callBack={handleCloseSnackBar} />
-                        :null}
+                            type={snackBar.type}
+                            message={snackBar.message}
+                            callBack={handleCloseSnackBar} />
+                        : null}
                 </div>
             </Grid>
 
@@ -294,20 +270,20 @@ export default function AdvSettings(props) {
 
 //Validation of advance setting
 
-function validateInput(values, customVisible) {
-    if (customVisible) {
-        if (values.uploadJSONFileHidden && (!(/\.(json)$/i).test(values.uploadJSONFileHidden))) {
-            return "Please upload file in JSON format."
+function validateInput(values) {
+    if (values.customVisible) {
+        if(values.customSynonymsJSON)
+        {
+            if(!isDict(values.customSynonymsJSON)){
+                return "Please upload file in JSON format."
+            }
         }
-        if ((!values.customSynonymsJSON)) {
+        else{
             return "Please enter json file.";
-        }
-        if (!isDict(values.customSynonymsJSON)) {
-            return "Please upload file in JSON format.";
         }
     }
     if ((values.removeUnimportantWords) && (!checkisArray(values.removeUnimportantWords))) {
-        return "Remove unimportant word must be an array.Please enter array";
+        return "Remove unimportant word must be comma separated";
     }
     if (values.maxMinLengthCluster) {
         var [max, min] = ((values.maxMinLengthCluster).split("/"));
@@ -324,7 +300,7 @@ function validateInput(values, customVisible) {
             }
         }
         else {
-            return "Please enter float value with one precision state."
+            return "Please enter float value with one precision state"
         }
     }
     else {
