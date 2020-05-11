@@ -69,17 +69,6 @@ const useStyles = makeStyles((theme) => ({
 export default function BeginForm(props) {
     const classes = useStyles();
 
-    const [values, setValues] = useState({ botName: "", uploadExcelFile: "" })
-
-    const handleInputchange = (e) => {
-        const { name, value } = e.target
-        console.log(name, "+", value);
-        if (name === "uploadExcelFileHidden") {
-            const filename = e.target.files[0].name;
-            values.uploadExcelFile = filename;
-        }
-        setValues({ ...values, [name]: value })
-    }
     //Error Handling Snackbar
     const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
     //Error Handling Snackbar
@@ -90,14 +79,13 @@ export default function BeginForm(props) {
     //Onsubmit action
     const handleSubmit = e => {
         e.preventDefault();
-        let errorstatus = validateInput(values);
+        let errorstatus = validateInput(props.values);
         if (errorstatus) {
             setSnackBar({ type: "error", show: true, message: errorstatus });
-            // setOpen(true);}
         }
         else {
             //Or go to next page or any other operation
-            props.onClick();
+            // props.onClick();
         }
     }
 
@@ -116,8 +104,9 @@ export default function BeginForm(props) {
                         <CssTextField id="outlined-full-width"
                             placeholder=""
                             fullWidth
+                            name="botName" value={props.values.botName} onChange={props.handleInputchange}
                             margin="dense"
-                            name="botName" value={values.botName} onChange={handleInputchange}
+                            name="botName" value={props.values.botName} onChange={props.setValues}
                             InputProps={{
                                 style: appTheme.textDefault
                             }}
@@ -134,7 +123,7 @@ export default function BeginForm(props) {
                         </Box>
                         <Box alignSelf="center">
                             <CssTextField className={classes.hiddenInput} id="contained-button-Excelfile"
-                                name="uploadExcelFileHidden" type="file" onChange={handleInputchange} />
+                                name="uploadExcelFileHidden" type="file" onChange={props.setValues} />
                             <label htmlFor="contained-button-Excelfile">
                                 <Button style={{ backgroundColor: 'Transparent', padding: "0px" }} component="span">
                                     <Typography style={appTheme.textSmall}>Browse File</Typography>
@@ -149,7 +138,7 @@ export default function BeginForm(props) {
                             fullWidth
                             margin="dense"
                             name="uploadExcelFile"
-                            value={values.uploadExcelFile}
+                            value={props.values.uploadExcelFile}
                             InputProps={{
                                 style: appTheme.textDefault
                             }}
@@ -157,7 +146,7 @@ export default function BeginForm(props) {
                                 shrink: true,
                             }}
                             variant="outlined"
-                            onChange={handleInputchange}
+                            onChange={props.setValues}
                         />
                     </div>
                     <br></br>
@@ -166,8 +155,8 @@ export default function BeginForm(props) {
                             <Box flexGrow={1}>
                                 <StyledButton onClick={handleSubmit}>Next</StyledButton>
                             </Box>
-                            <Box alignSelf="center" onClick={props.advSettings}>
-                                <SettingsIcon 
+                            <Box alignSelf="center" onClick={props.onClick}>
+                                <SettingsIcon
                                     style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
                                     fontSize="small"></SettingsIcon>
                             </Box>

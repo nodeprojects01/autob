@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -28,11 +28,53 @@ const useStyles = makeStyles((theme) => ({
 export default function Layout() {
     const classes = useStyles();
     const [checked, setChecked] = React.useState(false);
+    const [values, setValues] = useState({
+        botName: "",
+        uploadExcelFile: "",
+        synonymGenerating: 'auto_generate_synonyms',
+        customSynonymsJSON: '',
+        autoGenerateSynonymMode: 'moderate',
+        removeUnimportantWords: '',
+        outputUtterance: 'alphanumeric',
+        maxMinLengthCluster: '0.6/0.2',
+        uploadJSONFileHidden: '',
+        customVisible: false
+    })
 
     const handleChange = () => {
         setChecked((prev) => !prev);
     };
 
+    const handleInputchange = (e) => {
+        const { name, value } = e.target
+        console.log(name, "+", value);
+        if (name === "uploadExcelFileHidden") {
+            const filename = e.target.files[0].name;
+            values.uploadExcelFile = filename;
+        }
+        if (name === "synonymGenerating") {
+            if (value === "custom_synonyms")
+                values.customVisible = true;
+            else
+                values.customVisible = false;
+        }
+        if ((name === "uploadJSONFileHidden")) {
+            if ((/\.(json)$/i).test(value)) {
+                let file = e.target.files[0];
+                var reader = new FileReader();
+                reader.readAsText(file);
+                reader.onload = function (e) {
+                    const content = reader.result;
+                    setValues({ ...values, customSynonymsJSON: content, uploadJSONFileHidden: value })
+                }
+            }
+            else {
+                values.customSynonymsJSON = '';
+            }
+        }
+        setValues({ ...values, [name]: value })
+    }
+    console.log(values);
     return (
         <Grid container style={{
             // backgroundColor: "#4F5457" 
@@ -70,7 +112,8 @@ export default function Layout() {
                 }}>
                     {checked ?
                         <Fade in={checked}>
-                            <AdvSettings onClick={handleChange}></AdvSettings>
+                            <AdvSettings values={values} setValues={(e) => { handleInputchange(e) }}
+                                onClick={handleChange}></AdvSettings>
                         </Fade>
                         :
                         <Fade in={!checked}>
@@ -79,8 +122,8 @@ export default function Layout() {
                                     width: "50%", background: "rgba(255, 255, 255, 0.1)",
                                     borderRadius: "32px 0 0 0"
                                 }}>
-                                <BeginForm advSettings={() => { setChecked(true) }} onClick={handleChange}>
-                                </BeginForm>
+                                <BeginForm values={values} setValues={(e) => { handleInputchange(e) }}
+                                    onClick={handleChange}></BeginForm>
                             </Paper>
                         </Fade>
                     }

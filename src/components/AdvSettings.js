@@ -5,8 +5,6 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import image1 from '../images/abstract.jpg'
-import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import SnackBarComponent from './SnackbarComponent';
 import { appStyle, appTheme } from '../styles/global';
@@ -63,43 +61,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AdvSettings(props) {
     const classes = useStyles();
-    const [values, setValues] = useState({
-        synonymGenerating: 'auto_generate_synonyms',
-        customSynonymsJSON: '',
-        autoGenerateSynonymMode: 'moderate',
-        removeUnimportantWords: '',
-        outputUtterance: 'alphanumeric',
-        maxMinLengthCluster: '0.6/0.2',
-        uploadJSONFileHidden: ''
-    })
-    const [customVisible, setCustomVisible] = useState(false);
-
-    const handleInputchange = (e) => {
-        const { name, value } = e.target
-        console.log(name, "+", value);
-        if (name === "synonymGenerating") {
-            if (value === "custom_synonyms")
-                setCustomVisible(true);
-            else
-                setCustomVisible(false);
-        }
-        if ((name === "uploadJSONFileHidden")){
-            if((/\.(json)$/i).test(value)){
-                let file = e.target.files[0];
-                var reader = new FileReader();
-                reader.readAsText(file);
-                reader.onload = function (e) {
-                const content = reader.result;
-                setValues({ ...values, customSynonymsJSON: content, uploadJSONFileHidden: value })
-                }
-            }
-            else{
-                values.customSynonymsJSON='';
-            }
-        }
-        setValues({ ...values, [name]: value })
-    }
-
     //Error Handling Snackbar
     const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
     const handleCloseSnackBar = () => {
@@ -109,9 +70,9 @@ export default function AdvSettings(props) {
     //Onsubmit action
     const handleSubmit = e => {
         e.preventDefault();
-        let errorstatus = validateInput(values, customVisible);
+        let errorstatus = validateInput(props.values);
         if (errorstatus) {
-            setSnackBar({ type:"error", show: true, message: errorstatus });
+            setSnackBar({ type: "error", show: true, message: errorstatus });
         }
         else {
             //Or go to next page or any other operation
@@ -139,8 +100,8 @@ export default function AdvSettings(props) {
                             margin="dense"
                             variant="outlined"
                             name="synonymGenerating"
-                            value={values.synonymGenerating}
-                            onChange={handleInputchange}
+                            value={props.values.synonymGenerating}
+                            onChange={props.setValues}
                             InputProps={{
                                 style: appTheme.textDefault
                             }}
@@ -165,8 +126,8 @@ export default function AdvSettings(props) {
                             margin="dense"
                             variant="outlined"
                             name="autoGenerateSynonymMode"
-                            value={values.autoGenerateSynonymMode}
-                            onChange={handleInputchange}
+                            value={props.values.autoGenerateSynonymMode}
+                            onChange={props.setValues}
                             InputProps={{
                                 style: appTheme.textDefault
                             }}
@@ -180,7 +141,7 @@ export default function AdvSettings(props) {
                         </CssTextField>
                     </div>
                 </Grid>
-                {customVisible &&
+                {props.values.customVisible &&
                     <Grid item xs={12} sm={12}>
                         <div>
                             <Box display="flex">
@@ -188,7 +149,7 @@ export default function AdvSettings(props) {
                                     <Typography style={appTheme.textSmall}>Custom Synonyms</Typography>
                                 </Box>
                                 <Box>
-                                    <CssTextField className={classes.hiddenInput} id="contained-button-JSONfile" name="uploadJSONFileHidden" type="file" onChange={handleInputchange} />
+                                    <CssTextField className={classes.hiddenInput} id="contained-button-JSONfile" name="uploadJSONFileHidden" type="file" onChange={props.setValues} />
                                     <label htmlFor="contained-button-JSONfile">
                                         <Button style={{ backgroundColor: 'Transparent', padding: "0px" }} component="span">
                                             <Typography style={appTheme.textSmall}>Browse Json</Typography>
@@ -211,8 +172,8 @@ export default function AdvSettings(props) {
                                     }}
                                     variant="outlined"
                                     name="customSynonymsJSON"
-                                    value={values.customSynonymsJSON}
-                                    onChange={handleInputchange}
+                                    value={props.values.customSynonymsJSON}
+                                    onChange={props.setValues}
                                 />
                             </div>
                         </div>
@@ -227,8 +188,8 @@ export default function AdvSettings(props) {
                         <CssTextField id="outlined-full-width"
                             placeholder="Require comma separated values"
                             name="removeUnimportantWords"
-                            value={values.removeUnimportantWords}
-                            onChange={handleInputchange}
+                            value={props.values.removeUnimportantWords}
+                            onChange={props.setValues}
                             fullWidth
                             margin="dense"
                             InputProps={{
@@ -253,8 +214,8 @@ export default function AdvSettings(props) {
                             margin="dense"
                             variant="outlined"
                             name="outputUtterance"
-                            value={values.outputUtterance}
-                            onChange={handleInputchange}
+                            value={props.values.outputUtterance}
+                            onChange={props.setValues}
                             InputProps={{
                                 style: appTheme.textDefault
                             }}
@@ -284,12 +245,12 @@ export default function AdvSettings(props) {
                             }}
                             variant="outlined"
                             name="maxMinLengthCluster"
-                            value={values.maxMinLengthCluster}
-                            onChange={handleInputchange}
+                            value={props.values.maxMinLengthCluster}
+                            onChange={props.setValues}
                         />
                     </div>
                 </Grid>
-
+                <br></br>
                 <br></br>
                 <div>
                     <StyledButton onClick={handleSubmit} >Save</StyledButton>
@@ -309,15 +270,14 @@ export default function AdvSettings(props) {
 
 //Validation of advance setting
 
-function validateInput(values, customVisible) {
-    if (customVisible) {
-        if(values.customSynonymsJSON)
-        {
-            if(!isDict(values.customSynonymsJSON)){
+function validateInput(values) {
+    if (values.customVisible) {
+        if (values.customSynonymsJSON) {
+            if (!isDict(values.customSynonymsJSON)) {
                 return "Please upload file in JSON format."
             }
         }
-        else{
+        else {
             return "Please enter json file.";
         }
     }
