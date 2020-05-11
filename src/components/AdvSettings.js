@@ -72,7 +72,7 @@ export default function AdvSettings(props) {
         e.preventDefault();
         let errorstatus = validateInput(props.values);
         if (errorstatus) {
-            setSnackBar({ type:"error", show: true, message: errorstatus });
+            setSnackBar({ type: "error", show: true, message: errorstatus });
         }
         else {
             //Or go to next page or any other operation
@@ -272,13 +272,12 @@ export default function AdvSettings(props) {
 
 function validateInput(values) {
     if (values.customVisible) {
-        if(values.customSynonymsJSON)
-        {
-            if(!isDict(values.customSynonymsJSON)){
+        if (values.customSynonymsJSON) {
+            if (!isDict(values.customSynonymsJSON)) {
                 return "Please upload file in JSON format."
             }
         }
-        else{
+        else {
             return "Please enter json file.";
         }
     }

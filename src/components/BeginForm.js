@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BeginForm(props) {
     const classes = useStyles();
-    
+
     //Error Handling Snackbar
     const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
     //Error Handling Snackbar
@@ -156,7 +156,7 @@ export default function BeginForm(props) {
                                 <StyledButton onClick={handleSubmit}>Next</StyledButton>
                             </Box>
                             <Box alignSelf="center" onClick={props.onClick}>
-                                <SettingsIcon 
+                                <SettingsIcon
                                     style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
                                     fontSize="small"></SettingsIcon>
                             </Box>
