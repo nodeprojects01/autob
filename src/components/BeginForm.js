@@ -104,7 +104,6 @@ export default function BeginForm(props) {
                         <CssTextField id="outlined-full-width"
                             placeholder=""
                             fullWidth
-                            name="botName" value={props.values.botName} onChange={props.handleInputchange}
                             margin="dense"
                             name="botName" value={props.values.botName} onChange={props.setValues}
                             InputProps={{
