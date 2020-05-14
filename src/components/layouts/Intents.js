@@ -3,7 +3,7 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import image1 from '../../images/abstract_1.jpg'
+import image1 from '../../images/abstract.jpg'
 import TextField from '@material-ui/core/TextField';
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
@@ -13,10 +13,24 @@ import { Button } from '@material-ui/core';
 import SnackBarComponent from '../SnackbarComponent';
 import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import CancelIcon from '@material-ui/icons/Cancel';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 
 const useStyles = makeStyles((theme) => ({
+  '@global': {
+    '*::-webkit-scrollbar': {
+      width: '0.4em'
+    },
+    '*::-webkit-scrollbar-track': {
+      '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)',
+      boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
+    },
+    '*::-webkit-scrollbar-thumb': {
+      backgroundColor: 'rgba(0,0,0,.1)',
+      outline: '1px solid slategrey',
+      borderRadius:"20px"
+    }
+  },
   root: {
     flexGrow: 1,
     width: '100%',
@@ -57,23 +71,45 @@ const CssTextField = withStyles({
 })(TextField);
 const StyledListItem = withStyles({
   root: {
-    backgroundColor: "white",
-    borderRadius: '5px',
+    // backgroundColor: appStyle.colorGreyLight,
+    borderRadius: '2em',
+    border: "1px solid",
+    borderColor: "rgba(0, 0, 0, 0.2)",
+    margin: "5px 0",
+    padding: "4px 15px",
 
     '& .Mui-selected': {
       backgroundColor: "grey"
+    },
+
+    '& .MuiTypography-body1': {
+      fontSize: appStyle.fontSizeDefault,
+      color: appStyle.colorOffBlack
     }
   },
 
 })(ListItem);
 
+const StyledButton = withStyles({
+  root: appTheme.buttonDefault,
+  label: {
+      textTransform: 'capitalize',
+  },
+})(Button);
+
+const arrayToString = (arr) => {
+  return arr.toString().replace(/,/g, "\n");
+}
+
+const strToArray = (str) => {
+  return str.replace(/(?:\r\n|\r|\n)/g, ',').split(',');
+}
 
 export default function Slots() {
   const classes = useStyles();
-
-  const [inputUtterance, setInputUtterance] = React.useState(intentValues);
-  const [keyName, setKeyName] = React.useState(Object.keys(inputUtterance)[0]);
-  const [keyValue, setKeyValue] = React.useState()
+  const originalDataset = intentValues;
+  const [clusterData, setClusterData] = React.useState(intentValues);
+  const [selectedClusterName, setSelectedClusterName] = React.useState(Object.keys(clusterData)[0]);
   const [mergeKeyName, setmergeKeyName] = React.useState('');
 
   //Error Handling Snackbar
@@ -82,10 +118,6 @@ export default function Slots() {
     setSnackBar({ type: "error", show: false, message: "" })
   };
 
-  useEffect(() => {
-    setKeyValue(JSON.stringify(Object.values(inputUtterance[keyName]), null, " ").replace(/(\[)?(\])?(\")?(\')?(\\t)?/g, ""))
-  });
-
   const handleInputChange = (e) => {
     const { name, value } = e.target
     console.log(name, "+", value);
@@ -93,9 +125,8 @@ export default function Slots() {
       setmergeKeyName(value)
     }
     else {
-      setKeyValue(value);
-      const updatedValue = (value.replace(/(\n)?/g, '').split(','))
-      setInputUtterance({ ...inputUtterance, [name]: updatedValue })
+      const updatedValue = strToArray(value);
+      setClusterData({ ...clusterData, [name]: updatedValue })
     }
 
   }
@@ -103,9 +134,9 @@ export default function Slots() {
   const mergeIntent = (e) => {
     const { name, value } = e.target
     if (e.keyCode == 13) {
-      if ((value in inputUtterance)) {
-        const updatedValue = (inputUtterance[keyName] + "," + inputUtterance[value]).split(',');
-        setInputUtterance({ ...inputUtterance, [keyName]: updatedValue, [value]: '' })
+      if ((value in clusterData)) {
+        const updatedValue = (clusterData[selectedClusterName] + "," + clusterData[value]).split(',');
+        setClusterData({ ...clusterData, [selectedClusterName]: updatedValue, [value]: '' })
         setSnackBar({ type: "success", show: true, message: "Merge successfull" });
       }
       else {
@@ -113,8 +144,8 @@ export default function Slots() {
       }
 
       // const deleteIntentKey =[value];
-      // setInputUtterance(Object.fromEntries(
-      //   Object.entries(inputUtterance).filter(
+      // setClusterData(Object.fromEntries(
+      //   Object.entries(clusterData).filter(
       //      ([key, val])=>!deleteIntentKey.includes(key)
       //   )
       // ));
@@ -125,16 +156,16 @@ export default function Slots() {
   const deleteIntent = (e) => {
 
     if (window.confirm('Are you sure you want to delete?')) {
-      const deleteIntentKey = [keyName];
+      const deleteIntentKey = [selectedClusterName];
 
-      var position = Object.keys(inputUtterance).indexOf(keyName);
+      var position = Object.keys(clusterData).indexOf(selectedClusterName);
       (parseInt(position) > 0) ? (position = parseInt(position) - 1) : (position = parseInt(position) + 1)
-      const updatedKeyName = Object.keys(inputUtterance)[position]
-      setKeyName(updatedKeyName)
+      const updatedKeyName = Object.keys(clusterData)[position]
+      setSelectedClusterName(updatedKeyName)
 
 
-      setInputUtterance(Object.fromEntries(
-        Object.entries(inputUtterance).filter(
+      setClusterData(Object.fromEntries(
+        Object.entries(clusterData).filter(
           ([key, val]) => !deleteIntentKey.includes(key)
         )
       ));
@@ -192,12 +223,13 @@ export default function Slots() {
               <div style={{ margin: "2em 2em" }}>
                 <Grid container spacing={2}>
                   <Grid item xs={3} >
-                    <div style={{ background: "#FFF", padding:"1em" }}>
+                    <div style={{ background: "#FFF", padding: "1em" }}>
                       <List style={{ maxHeight: '500px', overflowY: 'scroll' }}>
-                        {Object.keys(inputUtterance).map((text) => (
-                          <StyledListItem button key={text} divider={1}
-                            onClick={() => { setKeyName(text) }}>
-                            <ListItemText primary={text} />
+                        {Object.keys(clusterData).map((clusterName) => (
+                          <StyledListItem button key={clusterName} divider={1}
+                            style={selectedClusterName == clusterName ? { background: "rgb(235, 112, 119, 0.5)", color: "#fff" } : {}}
+                            onClick={() => { setSelectedClusterName(clusterName) }}>
+                            <ListItemText primary={clusterName} />
                           </StyledListItem>
                         ))}
 
@@ -205,7 +237,7 @@ export default function Slots() {
                     </div>
                   </Grid>
                   <Grid item xs={9}>
-                    <div style={{ background: "#FFF", padding:"1em" }}>
+                    <div style={{ background: "#FFF", padding: "1em" }}>
                       <Grid xs={12} container spacing={1} >
                         <Grid item md={6} lg={6}>
                           <CssTextField id="outlined-full-width"
@@ -225,9 +257,9 @@ export default function Slots() {
                         <Grid item md={6} lg={6}>
                           <Box display="flex" justifyContent="flex-end" alignItems="center"
                             p={1} m={1} style={{ marginRight: "0", paddingRight: "0" }}>
-                            <CancelIcon onClick={deleteIntent}
+                            <DeleteIcon onClick={deleteIntent}
                               style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
-                              fontSize="medium"></CancelIcon>
+                              fontSize="medium"></DeleteIcon>
                           </Box>
                         </Grid>
                       </Grid>
@@ -257,7 +289,7 @@ export default function Slots() {
                             fullWidth
                             multiline
                             rows={20}
-                            value={keyValue}
+                            value={arrayToString(clusterData[selectedClusterName])}
                             margin="dense"
                             InputProps={{
                               style: {
@@ -270,7 +302,7 @@ export default function Slots() {
                               shrink: true,
                             }}
                             variant="outlined"
-                            name={keyName}
+                            name={selectedClusterName}
                             onChange={handleInputChange}
 
                           />
@@ -280,9 +312,8 @@ export default function Slots() {
                   </Grid>
                 </Grid>
                 <Grid xs={12} container justify="right" >
-
-                  <Button variant="outlined" onClick={() => { window.location.reload(); }}>Reset</Button>
-                  <Button variant="outlined" onClick={() => { console.log("New Page") }}>Next</Button>
+                  <StyledButton onClick={() => { setClusterData(originalDataset) }}>Reset</StyledButton>
+                  <StyledButton onClick={() => { console.log("New Page") }}>Next</StyledButton>
                   {snackBar.show ?
                     <SnackBarComponent open={snackBar.show}
                       type={snackBar.type}
@@ -319,26 +350,26 @@ const intentValues = {
     "Which dog used to be sacred in China",
     "Urticaria is a skin disease otherwise known as what?	Hives",
     "What kind of animal is the largest living creature on Earth",
-    "Give another name for the study of fossils?	",
-    "Which bird can swim but cannot fly?",
-    "What do dragonflies prefer to eat",
-    "What do you get when you crossbreed a donkey and a horse?",
-    "Which insects cannot fly, but can jump higher than 30 cm,What kind of animal is the largest living creature on Earth",
-    "What is the name of the European Bison",
-    "What is called a fish with a snake-like body?",
-    "In which city is the oldest zoo in the world?",
-    "After which animals are the Canary Islands named?",
-    "Which plant does the Canadian flag contain?",
-    "What is the food of penguins?	",
-    "Which is the largest species of the tiger?	",
-    "The bite of which insect causes the Lyme Disease?	",
-    "Which mammal cannot jump?",
-    "In which city is the oldest zoo in the world?",
-    "After which animals are the Canary Islands named?",
-    "Which plant does the Canadian flag contain?",
-    "What is the food of penguins?	",
-    "Which is the largest species of the tiger?	",
-    "The bite of which insect causes the Lyme Disease?	",
+    // "Give another name for the study of fossils?	",
+    // "Which bird can swim but cannot fly?",
+    // "What do dragonflies prefer to eat",
+    // "What do you get when you crossbreed a donkey and a horse?",
+    // "Which insects cannot fly, but can jump higher than 30 cm,What kind of animal is the largest living creature on Earth",
+    // "What is the name of the European Bison",
+    // "What is called a fish with a snake-like body?",
+    // "In which city is the oldest zoo in the world?",
+    // "After which animals are the Canary Islands named?",
+    // "Which plant does the Canadian flag contain?",
+    // "What is the food of penguins?	",
+    // "Which is the largest species of the tiger?	",
+    // "The bite of which insect causes the Lyme Disease?	",
+    // "Which mammal cannot jump?",
+    // "In which city is the oldest zoo in the world?",
+    // "After which animals are the Canary Islands named?",
+    // "Which plant does the Canadian flag contain?",
+    // "What is the food of penguins?	",
+    // "Which is the largest species of the tiger?	",
+    // "The bite of which insect causes the Lyme Disease?	",
     "Which mammal cannot jump?"
 
   ],

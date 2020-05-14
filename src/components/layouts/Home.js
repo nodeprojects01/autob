@@ -3,7 +3,7 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import image1 from '../../images/abstract_1.jpg'
+import image1 from '../../images/abstract.jpg'
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 import AdvSettings from '../AdvSettings';
