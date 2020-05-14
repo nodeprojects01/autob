@@ -9,7 +9,7 @@ import image1 from '../images/abstract.jpg'
 import '../index.css'
 import { StylesProvider } from '@material-ui/styles';
 import { appStyle, appTheme } from '../styles/global';
-import SnackBarComponent from './SnackBarComponent';
+import SnackBarComponent from './SnackbarComponent';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 {/* <StylesProvider injectFirst>
@@ -104,7 +104,6 @@ export default function BeginForm(props) {
                         <CssTextField id="outlined-full-width"
                             placeholder=""
                             fullWidth
-                            name="botName" value={props.values.botName} onChange={props.handleInputchange}
                             margin="dense"
                             name="botName" value={props.values.botName} onChange={props.setValues}
                             InputProps={{
