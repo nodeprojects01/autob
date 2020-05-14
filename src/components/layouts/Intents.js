@@ -10,7 +10,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { appStyle, appTheme } from '../../styles/global';
 import { Button } from '@material-ui/core';
-
+import SnackBarComponent from '../SnackBarComponent';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -154,18 +154,20 @@ export default function Slots() {
   const classes = useStyles();
 
   const [inputUtterance, setInputUtterance] = React.useState(intentValues);
-  console.log(inputUtterance);
-  const property = 'helloIntent';
-  
   const [keyName, setKeyName] = React.useState(Object.keys(inputUtterance)[0]);
   const [keyValue, setKeyValue] = React.useState()
-  console.log(inputUtterance[keyName]);
-
   const [mergeKeyName,setmergeKeyName]=React.useState('');
 
+  //Error Handling Snackbar
+  const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
+  const handleCloseSnackBar = () => {
+        setSnackBar({ type: "error", show: false, message: "" })
+    };
+
   useEffect(() => {
-    setKeyValue(JSON.stringify(Object.values(inputUtterance[keyName]), null, " ").replace(/(\[)?(\])?(\")?(\')?/g, ""))
+    setKeyValue(JSON.stringify(Object.values(inputUtterance[keyName]), null, " ").replace(/(\[)?(\])?(\")?(\')?(\\t)?/g, ""))
   });
+
   const handleInputChange = (e) => {
     const { name, value } = e.target
     console.log(name, "+", value);
@@ -181,15 +183,18 @@ export default function Slots() {
     
   }
 
-
   const mergeIntent = (e) =>{
-    const { name, value } = e.target
-    console.log(name, "+", value);
+    const { name, value } = e.target 
     if(e.keyCode == 13) {  
-      const updatedValue = (inputUtterance[keyName] +"," +inputUtterance[value]).split(',');
-      setInputUtterance({...inputUtterance,[keyName]:updatedValue,[value] :''})
-
-
+      if((value in inputUtterance)){
+        const updatedValue = (inputUtterance[keyName] +"," +inputUtterance[value]).split(',');
+        setInputUtterance({...inputUtterance,[keyName]:updatedValue,[value] :''})
+        setSnackBar({ type: "success", show: true, message: "Merge successfull" });
+      }
+      else{
+        setSnackBar({ type: "error", show: true, message: "Please enter correct Intent" });
+      }
+      
       // const deleteIntentKey =[value];
       // setInputUtterance(Object.fromEntries(
       //   Object.entries(inputUtterance).filter(
@@ -202,20 +207,21 @@ export default function Slots() {
 
   const deleteIntent = (e) =>{
 
+    if (window.confirm('Are you sure you want to delete?')) {
     const deleteIntentKey =[keyName];
 
     var position = Object.keys(inputUtterance).indexOf(keyName);
     (parseInt(position)>0)?(position=parseInt(position)-1):(position=parseInt(position)+1)
     const updatedKeyName = Object.keys(inputUtterance)[position]
     setKeyName(updatedKeyName)
-    
-        
+     
 
     setInputUtterance(Object.fromEntries(
       Object.entries(inputUtterance).filter(
          ([key, val])=>!deleteIntentKey.includes(key)
       )
     ));
+      }
     
   }
 
@@ -348,7 +354,13 @@ export default function Slots() {
                 <Grid xs={12} container  justify="right" >
                       
                         <Button variant="outlined"  onClick={()=>{window.location.reload(); }}>Reset</Button>
-                     
+                        <Button variant="outlined"  onClick={()=>{console.log("New Page") }}>Next</Button>
+                        {snackBar.show ?
+                            <SnackBarComponent open={snackBar.show}
+                                type={snackBar.type}
+                                message={snackBar.message}
+                                callBack={handleCloseSnackBar} />
+                            : null}
                 </Grid>
               </div>
             </div>
@@ -357,4 +369,13 @@ export default function Slots() {
       </Box>
     </Grid>
   );
+}
+
+
+
+
+
+
+function validateInput(){
+
 }
