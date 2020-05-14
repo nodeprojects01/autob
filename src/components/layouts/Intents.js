@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
     '*::-webkit-scrollbar-thumb': {
       backgroundColor: 'rgba(0,0,0,.1)',
       outline: '1px solid slategrey',
-      borderRadius:"20px"
+      borderRadius: "20px"
     }
   },
   root: {
@@ -93,7 +93,7 @@ const StyledListItem = withStyles({
 const StyledButton = withStyles({
   root: appTheme.buttonDefault,
   label: {
-      textTransform: 'capitalize',
+    textTransform: 'capitalize',
   },
 })(Button);
 
@@ -105,7 +105,7 @@ const strToArray = (str) => {
   return str.replace(/(?:\r\n|\r|\n)/g, ',').split(',');
 }
 
-export default function Slots() {
+export default function Intents() {
   const classes = useStyles();
   const originalDataset = intentValues;
   const [clusterData, setClusterData] = React.useState(intentValues);
@@ -268,8 +268,8 @@ export default function Slots() {
                           <Autocomplete
                             multiple
                             id="tags-filled"
-                            options={["hdfc", "axis", "citi", "indus"]}
-                            defaultValue={["hdfc", "axis", "citi", "indus"]}
+                            options={Object.keys(clusterData)}
+                            defaultValue={[selectedClusterName]}
                             freeSolo
                             renderTags={(value, getTagProps) =>
                               value.map((option, index) => (
