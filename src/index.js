@@ -10,7 +10,7 @@ import Intents from './components/layouts/Intents';
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <Route exact path="/" component={Home} />
+      <Route exact path="/" component={Intents} />
       <Route path="/slots" component={Slots} />
       <Route path="/intents" component={Intents} />
     </Router>
