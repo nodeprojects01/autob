@@ -10,7 +10,7 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { appStyle, appTheme } from '../../styles/global';
 import { Button } from '@material-ui/core';
-import SnackBarComponent from '../SnackbarComponent';
+import SnackBarComponent from '../SnackBarComponent';
 import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -107,11 +107,12 @@ const strToArray = (str) => {
 
 export default function Intents() {
   const classes = useStyles();
-  const originalDataset = intentValues;
-  const [clusterData, setClusterData] = React.useState(intentValues);
+  const originalDataset = myCustomeInput;
+  const [clusterData, setClusterData] = React.useState(myCustomeInput);
   const [selectedClusterName, setSelectedClusterName] = React.useState(Object.keys(clusterData)[0]);
-  const [mergeKeyName, setmergeKeyName] = React.useState('');
-
+  const [deletedClusterData,setDeletedClusterData] = React.useState('');
+  console.log(clusterData)
+  console.log(deletedClusterData);
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
   const handleCloseSnackBar = () => {
@@ -121,35 +122,87 @@ export default function Intents() {
   const handleInputChange = (e) => {
     const { name, value } = e.target
     console.log(name, "+", value);
-    if (name === "MergeIntent") {
-      setmergeKeyName(value)
-    }
-    else {
-      const updatedValue = strToArray(value);
-      setClusterData({ ...clusterData, [name]: updatedValue })
-    }
-
+    const updatedValue = strToArray(value);
+    setClusterData({ ...clusterData, [name]: updatedValue })
   }
 
-  const mergeIntent = (e) => {
-    const { name, value } = e.target
-    if (e.keyCode == 13) {
-      if ((value in clusterData)) {
-        const updatedValue = (clusterData[selectedClusterName] + "," + clusterData[value]).split(',');
-        setClusterData({ ...clusterData, [selectedClusterName]: updatedValue, [value]: '' })
-        setSnackBar({ type: "success", show: true, message: "Merge successfull" });
-      }
-      else {
-        setSnackBar({ type: "error", show: true, message: "Please enter correct Intent" });
-      }
+  
 
-      // const deleteIntentKey =[value];
-      // setClusterData(Object.fromEntries(
-      //   Object.entries(clusterData).filter(
-      //      ([key, val])=>!deleteIntentKey.includes(key)
-      //   )
-      // ));
+  const mergeIntent = (e,intialValues) => {
+    
+    var values = intialValues
+    console.log(values)
+    var indexselectedClusterName =values.indexOf(selectedClusterName)
+    if (indexselectedClusterName !== -1) {
+      values.splice(indexselectedClusterName, 1);
     }
+    
+
+    var updatedValue=clusterData[selectedClusterName]
+    var deletedClusterDataValue='';
+    var deleteIntentKey;
+   
+    if((deletedClusterData.hasOwnProperty(selectedClusterName) )){
+      var deletedKeys = Object.keys(deletedClusterData[selectedClusterName])
+      console.log(deletedKeys);
+      if (!(deletedKeys.every(val => values.includes(val)))){
+         //Value removed from the merge
+         for( var index in deletedKeys){
+          var deleteValue=deletedKeys[parseInt(index)]
+          console.log(deleteValue)
+          if(!(values.includes(deleteValue)))
+          {
+            //Value is removed from merge Intent so delete it from the deleted intent and add back to cluster data and remove from selectedClusterName values
+            var newValue = (arrayToString(updatedValue).replace(arrayToString(deletedClusterData[selectedClusterName][deleteValue]),""))
+            console.log(newValue)
+            setClusterData({...clusterData, [deleteValue]: strToArray(deletedClusterData[selectedClusterName][deleteValue]),[selectedClusterName] :newValue}); 
+            var deleteDeletedCluster=[deleteValue]
+            deletedClusterData[selectedClusterName] =  (Object.fromEntries(
+              Object.entries(deletedClusterData[selectedClusterName]).filter(
+                ([key, val]) => !deleteDeletedCluster.includes(key)
+              )
+            )); 
+            
+          }
+        }
+       
+        return;
+      }
+     
+    }
+
+  
+    for( var index in values){
+      var value=values[parseInt(index)]
+     
+      if ((value in clusterData)){
+          updatedValue = (updatedValue + "," + clusterData[value]).split(',');
+          (deletedClusterDataValue=='')? ( deletedClusterDataValue += `"${value}":"${clusterData[value]}"`):( deletedClusterDataValue += `,"${value}":"${clusterData[value]}"`)
+          deleteIntentKey =[value]; 
+      }
+      else if((value in deletedClusterData[selectedClusterName] )){
+        (deletedClusterDataValue=='')? ( deletedClusterDataValue += `"${value}":"${deletedClusterData[selectedClusterName][value]}"`):( deletedClusterDataValue += `,"${value}":"${deletedClusterData[selectedClusterName][value]}"`)
+      }
+    };
+    
+     //update values of the deletedCluster and main cluster and delete the main cluster merged  Intent
+     clusterData[selectedClusterName]= updatedValue 
+     setDeletedClusterData({...deletedClusterData, [selectedClusterName] : (JSON.parse(`{ ${deletedClusterDataValue} }`) )})
+    if(deleteIntentKey){
+      setClusterData(Object.fromEntries(
+        Object.entries(clusterData).filter(
+          ([key, val]) => !deleteIntentKey.includes(key)
+        )
+      )); 
+    }
+     
+    
+     
+    
+   
+   
+    
+    setSnackBar({ type: "success", show: true, message: "Merge successfull" });
 
   }
 
@@ -157,7 +210,7 @@ export default function Intents() {
 
     if (window.confirm('Are you sure you want to delete?')) {
       const deleteIntentKey = [selectedClusterName];
-
+      console.log(deleteIntentKey)
       var position = Object.keys(clusterData).indexOf(selectedClusterName);
       (parseInt(position) > 0) ? (position = parseInt(position) - 1) : (position = parseInt(position) + 1)
       const updatedKeyName = Object.keys(clusterData)[position]
@@ -245,6 +298,7 @@ export default function Intents() {
                             fullWidth
                             margin="dense"
                             name="botName"
+                            value={selectedClusterName}
                             InputProps={{
                               style: appTheme.textDefault
                             }}
@@ -273,13 +327,15 @@ export default function Intents() {
                             freeSolo
                             renderTags={(value, getTagProps) =>
                               value.map((option, index) => (
-                                <Chip key={option} variant="outlined" label={option} {...getTagProps({ index })} />
+                                <Chip key={option} variant="outlined"  label={option} {...getTagProps({ index })} />
                               ))
                             }
                             renderInput={(params) => (
-                              <TextField {...params} margin="normal" variant="outlined"
+                              <TextField {...params} margin="normal" variant="outlined" 
                                 label="synonyms" placeholder="Enter one or cluster names to merge with this cluster" />
                             )}
+                            onChange={mergeIntent}
+                            
                           />
                         </div>
                       </Grid>
@@ -339,9 +395,7 @@ const top100Films = [
   { title: 'The Dark Knight', year: 2008 }]
 
 
-function validateInput() {
 
-}
 
 const intentValues = {
   "greeting": [
