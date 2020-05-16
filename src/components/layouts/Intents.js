@@ -111,8 +111,8 @@ export default function Intents() {
   const [clusterData, setClusterData] = React.useState(myCustomeInput);
   const [selectedClusterName, setSelectedClusterName] = React.useState(Object.keys(clusterData)[0]);
   const [deletedClusterData,setDeletedClusterData] = React.useState('');
-  console.log(clusterData)
-  console.log(deletedClusterData);
+  const [addIntent,setAddIntent] =  React.useState('');
+  
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
   const handleCloseSnackBar = () => {
@@ -120,10 +120,23 @@ export default function Intents() {
   };
 
   const handleInputChange = (e) => {
+    console.log(e)
     const { name, value } = e.target
     console.log(name, "+", value);
-    const updatedValue = strToArray(value);
-    setClusterData({ ...clusterData, [name]: updatedValue })
+    if(name == "addNewIntent"){
+      setAddIntent(value)
+      if(Object.keys(clusterData).includes(value)){
+        setSnackBar({ type: "error", show: true, message: "Not Available" });
+      }
+      else{
+        setSnackBar({ type: "success", show: true, message: "Available" });
+      }
+    }
+    else{
+      const updatedValue = strToArray(value);
+      setClusterData({ ...clusterData, [name]: updatedValue })
+    }
+    
   }
 
   
@@ -131,7 +144,7 @@ export default function Intents() {
   const mergeIntent = (e,intialValues) => {
     
     var values = intialValues
-    console.log(values)
+   
     var indexselectedClusterName =values.indexOf(selectedClusterName)
     if (indexselectedClusterName !== -1) {
       values.splice(indexselectedClusterName, 1);
@@ -165,7 +178,6 @@ export default function Intents() {
             
           }
         }
-       
         return;
       }
      
@@ -196,12 +208,6 @@ export default function Intents() {
       )); 
     }
      
-    
-     
-    
-   
-   
-    
     setSnackBar({ type: "success", show: true, message: "Merge successfull" });
 
   }
@@ -277,6 +283,33 @@ export default function Intents() {
                 <Grid container spacing={2}>
                   <Grid item xs={3} >
                     <div style={{ background: "#FFF", padding: "1em" }}>
+                    <CssTextField id="outlined-full-width"
+                            placeholder=""
+                            fullWidth
+                            margin="dense"
+                            InputProps={{
+                              style: appTheme.textDefault
+                            }}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            variant="outlined"
+                            label="Add Intent"
+                            name = "addNewIntent"
+                            value = {addIntent}
+                            onChange ={handleInputChange}
+                            onKeyPress={event => {
+                              if (event.key === 'Enter') {
+                                if(!(Object.keys(clusterData).includes(addIntent))){
+                                  setClusterData({ ...clusterData, [addIntent]: "" })
+                                  setSnackBar({ type: "success", show: true, message: "Intent Added succesfully" });
+                                  setAddIntent('')
+                                }
+                              }
+                            }}
+                          />
+                          
+                    
                       <List style={{ maxHeight: '500px', overflowY: 'scroll' }}>
                         {Object.keys(clusterData).map((clusterName) => (
                           <StyledListItem button key={clusterName} divider={1}
