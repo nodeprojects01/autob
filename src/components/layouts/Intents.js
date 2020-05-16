@@ -14,6 +14,7 @@ import SnackBarComponent from '../SnackBarComponent';
 import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DeleteIcon from '@material-ui/icons/Delete';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -112,6 +113,7 @@ export default function Intents() {
   const [selectedClusterName, setSelectedClusterName] = React.useState(Object.keys(clusterData)[0]);
   const [deletedClusterData,setDeletedClusterData] = React.useState('');
   const [addIntent,setAddIntent] =  React.useState('');
+  const [addIntentDisable,setAddIntentDisable]= React.useState(true)
   
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
@@ -283,7 +285,9 @@ export default function Intents() {
                 <Grid container spacing={2}>
                   <Grid item xs={3} >
                     <div style={{ background: "#FFF", padding: "1em" }}>
-                    <CssTextField id="outlined-full-width"
+                    <Box display="flex">
+                        <Box flexGrow={1}>
+                        <CssTextField id="outlined-full-width"
                             placeholder=""
                             fullWidth
                             margin="dense"
@@ -298,17 +302,24 @@ export default function Intents() {
                             name = "addNewIntent"
                             value = {addIntent}
                             onChange ={handleInputChange}
+                            disabled={addIntentDisable}
                             onKeyPress={event => {
                               if (event.key === 'Enter') {
                                 if(!(Object.keys(clusterData).includes(addIntent))){
                                   setClusterData({ ...clusterData, [addIntent]: "" })
                                   setSnackBar({ type: "success", show: true, message: "Intent Added succesfully" });
                                   setAddIntent('')
+                                  setAddIntentDisable(true)
                                 }
                               }
                             }}
                           />
-                          
+                          </Box>
+                          <Box alignSelf="center">
+                              <AddCircleIcon  onClick={()=>{setAddIntentDisable(false)}} />
+                          </Box>                        
+                      </Box>
+                      
                     
                       <List style={{ maxHeight: '500px', overflowY: 'scroll' }}>
                         {Object.keys(clusterData).map((clusterName) => (
