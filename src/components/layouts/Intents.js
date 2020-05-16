@@ -15,6 +15,7 @@ import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
+import Divider from '@material-ui/core/Divider';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -111,10 +112,11 @@ export default function Intents() {
   const originalDataset = myCustomeInput;
   const [clusterData, setClusterData] = React.useState(myCustomeInput);
   const [selectedClusterName, setSelectedClusterName] = React.useState(Object.keys(clusterData)[0]);
-  const [deletedClusterData,setDeletedClusterData] = React.useState('');
-  const [addIntent,setAddIntent] =  React.useState('');
-  const [addIntentDisable,setAddIntentDisable]= React.useState(true)
-  
+  const [clusterNames, setClusterNames] = React.useState(Object.keys(clusterData));
+  const [addIntent, setAddIntent] = React.useState('');
+  const [mergedClusters, setMergedClusters] = React.useState({});
+  const [fixedOptions, setFixedOptions] = React.useState([selectedClusterName]);
+
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
   const handleCloseSnackBar = () => {
@@ -125,94 +127,118 @@ export default function Intents() {
     console.log(e)
     const { name, value } = e.target
     console.log(name, "+", value);
-    if(name == "addNewIntent"){
+    if (name == "addNewIntent") {
       setAddIntent(value)
-      if(Object.keys(clusterData).includes(value)){
-        setSnackBar({ type: "error", show: true, message: "Not Available" });
+      if (Object.keys(clusterData).includes(value)) {
+        // Garima - Show red cross icon for not available
+        // setSnackBar({ type: "error", show: true, message: "Not Available" });
       }
-      else{
-        setSnackBar({ type: "success", show: true, message: "Available" });
+      else {
+        // Garima - Show green right icon for available
+        // setSnackBar({ type: "success", show: true, message: "Available" });
       }
     }
-    else{
+    else {
+      // **************** what is this else condition? ****** need to handle as else if ************
       const updatedValue = strToArray(value);
       setClusterData({ ...clusterData, [name]: updatedValue })
     }
-    
-  }
-
-  
-
-  const mergeIntent = (e,intialValues) => {
-    
-    var values = intialValues
-   
-    var indexselectedClusterName =values.indexOf(selectedClusterName)
-    if (indexselectedClusterName !== -1) {
-      values.splice(indexselectedClusterName, 1);
-    }
-    
-
-    var updatedValue=clusterData[selectedClusterName]
-    var deletedClusterDataValue='';
-    var deleteIntentKey;
-   
-    if((deletedClusterData.hasOwnProperty(selectedClusterName) )){
-      var deletedKeys = Object.keys(deletedClusterData[selectedClusterName])
-      console.log(deletedKeys);
-      if (!(deletedKeys.every(val => values.includes(val)))){
-         //Value removed from the merge
-         for( var index in deletedKeys){
-          var deleteValue=deletedKeys[parseInt(index)]
-          console.log(deleteValue)
-          if(!(values.includes(deleteValue)))
-          {
-            //Value is removed from merge Intent so delete it from the deleted intent and add back to cluster data and remove from selectedClusterName values
-            var newValue = (arrayToString(updatedValue).replace(arrayToString(deletedClusterData[selectedClusterName][deleteValue]),""))
-            console.log(newValue)
-            setClusterData({...clusterData, [deleteValue]: strToArray(deletedClusterData[selectedClusterName][deleteValue]),[selectedClusterName] :newValue}); 
-            var deleteDeletedCluster=[deleteValue]
-            deletedClusterData[selectedClusterName] =  (Object.fromEntries(
-              Object.entries(deletedClusterData[selectedClusterName]).filter(
-                ([key, val]) => !deleteDeletedCluster.includes(key)
-              )
-            )); 
-            
-          }
-        }
-        return;
-      }
-     
-    }
-
-  
-    for( var index in values){
-      var value=values[parseInt(index)]
-     
-      if ((value in clusterData)){
-          updatedValue = (updatedValue + "," + clusterData[value]).split(',');
-          (deletedClusterDataValue=='')? ( deletedClusterDataValue += `"${value}":"${clusterData[value]}"`):( deletedClusterDataValue += `,"${value}":"${clusterData[value]}"`)
-          deleteIntentKey =[value]; 
-      }
-      else if((value in deletedClusterData[selectedClusterName] )){
-        (deletedClusterDataValue=='')? ( deletedClusterDataValue += `"${value}":"${deletedClusterData[selectedClusterName][value]}"`):( deletedClusterDataValue += `,"${value}":"${deletedClusterData[selectedClusterName][value]}"`)
-      }
-    };
-    
-     //update values of the deletedCluster and main cluster and delete the main cluster merged  Intent
-     clusterData[selectedClusterName]= updatedValue 
-     setDeletedClusterData({...deletedClusterData, [selectedClusterName] : (JSON.parse(`{ ${deletedClusterDataValue} }`) )})
-    if(deleteIntentKey){
-      setClusterData(Object.fromEntries(
-        Object.entries(clusterData).filter(
-          ([key, val]) => !deleteIntentKey.includes(key)
-        )
-      )); 
-    }
-     
-    setSnackBar({ type: "success", show: true, message: "Merge successfull" });
 
   }
+
+  const handleOnChangeMergeClusters = (event, newValue) => {
+    console.log("handleOnChangeMergeClusters - ", newValue);
+    setFixedOptions([
+      ...fixedOptions,
+      ...newValue.filter(option => fixedOptions.indexOf(option) === -1)
+    ]);
+
+    newValue.splice(selectedClusterName, 1);
+    mergedClusters[selectedClusterName] = newValue;
+    console.log("mergedClusters - ", mergedClusters);
+    setMergedClusters(mergedClusters);
+    getFilteredClusterNames();
+  }
+
+  const getFilteredClusterNames = () => {
+    console.log("getFilteredClusterNames...")
+    const mergedClusts = [].concat.apply([], (Object.values(mergedClusters)));
+    const filClusterNames = (Object.keys(clusterData)).filter(function (el) {
+      return (mergedClusts).indexOf(el) < 0;
+    });
+    setClusterNames(filClusterNames);
+  }
+
+console.log("clusters",clusterNames);
+  // const mergeIntent = (e, intialValues) => {
+
+  //   var values = intialValues
+  //   console.log("values", intialValues);
+  //   var indexselectedClusterName = values.indexOf(selectedClusterName)
+  //   if (indexselectedClusterName !== -1) {
+  //     values.splice(indexselectedClusterName, 1);
+  //   }
+
+  //   var updatedValue = clusterData[selectedClusterName]
+  //   var deletedClusterDataValue = '';
+  //   var deleteIntentKey;
+
+  //   if ((deletedClusterData.hasOwnProperty(selectedClusterName))) {
+  //     console.log("deletedClusterData--", deletedClusterData[selectedClusterName]);
+  //     var deletedKeys = Object.keys(deletedClusterData[selectedClusterName])
+  //     console.log("deletedKeys", deletedKeys);
+  //     if (!(deletedKeys.every(val => values.includes(val)))) {
+  //       //Value removed from the merge
+  //       for (var index in deletedKeys) {
+  //         var deleteValue = deletedKeys[parseInt(index)]
+  //         console.log(deleteValue);
+  //         if (!(values.includes(deleteValue))) {
+  //           //Value is removed from merge Intent so delete it from the deleted intent and add back to cluster data and remove from selectedClusterName values
+  //           var newValue = (arrayToString(updatedValue).replace(arrayToString(deletedClusterData[selectedClusterName][deleteValue]), ""))
+  //           console.log(newValue)
+  //           setClusterData({ ...clusterData, [deleteValue]: strToArray(deletedClusterData[selectedClusterName][deleteValue]), [selectedClusterName]: newValue });
+  //           var deleteDeletedCluster = [deleteValue]
+  //           deletedClusterData[selectedClusterName] = (Object.fromEntries(
+  //             Object.entries(deletedClusterData[selectedClusterName]).filter(
+  //               ([key, val]) => !deleteDeletedCluster.includes(key)
+  //             )
+  //           ));
+
+  //         }
+  //       }
+  //       return;
+  //     }
+
+  //   }
+
+
+  //   for (var index in values) {
+  //     var value = values[parseInt(index)]
+
+  //     if ((value in clusterData)) {
+  //       updatedValue = (updatedValue + "," + clusterData[value]).split(',');
+  //       (deletedClusterDataValue == '') ? (deletedClusterDataValue += `"${value}":"${clusterData[value]}"`) : (deletedClusterDataValue += `,"${value}":"${clusterData[value]}"`)
+  //       deleteIntentKey = [value];
+  //     }
+  //     else if ((value in deletedClusterData[selectedClusterName])) {
+  //       (deletedClusterDataValue == '') ? (deletedClusterDataValue += `"${value}":"${deletedClusterData[selectedClusterName][value]}"`) : (deletedClusterDataValue += `,"${value}":"${deletedClusterData[selectedClusterName][value]}"`)
+  //     }
+  //   };
+
+  //   //update values of the deletedCluster and main cluster and delete the main cluster merged  Intent
+  //   clusterData[selectedClusterName] = updatedValue
+  //   setDeletedClusterData({ ...deletedClusterData, [selectedClusterName]: (JSON.parse(`{ ${deletedClusterDataValue} }`)) })
+  //   if (deleteIntentKey) {
+  //     setClusterData(Object.fromEntries(
+  //       Object.entries(clusterData).filter(
+  //         ([key, val]) => !deleteIntentKey.includes(key)
+  //       )
+  //     ));
+  //   }
+
+  //   setSnackBar({ type: "success", show: true, message: "Merge successfull" });
+
+  // }
 
   const deleteIntent = (e) => {
 
@@ -231,31 +257,11 @@ export default function Intents() {
         )
       ));
     }
-
   }
 
-  const slotValues = [
-    {
-      "value": "action",
-      "synonyms": ["add", "remove", "register", "signup"]
-    },
-    {
-      "value": "bank",
-      "synonyms": ["hdfc", "axis", "citi", "indus"]
-    },
-    {
-      "value": "action",
-      "synonyms": ["add", "remove", "register", "signup"]
-    },
-    {
-      "value": "bank",
-      "synonyms": ["hdfc", "axis", "citi", "indus"]
-    }
-  ]
   return (
 
     <Grid container style={{
-      // backgroundColor: "#4F5457" 
       backgroundImage: `url(${image1})`,
       height: "100%",
       backgroundPosition: "center",
@@ -272,7 +278,6 @@ export default function Intents() {
           minHeight: "100%",
           width: "96%",
           textAlign: "left"
-          // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
         }}>
 
           <Grid item xs={12}>
@@ -284,160 +289,155 @@ export default function Intents() {
               <div style={{ margin: "2em 2em" }}>
                 <Grid container spacing={2}>
                   <Grid item xs={3} >
-                    <div style={{ background: "#FFF", padding: "1em" }}>
-                    <Box display="flex">
-                        <Box flexGrow={1}>
-                        <CssTextField id="outlined-full-width"
-                            placeholder=""
-                            fullWidth
-                            margin="dense"
-                            InputProps={{
-                              style: appTheme.textDefault
-                            }}
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            variant="outlined"
-                            label="Add Intent"
-                            name = "addNewIntent"
-                            value = {addIntent}
-                            onChange ={handleInputChange}
-                            disabled={addIntentDisable}
-                            onKeyPress={event => {
-                              if (event.key === 'Enter') {
-                                if(!(Object.keys(clusterData).includes(addIntent))){
-                                  setClusterData({ ...clusterData, [addIntent]: "" })
-                                  setSnackBar({ type: "success", show: true, message: "Intent Added succesfully" });
-                                  setAddIntent('')
-                                  setAddIntentDisable(true)
-                                }
-                              }
-                            }}
-                          />
-                          </Box>
-                          <Box alignSelf="center">
-                              <AddCircleIcon  onClick={()=>{setAddIntentDisable(false)}} />
-                          </Box>                        
-                      </Box>
-                      
-                    
+                    <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
+
+                      <CssTextField id="outlined-full-width"
+                        placeholder=""
+                        fullWidth
+                        margin="dense"
+                        InputProps={{
+                          style: appTheme.textDefault
+                        }}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        variant="outlined"
+                        placeholder="Add New Cluster"
+                        name="addNewIntent"
+                        value={addIntent}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                        onChange={handleInputChange}
+                        onKeyPress={event => {
+                          if (event.key === 'Enter') {
+                            if (!(Object.keys(clusterData).includes(addIntent))) {
+                              setClusterData({ ...clusterData, [addIntent]: "" })
+                              setSnackBar({ type: "success", show: true, message: "New cluster has been created" });
+                              setAddIntent('')
+                              getFilteredClusterNames()
+                            }
+                          }
+                        }}
+                      />
+                      <Divider style={{ marginTop: "10px" }} />
+
                       <List style={{ maxHeight: '500px', overflowY: 'scroll' }}>
-                        {Object.keys(clusterData).map((clusterName) => (
+                        {clusterNames.map((clusterName) => (
                           <StyledListItem button key={clusterName} divider={1}
                             style={selectedClusterName == clusterName ? { background: "rgb(235, 112, 119, 0.5)", color: "#fff" } : {}}
-                            onClick={() => { setSelectedClusterName(clusterName) }}>
+                            onClick={()=>{
+                              setSelectedClusterName(clusterName);
+                              var mgdCluts = mergedClusters[clusterName];
+                              const nexFixOptions = mgdCluts != undefined && mgdCluts.length >= 1 ? [clusterName].concat(mgdCluts) : [clusterName];
+                              setFixedOptions(nexFixOptions);}}>
                             <ListItemText primary={clusterName} />
                           </StyledListItem>
                         ))}
 
                       </List>
                     </div>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <div style={{ background: "#FFF", padding: "1em" }}>
-                      <Grid xs={12} container spacing={1} >
-                        <Grid item md={6} lg={6}>
-                          <CssTextField id="outlined-full-width"
-                            placeholder=""
-                            fullWidth
-                            margin="dense"
-                            name="botName"
-                            value={selectedClusterName}
-                            InputProps={{
-                              style: appTheme.textDefault
-                            }}
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            variant="outlined"
-                          />
-                        </Grid>
-                        <Grid item md={6} lg={6}>
-                          <Box display="flex" justifyContent="flex-end" alignItems="center"
-                            p={1} m={1} style={{ marginRight: "0", paddingRight: "0" }}>
-                            <DeleteIcon onClick={deleteIntent}
-                              style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
-                              fontSize="medium"></DeleteIcon>
-                          </Box>
-                        </Grid>
+                </Grid>
+                <Grid item xs={9}>
+                  <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
+                    <Grid xs={12} container spacing={1} >
+                      <Grid item md={9} lg={9}>
+                        <CssTextField id="outlined-full-width"
+                          placeholder=""
+                          fullWidth
+                          margin="dense"
+                          name="botName"
+                          value={selectedClusterName}
+                          InputProps={{
+                            style: appTheme.textDefault
+                          }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          variant="outlined"
+                        />
                       </Grid>
-                      <Grid xs={12}>
-                        <div style={{ width: "100%" }}>
-                          <Autocomplete
-                            multiple
-                            id="tags-filled"
-                            options={Object.keys(clusterData)}
-                            defaultValue={[selectedClusterName]}
-                            freeSolo
-                            renderTags={(value, getTagProps) =>
-                              value.map((option, index) => (
-                                <Chip key={option} variant="outlined"  label={option} {...getTagProps({ index })} />
-                              ))
+                      <Grid item md={3} lg={3}>
+                        <Box display="flex" justifyContent="flex-end" alignItems="center"
+                          p={1} m={1} style={{ marginRight: "0", paddingRight: "0" }}>
+                          <DeleteIcon onClick={deleteIntent}
+                            style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
+                            fontSize="medium"></DeleteIcon>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                    <Grid xs={12}>
+                      <div style={{ width: "100%" }}>
+                        <Autocomplete
+                          multiple
+                          id="tags-filled"
+                          value={fixedOptions}
+                          onChange={handleOnChangeMergeClusters}
+                          options={Object.keys(clusterData)}
+                          filterSelectedOptions
+                          getOptionLabel={option => option}
+                          renderTags={(tagValue, getTagProps) =>
+                            tagValue.map((option, index) => (
+                              <Chip
+                                label={option}
+                                {...getTagProps({ index })}
+                                disabled={fixedOptions.indexOf(option) !== -1}
+                              />
+                            ))
+                          }
+                          renderInput={(params) => (
+                            <TextField {...params} margin="normal" variant="outlined"
+                              label="Merge Clusters" placeholder="Choose one or more cluster names to merge with this cluster" />
+                          )}
+                        />
+                      </div>
+                    </Grid>
+                    <Grid xd={12} >
+                      <div>
+                        <CssTextField id="outlined-multiline-static"
+                          fullWidth
+                          multiline
+                          rows={20}
+                          value={arrayToString(clusterData[selectedClusterName])}
+                          margin="dense"
+                          InputProps={{
+                            style: {
+                              color: appStyle.colorOffBlack,
+                              fontSize: appStyle.fontSizeDefault,
+                              lineHeight: "2.3"
                             }
-                            renderInput={(params) => (
-                              <TextField {...params} margin="normal" variant="outlined" 
-                                label="synonyms" placeholder="Enter one or cluster names to merge with this cluster" />
-                            )}
-                            onChange={mergeIntent}
-                            
-                          />
-                        </div>
-                      </Grid>
-                      <Grid xd={12} >
-                        <div>
-                          <CssTextField id="outlined-multiline-static"
-                            fullWidth
-                            multiline
-                            rows={20}
-                            value={arrayToString(clusterData[selectedClusterName])}
-                            margin="dense"
-                            InputProps={{
-                              style: {
-                                color: appStyle.colorOffBlack,
-                                fontSize: appStyle.fontSizeDefault,
-                                lineHeight: "2.3"
-                              }
-                            }}
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            variant="outlined"
-                            name={selectedClusterName}
-                            onChange={handleInputChange}
+                          }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          variant="outlined"
+                          name={selectedClusterName}
+                          onChange={handleInputChange}
 
-                          />
-                        </div>
-                      </Grid>
-                    </div>
-                  </Grid>
+                        />
+                      </div>
+                    </Grid>
+                  </div>
                 </Grid>
-                <Grid xs={12} container justify="right" >
-                  <StyledButton onClick={() => { setClusterData(originalDataset) }}>Reset</StyledButton>
-                  <StyledButton onClick={() => { console.log("New Page") }}>Next</StyledButton>
-                  {snackBar.show ?
-                    <SnackBarComponent open={snackBar.show}
-                      type={snackBar.type}
-                      message={snackBar.message}
-                      callBack={handleCloseSnackBar} />
-                    : null}
                 </Grid>
-              </div>
+              <Grid xs={12} container justify="right" >
+                <StyledButton onClick={() => { setClusterData(originalDataset) }}>Reset</StyledButton>
+                <StyledButton onClick={() => { console.log("New Page") }}>Next</StyledButton>
+                {snackBar.show ?
+                  <SnackBarComponent open={snackBar.show}
+                    type={snackBar.type}
+                    message={snackBar.message}
+                    callBack={handleCloseSnackBar} />
+                  : null}
+              </Grid>
+            </div>
             </div>
           </Grid>
-        </Box>
       </Box>
-    </Grid>
+      </Box>
+    </Grid >
   );
 }
-
-
-
-const top100Films = [
-  { title: 'The Shawshank Redemption', year: 1994 },
-  { title: 'The Godfather', year: 1972 },
-  { title: 'The Godfather: Part II', year: 1974 },
-  { title: 'The Dark Knight', year: 2008 }]
-
 
 
 
