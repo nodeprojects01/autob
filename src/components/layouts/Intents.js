@@ -14,7 +14,6 @@ import SnackBarComponent from '../SnackBarComponent';
 import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DeleteIcon from '@material-ui/icons/Delete';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Divider from '@material-ui/core/Divider';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
@@ -102,8 +101,8 @@ const strToArray = (str) => {
 
 export default function Intents() {
   const classes = useStyles();
-  const originalDataset = myCustomeInput;
-  const [clusterData, setClusterData] = React.useState(myCustomeInput);
+  const originalDataset = intentValues;
+  const [clusterData, setClusterData] = React.useState(intentValues);
   const [selectedClusterName, setSelectedClusterName] = React.useState(Object.keys(clusterData)[0]);
   const [clusterNames, setClusterNames] = React.useState(Object.keys(clusterData));
   const [addIntent, setAddIntent] = React.useState('');
@@ -319,7 +318,7 @@ export default function Intents() {
                           id="tags-filled"
                           value={fixedOptions}
                           onChange={handleOnChangeMergeClusters}
-                          options={Object.keys(clusterData)}
+                          options={clusterNames}
                           filterSelectedOptions
                           getOptionLabel={option => option}
                           renderTags={(tagValue, getTagProps) =>
@@ -366,9 +365,17 @@ export default function Intents() {
                   </div>
                 </Grid>
                 </Grid>
-              <Grid xs={12} container justify="right" >
-                <StyledButton onClick={() => { setClusterData(originalDataset) }}>Reset</StyledButton>
-                <StyledButton onClick={() => { console.log("New Page") }}>Next</StyledButton>
+              <Grid xs={12}>
+                <Box display="flex"  p={1}>
+                  <Box flexGrow={1}  p={1}>
+                    <StyledButton onClick={() => { setClusterData(originalDataset) }}>Reset</StyledButton>
+                  </Box>
+                  <Box  p={1}>
+                    <StyledButton onClick={() => { console.log("New Page") }}>Next</StyledButton>
+                  </Box>
+                </Box>
+                
+                
                 {snackBar.show ?
                   <SnackBarComponent open={snackBar.show}
                     type={snackBar.type}
@@ -394,26 +401,26 @@ const intentValues = {
     "Which dog used to be sacred in China",
     "Urticaria is a skin disease otherwise known as what?	Hives",
     "What kind of animal is the largest living creature on Earth",
-    // "Give another name for the study of fossils?	",
-    // "Which bird can swim but cannot fly?",
-    // "What do dragonflies prefer to eat",
-    // "What do you get when you crossbreed a donkey and a horse?",
-    // "Which insects cannot fly, but can jump higher than 30 cm,What kind of animal is the largest living creature on Earth",
-    // "What is the name of the European Bison",
-    // "What is called a fish with a snake-like body?",
-    // "In which city is the oldest zoo in the world?",
-    // "After which animals are the Canary Islands named?",
-    // "Which plant does the Canadian flag contain?",
-    // "What is the food of penguins?	",
-    // "Which is the largest species of the tiger?	",
-    // "The bite of which insect causes the Lyme Disease?	",
-    // "Which mammal cannot jump?",
-    // "In which city is the oldest zoo in the world?",
-    // "After which animals are the Canary Islands named?",
-    // "Which plant does the Canadian flag contain?",
-    // "What is the food of penguins?	",
-    // "Which is the largest species of the tiger?	",
-    // "The bite of which insect causes the Lyme Disease?	",
+    "Give another name for the study of fossils?	",
+    "Which bird can swim but cannot fly?",
+    "What do dragonflies prefer to eat",
+    "What do you get when you crossbreed a donkey and a horse?",
+    "Which insects cannot fly, but can jump higher than 30 cm,What kind of animal is the largest living creature on Earth",
+    "What is the name of the European Bison",
+    "What is called a fish with a snake-like body?",
+    "In which city is the oldest zoo in the world?",
+    "After which animals are the Canary Islands named?",
+    "Which plant does the Canadian flag contain?",
+    "What is the food of penguins?	",
+    "Which is the largest species of the tiger?	",
+    "The bite of which insect causes the Lyme Disease?	",
+    "Which mammal cannot jump?",
+    "In which city is the oldest zoo in the world?",
+    "After which animals are the Canary Islands named?",
+    "Which plant does the Canadian flag contain?",
+    "What is the food of penguins?	",
+    "Which is the largest species of the tiger?	",
+    "The bite of which insect causes the Lyme Disease?	",
     "Which mammal cannot jump?"
 
   ],
