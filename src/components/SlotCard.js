@@ -9,66 +9,52 @@ import SlotValueChip from './SlotValueChip';
 import TextField from '@material-ui/core/TextField';
 import { appStyle, appTheme } from '../styles/global'
 
-const useStyles = makeStyles({
-  root: {
-    minWidth: 250,
-  },
-  bullet: {
-    display: 'inline-block',
-    margin: '0 2px',
-    transform: 'scale(0.8)',
-  },
-  title: {
-    fontSize: 14,
-  },
-  pos: {
-    marginBottom: 5,
-  },
-});
 
 const CssTextField = withStyles({
   root: {
     '& label.Mui-focused': {
-      color: 'transparent',
+      color: appStyle.colorBlueGreyDark,
     },
     '& .MuiInput-underline:after': {
-      borderBottomColor: 'transparent',
+      borderBottomColor: appStyle.colorBlueGreyDark,
     },
     '& .MuiOutlinedInput-root': {
-      '& fieldset': {
+      // '& fieldset': {
+      //   borderColor: appStyle.colorBlueGreyDark,
+      // },
+      '&:hover fieldset': {
         borderColor: appStyle.colorBlueGreyDark,
       },
-      '&:hover fieldset': {
-        borderColor: 'transparent',
-      },
       '&.Mui-focused fieldset': {
-        borderColor: 'transparent',
+        borderColor: appStyle.colorBlueGreyDark,
       },
     },
   },
 })(TextField);
 
 export default function SlotCard(props) {
-  const classes = useStyles();
 
   return (
-    <Card className={classes.root}>
-      <CardContent style={{ padding: "1px" }}>
-        <div style={{ padding: "1em 1.2em 0" }}>
-          <CssTextField id="standard-basic"
+    <Card >
+      <CardContent style={{ padding: "1em" }}>
+        <div>
+          <CssTextField id="outlined-full-width"
             placeholder=""
             fullWidth
             margin="dense"
-            size="normal"
+            name="botName"
+            value={props.slotValues.value}
+            // onChange={}
+            InputProps={{
+              style: appTheme.textDefault
+            }}
             InputLabelProps={{
               shrink: true,
             }}
+            variant="outlined"
           />
         </div>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {/* {props.slotValues.map((value) => (<SlotValueChip enumVal={value} />))} */}
-          <SlotValueChip enumVal={props.slotValues} />
-        </Typography>
+        <SlotValueChip enumVal={props.slotValues} />
       </CardContent>
     </Card>
   );
