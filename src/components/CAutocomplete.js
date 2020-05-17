@@ -10,13 +10,16 @@ import { appStyle, appTheme } from '../styles/global'
 const CssTextField = withStyles({
     root: {
         '& label.Mui-focused': {
-            color: appStyle.colorBlueGreyDark,
+            color: appStyle.colorBlueGreyDark
         },
         '& .MuiInput-underline:after': {
             borderBottomColor: appStyle.colorBlueGreyDark,
         },
         '& .MuiOutlinedInput-inputMarginDense': {
             padding: "1em"
+        },
+        '& .MuiAutocomplete-clearIndicator': {
+            display: "none"
         },
         '& .MuiOutlinedInput-root': {
             // '& fieldset': {
@@ -33,7 +36,7 @@ const CssTextField = withStyles({
 })(TextField);
 
 export default function CAutocomplete(props) {
-    
+
     return (
         <div>
             {props.options.length >= 1 ?
@@ -77,7 +80,6 @@ export default function CAutocomplete(props) {
                     )}
                 />
             }
-
         </div>
     );
 }

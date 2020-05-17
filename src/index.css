@@ -25,3 +25,14 @@ input[type="file" i]::-webkit-file-upload-button {
 div .MuiSnackbarContent-root{
   border-radius: 35px;
 }
+
+/* button.MuiAutocomplete-clearIndicatorDirty{
+  visibility: "hidden" !important
+}
+button.MuiAutocomplete-clearIndicator{
+  visibility: "hidden" !important
+}
+
+button.MuiAutocomplete-clearIndicator:hover{
+  visibility: "hidden" !important
+} */
