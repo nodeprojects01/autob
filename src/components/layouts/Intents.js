@@ -16,8 +16,9 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Divider from '@material-ui/core/Divider';
-
-
+import CancelIcon from '@material-ui/icons/Cancel';
+import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
+import Fade from '@material-ui/core/Fade';
 const useStyles = makeStyles((theme) => ({
   '@global': {
     '*::-webkit-scrollbar': {
@@ -116,6 +117,7 @@ export default function Intents() {
   const [addIntent, setAddIntent] = React.useState('');
   const [mergedClusters, setMergedClusters] = React.useState({});
   const [fixedOptions, setFixedOptions] = React.useState([selectedClusterName]);
+  const [checked, setChecked] = React.useState();
 
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
@@ -130,12 +132,10 @@ export default function Intents() {
     if (name == "addNewIntent") {
       setAddIntent(value)
       if (Object.keys(clusterData).includes(value)) {
-        // Garima - Show red cross icon for not available
-        // setSnackBar({ type: "error", show: true, message: "Not Available" });
+        setChecked(true)
       }
       else {
-        // Garima - Show green right icon for available
-        // setSnackBar({ type: "success", show: true, message: "Available" });
+        setChecked(false)
       }
     }
     else {
@@ -153,6 +153,10 @@ export default function Intents() {
       ...newValue.filter(option => fixedOptions.indexOf(option) === -1)
     ]);
 
+    //update value in the intent after merge
+    var updatedValue = (clusterData[selectedClusterName] + "," + clusterData[newValue[newValue.length -1]]).split(',')
+    setClusterData({...clusterData,[selectedClusterName] : updatedValue})
+
     newValue.splice(selectedClusterName, 1);
     mergedClusters[selectedClusterName] = newValue;
     console.log("mergedClusters - ", mergedClusters);
@@ -166,10 +170,12 @@ export default function Intents() {
     const filClusterNames = (Object.keys(clusterData)).filter(function (el) {
       return (mergedClusts).indexOf(el) < 0;
     });
+    console.log(filClusterNames)
     setClusterNames(filClusterNames);
   }
 
 console.log("clusters",clusterNames);
+console.log(clusterData)
   // const mergeIntent = (e, intialValues) => {
 
   //   var values = intialValues
@@ -290,36 +296,56 @@ console.log("clusters",clusterNames);
                 <Grid container spacing={2}>
                   <Grid item xs={3} >
                     <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
+                      <Box display="flex">
+                          <Box flexGrow={1}>
+                          <CssTextField id="outlined-full-width"
+                            placeholder=""
+                            fullWidth
+                            margin="dense"
+                            InputProps={{
+                              style: appTheme.textDefault
+                            }}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            variant="outlined"
+                            placeholder="Add New Cluster"
+                            name="addNewIntent"
+                            value={addIntent}
+                            InputLabelProps={{
+                              shrink: true,
+                            }}
+                            onChange={handleInputChange}
+                            onKeyPress={event => {
+                              if (event.key === 'Enter') {
+                                if (!(Object.keys(clusterData).includes(addIntent))) {
+                                  setClusterData({ ...clusterData, [addIntent]: [] })
+                                  setClusterNames(clusterNames.concat(addIntent))
+                                  setAddIntent('')
+                                  setChecked(null)
+                                  setSnackBar({ type: "success", show: true, message: "New cluster has been created" });
+                                }
+                              }
+                            }}
+                          />
 
-                      <CssTextField id="outlined-full-width"
-                        placeholder=""
-                        fullWidth
-                        margin="dense"
-                        InputProps={{
-                          style: appTheme.textDefault
-                        }}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        variant="outlined"
-                        placeholder="Add New Cluster"
-                        name="addNewIntent"
-                        value={addIntent}
-                        InputLabelProps={{
-                          shrink: true,
-                        }}
-                        onChange={handleInputChange}
-                        onKeyPress={event => {
-                          if (event.key === 'Enter') {
-                            if (!(Object.keys(clusterData).includes(addIntent))) {
-                              setClusterData({ ...clusterData, [addIntent]: "" })
-                              setSnackBar({ type: "success", show: true, message: "New cluster has been created" });
-                              setAddIntent('')
-                              getFilteredClusterNames()
-                            }
-                          }
-                        }}
-                      />
+                          </Box>
+                          
+                          <Box alignSelf="center">
+                          
+                          {checked==true &&
+                            <Fade in={checked}>
+                              <CancelIcon style={{ color: "red"}}/>
+                            </Fade>}
+                          {checked==false &&
+                             <Fade in={!checked}>
+                              <CheckCircleRoundedIcon style={{ color: "green"}}/>
+                            </Fade>}
+                          </Box>
+
+                      </Box>
+                      
+                        
                       <Divider style={{ marginTop: "10px" }} />
 
                       <List style={{ maxHeight: '500px', overflowY: 'scroll' }}>
