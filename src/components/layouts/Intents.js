@@ -42,15 +42,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-// const ChipTextField = withStyles({
-//   root: {
-//     '& .MuiOutlinedInput-root': {
-//       '& fieldset': {
-//         borderRadius: `50px `,
-//       },
-//     },
-//   },
-// })(TextField);
+
 const CssTextField = withStyles({
   root: {
     '& label.Mui-focused': {
@@ -173,79 +165,7 @@ export default function Intents() {
     console.log(filClusterNames)
     setClusterNames(filClusterNames);
   }
-
-console.log("clusters",clusterNames);
-console.log(clusterData)
-  // const mergeIntent = (e, intialValues) => {
-
-  //   var values = intialValues
-  //   console.log("values", intialValues);
-  //   var indexselectedClusterName = values.indexOf(selectedClusterName)
-  //   if (indexselectedClusterName !== -1) {
-  //     values.splice(indexselectedClusterName, 1);
-  //   }
-
-  //   var updatedValue = clusterData[selectedClusterName]
-  //   var deletedClusterDataValue = '';
-  //   var deleteIntentKey;
-
-  //   if ((deletedClusterData.hasOwnProperty(selectedClusterName))) {
-  //     console.log("deletedClusterData--", deletedClusterData[selectedClusterName]);
-  //     var deletedKeys = Object.keys(deletedClusterData[selectedClusterName])
-  //     console.log("deletedKeys", deletedKeys);
-  //     if (!(deletedKeys.every(val => values.includes(val)))) {
-  //       //Value removed from the merge
-  //       for (var index in deletedKeys) {
-  //         var deleteValue = deletedKeys[parseInt(index)]
-  //         console.log(deleteValue);
-  //         if (!(values.includes(deleteValue))) {
-  //           //Value is removed from merge Intent so delete it from the deleted intent and add back to cluster data and remove from selectedClusterName values
-  //           var newValue = (arrayToString(updatedValue).replace(arrayToString(deletedClusterData[selectedClusterName][deleteValue]), ""))
-  //           console.log(newValue)
-  //           setClusterData({ ...clusterData, [deleteValue]: strToArray(deletedClusterData[selectedClusterName][deleteValue]), [selectedClusterName]: newValue });
-  //           var deleteDeletedCluster = [deleteValue]
-  //           deletedClusterData[selectedClusterName] = (Object.fromEntries(
-  //             Object.entries(deletedClusterData[selectedClusterName]).filter(
-  //               ([key, val]) => !deleteDeletedCluster.includes(key)
-  //             )
-  //           ));
-
-  //         }
-  //       }
-  //       return;
-  //     }
-
-  //   }
-
-
-  //   for (var index in values) {
-  //     var value = values[parseInt(index)]
-
-  //     if ((value in clusterData)) {
-  //       updatedValue = (updatedValue + "," + clusterData[value]).split(',');
-  //       (deletedClusterDataValue == '') ? (deletedClusterDataValue += `"${value}":"${clusterData[value]}"`) : (deletedClusterDataValue += `,"${value}":"${clusterData[value]}"`)
-  //       deleteIntentKey = [value];
-  //     }
-  //     else if ((value in deletedClusterData[selectedClusterName])) {
-  //       (deletedClusterDataValue == '') ? (deletedClusterDataValue += `"${value}":"${deletedClusterData[selectedClusterName][value]}"`) : (deletedClusterDataValue += `,"${value}":"${deletedClusterData[selectedClusterName][value]}"`)
-  //     }
-  //   };
-
-  //   //update values of the deletedCluster and main cluster and delete the main cluster merged  Intent
-  //   clusterData[selectedClusterName] = updatedValue
-  //   setDeletedClusterData({ ...deletedClusterData, [selectedClusterName]: (JSON.parse(`{ ${deletedClusterDataValue} }`)) })
-  //   if (deleteIntentKey) {
-  //     setClusterData(Object.fromEntries(
-  //       Object.entries(clusterData).filter(
-  //         ([key, val]) => !deleteIntentKey.includes(key)
-  //       )
-  //     ));
-  //   }
-
-  //   setSnackBar({ type: "success", show: true, message: "Merge successfull" });
-
-  // }
-
+  
   const deleteIntent = (e) => {
 
     if (window.confirm('Are you sure you want to delete?')) {
@@ -320,7 +240,7 @@ console.log(clusterData)
                               if (event.key === 'Enter') {
                                 if (!(Object.keys(clusterData).includes(addIntent))) {
                                   setClusterData({ ...clusterData, [addIntent]: [] })
-                                  setClusterNames(clusterNames.concat(addIntent))
+                                  setClusterNames(([addIntent].concat(clusterNames)))
                                   setAddIntent('')
                                   setChecked(null)
                                   setSnackBar({ type: "success", show: true, message: "New cluster has been created" });
