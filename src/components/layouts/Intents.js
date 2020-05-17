@@ -189,25 +189,25 @@ export default function Intents() {
 
     <Grid container style={{
       backgroundImage: `url(${image1})`,
-      height: "100%",
+      // height: "100%",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
       backgroundAttachment: "fixed",
-      minHeight: "100vh",
+      // minHeight: "100vh",
       padding: "3em 0 0 0",
     }}>
       <Box display="flex" justifyContent="flex-end" style={{ width: "100%" }}>
         <Box style={{
           background: "rgba(255, 255, 255, 0.9)",
           borderRadius: "32px 0 0 0",
-          minHeight: "100%",
+          // minHeight: "100%",
           width: "96%",
           textAlign: "left"
         }}>
 
           <Grid item xs={12}>
-            <div style={{ padding: "1.7em 2em", height: "80vh" }}>
+            <div style={{ padding: "1.7em 2em"}}>
               <div>
                 <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Identify Intents</Typography>
               </div>
