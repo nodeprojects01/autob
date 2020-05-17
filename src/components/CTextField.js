@@ -43,9 +43,21 @@ export default function CTextField(props) {
                 value={props.value}
                 margin="dense"
                 onChange={props.onChange}
-                InputProps={{
-                    style: appTheme.textDefault
-                }}
+                onKeyPress={props.onKeyPress}
+                InputProps={
+                    props.multiline ?
+                        {
+                            style: {
+                                color: appStyle.colorOffBlack,
+                                fontSize: appStyle.fontSizeDefault,
+                                lineHeight: "2.3"
+                            }
+                        }
+                        :
+                        {
+                            style: appTheme.textDefault
+                        }
+                }
                 InputLabelProps={{
                     shrink: true,
                 }}

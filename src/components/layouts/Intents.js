@@ -4,20 +4,20 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import image1 from '../../images/abstract.jpg'
-import TextField from '@material-ui/core/TextField';
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { appStyle, appTheme } from '../../styles/global';
-import { Button } from '@material-ui/core';
 import SnackBarComponent from '../SnackBarComponent';
-import Chip from '@material-ui/core/Chip';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 import Fade from '@material-ui/core/Fade';
+import CTextField from '../CTextField';
+import CAutocomplete from '../CAutocomplete';
+import CButton from '../CButton';
+
 const useStyles = makeStyles((theme) => ({
   '@global': {
     '*::-webkit-scrollbar': {
@@ -42,27 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CssTextField = withStyles({
-  root: {
-    '& label.Mui-focused': {
-      color: appStyle.colorBlueGreyDark,
-    },
-    '& .MuiInput-underline:after': {
-      borderBottomColor: appStyle.colorBlueGreyDark,
-    },
-    '& .MuiOutlinedInput-root': {
-      // '& fieldset': {
-      //   borderColor: appStyle.colorBlueGreyDark,
-      // },
-      '&:hover fieldset': {
-        borderColor: appStyle.colorBlueGreyDark,
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: appStyle.colorBlueGreyDark,
-      },
-    },
-  },
-})(TextField);
+
 const StyledListItem = withStyles({
   root: {
     // backgroundColor: appStyle.colorGreyLight,
@@ -84,12 +64,6 @@ const StyledListItem = withStyles({
 
 })(ListItem);
 
-const StyledButton = withStyles({
-  root: appTheme.buttonDefault,
-  label: {
-    textTransform: 'capitalize',
-  },
-})(Button);
 
 const arrayToString = (arr) => {
   return arr.toString().replace(/,/g, "\n");
@@ -241,23 +215,10 @@ export default function Intents() {
                     <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
                       <Box display="flex">
                           <Box flexGrow={1}>
-                          <CssTextField id="outlined-full-width"
-                            placeholder=""
-                            fullWidth
-                            margin="dense"
-                            InputProps={{
-                              style: appTheme.textDefault
-                            }}
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
-                            variant="outlined"
+                          <CTextField 
                             placeholder="Add New Cluster"
                             name="addNewIntent"
                             value={addIntent}
-                            InputLabelProps={{
-                              shrink: true,
-                            }}
                             onChange={handleInputChange}
                             onKeyPress={event => {
                               if (event.key === 'Enter') {
@@ -271,11 +232,9 @@ export default function Intents() {
                               }
                             }}
                           />
-
                           </Box>
                           
                           <Box alignSelf="center">
-                          
                           {checked==true &&
                             <Fade in={checked}>
                               <CancelIcon style={{ color: "red"}}/>
@@ -314,19 +273,9 @@ export default function Intents() {
                       <Grid item md={9} lg={9}>
                         <Box display="flex">
                         <Box flexGrow={1}>
-                        <CssTextField id="outlined-full-width"
-                          placeholder=""
-                          fullWidth
-                          margin="dense"
+                        <CTextField
                           name="intentName"
                           value={newIntentName}
-                          InputProps={{
-                            style: appTheme.textDefault
-                          }}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          variant="outlined"
                           onChange={handleInputChange}
                           onKeyPress={event => {
                             if (event.key === 'Enter') {
@@ -368,52 +317,21 @@ export default function Intents() {
                     </Grid>
                     <Grid xs={12}>
                       <div style={{ width: "100%" }}>
-                        <Autocomplete
-                          multiple
-                          id="tags-filled"
+                        <CAutocomplete
                           value={fixedOptions}
                           onChange={handleOnChangeMergeClusters}
                           options={clusterNames}
-                          filterSelectedOptions
-                          getOptionLabel={option => option}
-                          renderTags={(tagValue, getTagProps) =>
-                            tagValue.map((option, index) => (
-                              <Chip
-                                label={option}
-                                {...getTagProps({ index })}
-                                disabled={fixedOptions.indexOf(option) !== -1}
-                              />
-                            ))
-                          }
-                          renderInput={(params) => (
-                            <TextField {...params} margin="normal" variant="outlined"
-                              label="Merge Clusters" placeholder="Choose one or more cluster names to merge with this cluster" />
-                          )}
                         />
                       </div>
                     </Grid>
                     <Grid xd={12} >
                       <div>
-                        <CssTextField id="outlined-multiline-static"
-                          fullWidth
+                        <CTextField
                           multiline
                           rows={20}
                           value={arrayToString(clusterData[selectedClusterName])}
-                          margin="dense"
-                          InputProps={{
-                            style: {
-                              color: appStyle.colorOffBlack,
-                              fontSize: appStyle.fontSizeDefault,
-                              lineHeight: "2.3"
-                            }
-                          }}
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          variant="outlined"
                           name={selectedClusterName}
                           onChange={handleInputChange}
-
                         />
                       </div>
                     </Grid>
@@ -423,10 +341,10 @@ export default function Intents() {
               <Grid xs={12}>
                 <Box display="flex"  p={1}>
                   <Box flexGrow={1}  p={1}>
-                    <StyledButton onClick={() => { setClusterData(originalDataset) }}>Reset</StyledButton>
+                    <CButton onClick={() => { setClusterData(originalDataset) }} name="Reset" />
                   </Box>
                   <Box  p={1}>
-                    <StyledButton onClick={() => { console.log("New Page") }}>Next</StyledButton>
+                    <CButton onClick={() => { console.log("New Page") }} name="Next" />
                   </Box>
                 </Box>
                 
