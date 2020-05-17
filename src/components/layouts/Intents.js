@@ -96,7 +96,7 @@ const arrayToString = (arr) => {
 }
 
 const strToArray = (str) => {
-  return  str.replace(/(\n\n)/g,'\n').replace(/(?:\r\n|\r|\n)/g, ',').replace(/\s+/g, ' ').split(',');
+  return  str.replace(/(?:\r\n|\r|\n)/g, ',').replace(/\s+/g, ' ').split(',');
 }
 
 export default function Intents() {
@@ -179,6 +179,13 @@ export default function Intents() {
     });
     console.log(filClusterNames)
     setClusterNames(filClusterNames);
+  }
+  const updateClusterName = (newIntentName,selectedClusterName) => {
+    clusterNames[clusterNames.indexOf(selectedClusterName)] = newIntentName
+    clusterData[newIntentName] = clusterData[selectedClusterName]
+    mergedClusters[newIntentName] = mergedClusters[selectedClusterName]
+    delete clusterData[selectedClusterName]
+    delete  mergedClusters[selectedClusterName]
   }
   
   const deleteIntent = (e) => {
@@ -323,11 +330,9 @@ export default function Intents() {
                           onChange={handleInputChange}
                           onKeyPress={event => {
                             if (event.key === 'Enter') {
-                              if (!(Object.keys(clusterData).includes(newIntentName))) {//selectedClusterName
-                                clusterNames[clusterNames.indexOf(selectedClusterName)] = newIntentName
-                                clusterData[newIntentName] = clusterData[selectedClusterName]
+                              if (!(Object.keys(clusterData).includes(newIntentName))) {
+                                updateClusterName(newIntentName,selectedClusterName)
                                 setSelectedClusterName(newIntentName)
-                                delete clusterData[selectedClusterName]
                                 setCheckedIntentName(null)
                                 setSnackBar({ type: "success", show: true, message: "Name  cluster has been updated" });
                               }
