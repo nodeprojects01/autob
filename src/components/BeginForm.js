@@ -11,40 +11,14 @@ import { StylesProvider } from '@material-ui/styles';
 import { appStyle, appTheme } from '../styles/global';
 import SnackBarComponent from './SnackBarComponent';
 import SettingsIcon from '@material-ui/icons/Settings';
+import CTextField from './CTextField';
+import CButton from './CButton';
 
 {/* <StylesProvider injectFirst>
     content goes here
 </StylesProvider> */}
 
 
-const StyledButton = withStyles({
-    root: appTheme.buttonDefault,
-    label: {
-        textTransform: 'capitalize',
-    },
-})(Button);
-
-const CssTextField = withStyles({
-    root: {
-        '& label.Mui-focused': {
-            color: appStyle.colorBlueGreyDark,
-        },
-        '& .MuiInput-underline:after': {
-            borderBottomColor: appStyle.colorBlueGreyDark,
-        },
-        '& .MuiOutlinedInput-root': {
-            // '& fieldset': {
-            //   borderColor: appStyle.colorBlueGreyDark,
-            // },
-            '&:hover fieldset': {
-                borderColor: appStyle.colorBlueGreyDark,
-            },
-            '&.Mui-focused fieldset': {
-                borderColor: appStyle.colorBlueGreyDark,
-            },
-        },
-    },
-})(TextField);
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -101,19 +75,7 @@ export default function BeginForm(props) {
                         <Typography style={appTheme.textSmall}>Botname</Typography>
                     </div>
                     <div>
-                        <CssTextField id="outlined-full-width"
-                            placeholder=""
-                            fullWidth
-                            margin="dense"
-                            name="botName" value={props.values.botName} onChange={props.setValues}
-                            InputProps={{
-                                style: appTheme.textDefault
-                            }}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            variant="outlined"
-                        />
+                        <CTextField name="botName" value={props.values.botName} onChange={props.setValues} />
                     </div>
                     <br></br>
                     <Box display="flex">
@@ -121,7 +83,7 @@ export default function BeginForm(props) {
                             <Typography style={appTheme.textSmall}>Upload Excel</Typography>
                         </Box>
                         <Box alignSelf="center">
-                            <CssTextField className={classes.hiddenInput} id="contained-button-Excelfile"
+                            <TextField className={classes.hiddenInput} id="contained-button-Excelfile"
                                 name="uploadExcelFileHidden" type="file" onChange={props.setValues} />
                             <label htmlFor="contained-button-Excelfile">
                                 <Button style={{ backgroundColor: 'Transparent', padding: "0px" }} component="span">
@@ -132,27 +94,14 @@ export default function BeginForm(props) {
                     </Box>
 
                     <div>
-                        <CssTextField id="outlined-full-width"
-                            placeholder=""
-                            fullWidth
-                            margin="dense"
-                            name="uploadExcelFile"
-                            value={props.values.uploadExcelFile}
-                            InputProps={{
-                                style: appTheme.textDefault
-                            }}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            variant="outlined"
-                            onChange={props.setValues}
-                        />
+                        <CTextField name="uploadExcelFile" value={props.values.uploadExcelFile}
+                            onChange={props.setValues} />
                     </div>
                     <br></br>
                     <div>
                         <Box display="flex">
                             <Box flexGrow={1}>
-                                <StyledButton onClick={handleSubmit}>Next</StyledButton>
+                                <CButton onClick={handleSubmit} name="Next" />
                             </Box>
                             <Box alignSelf="center" onClick={props.onClick}>
                                 <SettingsIcon

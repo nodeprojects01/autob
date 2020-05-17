@@ -14,7 +14,6 @@ import SnackBarComponent from '../SnackBarComponent';
 import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DeleteIcon from '@material-ui/icons/Delete';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
 import Divider from '@material-ui/core/Divider';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
@@ -97,7 +96,7 @@ const arrayToString = (arr) => {
 }
 
 const strToArray = (str) => {
-  return str.replace(/(?:\r\n|\r|\n)/g, ',').split(',');
+  return  str.replace(/(?:\r\n|\r|\n)/g, ',').replace(/\s+/g, ' ').split(',');
 }
 
 export default function Intents() {
@@ -110,7 +109,10 @@ export default function Intents() {
   const [mergedClusters, setMergedClusters] = React.useState({});
   const [fixedOptions, setFixedOptions] = React.useState([selectedClusterName]);
   const [checked, setChecked] = React.useState();
+  const [checkedIntentName, setCheckedIntentName] = React.useState();
+  const [newIntentName,setNewIntentName]=React.useState(Object.keys(clusterData)[0]);
 
+  console.log(clusterData)
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
   const handleCloseSnackBar = () => {
@@ -130,6 +132,16 @@ export default function Intents() {
         setChecked(false)
       }
     }
+    else if(name == "intentName"){
+      setNewIntentName(value)
+      if (Object.keys(clusterData).includes(value)) {
+        setCheckedIntentName(true)
+      }
+      else {
+        setCheckedIntentName(false)
+      }
+
+    }
     else {
       // **************** what is this else condition? ****** need to handle as else if ************
       const updatedValue = strToArray(value);
@@ -146,7 +158,10 @@ export default function Intents() {
     ]);
 
     //update value in the intent after merge
+   
     var updatedValue = (clusterData[selectedClusterName] + "," + clusterData[newValue[newValue.length -1]]).split(',')
+    //Remove duplicates
+    updatedValue = updatedValue.filter((item, index) => updatedValue.indexOf(item) === index)
     setClusterData({...clusterData,[selectedClusterName] : updatedValue})
 
     newValue.splice(selectedClusterName, 1);
@@ -165,6 +180,13 @@ export default function Intents() {
     console.log(filClusterNames)
     setClusterNames(filClusterNames);
   }
+  const updateClusterName = (newIntentName,selectedClusterName) => {
+    clusterNames[clusterNames.indexOf(selectedClusterName)] = newIntentName
+    clusterData[newIntentName] = clusterData[selectedClusterName]
+    mergedClusters[newIntentName] = mergedClusters[selectedClusterName]
+    delete clusterData[selectedClusterName]
+    delete  mergedClusters[selectedClusterName]
+  }
   
   const deleteIntent = (e) => {
 
@@ -175,6 +197,7 @@ export default function Intents() {
       (parseInt(position) > 0) ? (position = parseInt(position) - 1) : (position = parseInt(position) + 1)
       const updatedKeyName = Object.keys(clusterData)[position]
       setSelectedClusterName(updatedKeyName)
+      setNewIntentName(updatedKeyName)
 
 
       setClusterData(Object.fromEntries(
@@ -274,6 +297,7 @@ export default function Intents() {
                             style={selectedClusterName == clusterName ? { background: "rgb(235, 112, 119, 0.5)", color: "#fff" } : {}}
                             onClick={()=>{
                               setSelectedClusterName(clusterName);
+                              setNewIntentName(clusterName)
                               var mgdCluts = mergedClusters[clusterName];
                               const nexFixOptions = mgdCluts != undefined && mgdCluts.length >= 1 ? [clusterName].concat(mgdCluts) : [clusterName];
                               setFixedOptions(nexFixOptions);}}>
@@ -288,12 +312,14 @@ export default function Intents() {
                   <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
                     <Grid xs={12} container spacing={1} >
                       <Grid item md={9} lg={9}>
+                        <Box display="flex">
+                        <Box flexGrow={1}>
                         <CssTextField id="outlined-full-width"
                           placeholder=""
                           fullWidth
                           margin="dense"
-                          name="botName"
-                          value={selectedClusterName}
+                          name="intentName"
+                          value={newIntentName}
                           InputProps={{
                             style: appTheme.textDefault
                           }}
@@ -301,7 +327,35 @@ export default function Intents() {
                             shrink: true,
                           }}
                           variant="outlined"
+                          onChange={handleInputChange}
+                          onKeyPress={event => {
+                            if (event.key === 'Enter') {
+                              if (!(Object.keys(clusterData).includes(newIntentName))) {
+                                updateClusterName(newIntentName,selectedClusterName)
+                                setSelectedClusterName(newIntentName)
+                                setCheckedIntentName(null)
+                                setSnackBar({ type: "success", show: true, message: "Name  cluster has been updated" });
+                              }
+                            }
+                          }}
                         />
+
+                        </Box>
+                        
+                         <Box alignSelf="center">
+                          
+                          {checkedIntentName==true &&
+                            <Fade in={checkedIntentName}>
+                              <CancelIcon style={{ color: "red"}}/>
+                            </Fade>}
+                          {checkedIntentName==false &&
+                             <Fade in={!checkedIntentName}>
+                              <CheckCircleRoundedIcon style={{ color: "green"}}/>
+                            </Fade>}
+                          </Box>
+
+                        </Box>
+                        
                       </Grid>
                       <Grid item md={3} lg={3}>
                         <Box display="flex" justifyContent="flex-end" alignItems="center"
@@ -319,7 +373,7 @@ export default function Intents() {
                           id="tags-filled"
                           value={fixedOptions}
                           onChange={handleOnChangeMergeClusters}
-                          options={Object.keys(clusterData)}
+                          options={clusterNames}
                           filterSelectedOptions
                           getOptionLabel={option => option}
                           renderTags={(tagValue, getTagProps) =>
@@ -366,9 +420,17 @@ export default function Intents() {
                   </div>
                 </Grid>
                 </Grid>
-              <Grid xs={12} container justify="right" >
-                <StyledButton onClick={() => { setClusterData(originalDataset) }}>Reset</StyledButton>
-                <StyledButton onClick={() => { console.log("New Page") }}>Next</StyledButton>
+              <Grid xs={12}>
+                <Box display="flex"  p={1}>
+                  <Box flexGrow={1}  p={1}>
+                    <StyledButton onClick={() => { setClusterData(originalDataset) }}>Reset</StyledButton>
+                  </Box>
+                  <Box  p={1}>
+                    <StyledButton onClick={() => { console.log("New Page") }}>Next</StyledButton>
+                  </Box>
+                </Box>
+                
+                
                 {snackBar.show ?
                   <SnackBarComponent open={snackBar.show}
                     type={snackBar.type}
@@ -394,26 +456,26 @@ const intentValues = {
     "Which dog used to be sacred in China",
     "Urticaria is a skin disease otherwise known as what?	Hives",
     "What kind of animal is the largest living creature on Earth",
-    // "Give another name for the study of fossils?	",
-    // "Which bird can swim but cannot fly?",
-    // "What do dragonflies prefer to eat",
-    // "What do you get when you crossbreed a donkey and a horse?",
-    // "Which insects cannot fly, but can jump higher than 30 cm,What kind of animal is the largest living creature on Earth",
-    // "What is the name of the European Bison",
-    // "What is called a fish with a snake-like body?",
-    // "In which city is the oldest zoo in the world?",
-    // "After which animals are the Canary Islands named?",
-    // "Which plant does the Canadian flag contain?",
-    // "What is the food of penguins?	",
-    // "Which is the largest species of the tiger?	",
-    // "The bite of which insect causes the Lyme Disease?	",
-    // "Which mammal cannot jump?",
-    // "In which city is the oldest zoo in the world?",
-    // "After which animals are the Canary Islands named?",
-    // "Which plant does the Canadian flag contain?",
-    // "What is the food of penguins?	",
-    // "Which is the largest species of the tiger?	",
-    // "The bite of which insect causes the Lyme Disease?	",
+    "Give another name for the study of fossils?	",
+    "Which bird can swim but cannot fly?",
+    "What do dragonflies prefer to eat",
+    "What do you get when you crossbreed a donkey and a horse?",
+    "Which insects cannot fly, but can jump higher than 30 cm,What kind of animal is the largest living creature on Earth",
+    "What is the name of the European Bison",
+    "What is called a fish with a snake-like body?",
+    "In which city is the oldest zoo in the world?",
+    "After which animals are the Canary Islands named?",
+    "Which plant does the Canadian flag contain?",
+    "What is the food of penguins?	",
+    "Which is the largest species of the tiger?	",
+    "The bite of which insect causes the Lyme Disease?	",
+    "Which mammal cannot jump?",
+    "In which city is the oldest zoo in the world?",
+    "After which animals are the Canary Islands named?",
+    "Which plant does the Canadian flag contain?",
+    "What is the food of penguins?	",
+    "Which is the largest species of the tiger?	",
+    "The bite of which insect causes the Lyme Disease?	",
     "Which mammal cannot jump?"
 
   ],
@@ -472,5 +534,5 @@ const myCustomeInput = {
   "helloIntent": ["hey", "hi", "hello", "hiiiiiiiii", "heyyyyyyyyyyyy"],
   "byeIntent": ["b", "by", "bye", "byee", "byeee"],
   "goodIntent": ["good", "bettter", "best", "happy", "smile"],
-  "hateIntent": ["worst", "bad", "sad", "kill"]
+  "hateIntent": ["worst", "bad", "sad", "kill","hello"]
 }

@@ -8,7 +8,7 @@ import Button from '@material-ui/core/Button';
 import MenuItem from '@material-ui/core/MenuItem';
 import SnackBarComponent from './SnackBarComponent';
 import { appStyle, appTheme } from '../styles/global';
-
+import CTextField from './CTextField';
 
 const StyledButton = withStyles({
     root: appTheme.buttonDefault,
@@ -93,26 +93,16 @@ export default function AdvSettings(props) {
                         <Typography style={appTheme.textSmall}>Synonym Generating Type</Typography>
                     </div>
                     <div>
-                        <CssTextField
-                            id="outlined-full-width"
+                        <CTextField
                             select
-                            fullWidth
-                            margin="dense"
-                            variant="outlined"
                             name="synonymGenerating"
                             value={props.values.synonymGenerating}
                             onChange={props.setValues}
-                            InputProps={{
-                                style: appTheme.textDefault
-                            }}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
                         >
                             <MenuItem value={"auto_generate_synonyms"}>Auto Generate Synonyms</MenuItem>
                             <MenuItem value={"custom_synonyms"}>Custom Synonyms</MenuItem>
                             <MenuItem value={"apply_global synonyms"}>Apply Global Synonyms</MenuItem>
-                        </CssTextField>
+                        </CTextField>
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={6} >
@@ -158,19 +148,11 @@ export default function AdvSettings(props) {
                                 </Box>
                             </Box>
                             <div>
-                                <CssTextField id="outlined-multiline-static"
+                                <CTextField
                                     placeholder="Paste the json or upload json file"
                                     fullWidth
                                     multiline
                                     rows={4}
-                                    margin="dense"
-                                    InputProps={{
-                                        style: appTheme.textDefault
-                                    }}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    variant="outlined"
                                     name="customSynonymsJSON"
                                     value={props.values.customSynonymsJSON}
                                     onChange={props.setValues}

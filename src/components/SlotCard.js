@@ -5,7 +5,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import SlotValueChip from './SlotValueChip';
+import CAutocomplete from './CAutocomplete';
 import TextField from '@material-ui/core/TextField';
 import { appStyle, appTheme } from '../styles/global'
 
@@ -54,7 +54,7 @@ export default function SlotCard(props) {
             variant="outlined"
           />
         </div>
-        <SlotValueChip enumVal={props.slotValues} />
+        <CAutocomplete options={[]} label="Synonyms" placeholder="synonyms" defaultValue={props.slotValues.synonyms} />
       </CardContent>
     </Card>
   );
