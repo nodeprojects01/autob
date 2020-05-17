@@ -63,7 +63,7 @@ export default function CAutocomplete(props) {
                 <Autocomplete
                     multiple
                     id="tags-filled"
-                    options={[]}
+                    options={props.options}
                     defaultValue={props.defaultValue}
                     freeSolo
                     renderTags={(value, getTagProps) =>

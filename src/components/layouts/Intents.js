@@ -96,20 +96,23 @@ const arrayToString = (arr) => {
 }
 
 const strToArray = (str) => {
-  return str.replace(/(?:\r\n|\r|\n)/g, ',').split(',');
+  return  str.replace(/(?:\r\n|\r|\n)/g, ',').replace(/\s+/g, ' ').split(',');
 }
 
 export default function Intents() {
   const classes = useStyles();
-  const originalDataset = intentValues;
-  const [clusterData, setClusterData] = React.useState(intentValues);
+  const originalDataset = myCustomeInput;
+  const [clusterData, setClusterData] = React.useState(myCustomeInput);
   const [selectedClusterName, setSelectedClusterName] = React.useState(Object.keys(clusterData)[0]);
   const [clusterNames, setClusterNames] = React.useState(Object.keys(clusterData));
   const [addIntent, setAddIntent] = React.useState('');
   const [mergedClusters, setMergedClusters] = React.useState({});
   const [fixedOptions, setFixedOptions] = React.useState([selectedClusterName]);
   const [checked, setChecked] = React.useState();
+  const [checkedIntentName, setCheckedIntentName] = React.useState();
+  const [newIntentName,setNewIntentName]=React.useState(Object.keys(clusterData)[0]);
 
+  console.log(clusterData)
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
   const handleCloseSnackBar = () => {
@@ -129,6 +132,16 @@ export default function Intents() {
         setChecked(false)
       }
     }
+    else if(name == "intentName"){
+      setNewIntentName(value)
+      if (Object.keys(clusterData).includes(value)) {
+        setCheckedIntentName(true)
+      }
+      else {
+        setCheckedIntentName(false)
+      }
+
+    }
     else {
       // **************** what is this else condition? ****** need to handle as else if ************
       const updatedValue = strToArray(value);
@@ -145,7 +158,10 @@ export default function Intents() {
     ]);
 
     //update value in the intent after merge
+   
     var updatedValue = (clusterData[selectedClusterName] + "," + clusterData[newValue[newValue.length -1]]).split(',')
+    //Remove duplicates
+    updatedValue = updatedValue.filter((item, index) => updatedValue.indexOf(item) === index)
     setClusterData({...clusterData,[selectedClusterName] : updatedValue})
 
     newValue.splice(selectedClusterName, 1);
@@ -164,6 +180,13 @@ export default function Intents() {
     console.log(filClusterNames)
     setClusterNames(filClusterNames);
   }
+  const updateClusterName = (newIntentName,selectedClusterName) => {
+    clusterNames[clusterNames.indexOf(selectedClusterName)] = newIntentName
+    clusterData[newIntentName] = clusterData[selectedClusterName]
+    mergedClusters[newIntentName] = mergedClusters[selectedClusterName]
+    delete clusterData[selectedClusterName]
+    delete  mergedClusters[selectedClusterName]
+  }
   
   const deleteIntent = (e) => {
 
@@ -174,6 +197,7 @@ export default function Intents() {
       (parseInt(position) > 0) ? (position = parseInt(position) - 1) : (position = parseInt(position) + 1)
       const updatedKeyName = Object.keys(clusterData)[position]
       setSelectedClusterName(updatedKeyName)
+      setNewIntentName(updatedKeyName)
 
 
       setClusterData(Object.fromEntries(
@@ -273,6 +297,7 @@ export default function Intents() {
                             style={selectedClusterName == clusterName ? { background: "rgb(235, 112, 119, 0.5)", color: "#fff" } : {}}
                             onClick={()=>{
                               setSelectedClusterName(clusterName);
+                              setNewIntentName(clusterName)
                               var mgdCluts = mergedClusters[clusterName];
                               const nexFixOptions = mgdCluts != undefined && mgdCluts.length >= 1 ? [clusterName].concat(mgdCluts) : [clusterName];
                               setFixedOptions(nexFixOptions);}}>
@@ -287,12 +312,14 @@ export default function Intents() {
                   <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
                     <Grid xs={12} container spacing={1} >
                       <Grid item md={9} lg={9}>
+                        <Box display="flex">
+                        <Box flexGrow={1}>
                         <CssTextField id="outlined-full-width"
                           placeholder=""
                           fullWidth
                           margin="dense"
-                          name="botName"
-                          value={selectedClusterName}
+                          name="intentName"
+                          value={newIntentName}
                           InputProps={{
                             style: appTheme.textDefault
                           }}
@@ -300,7 +327,35 @@ export default function Intents() {
                             shrink: true,
                           }}
                           variant="outlined"
+                          onChange={handleInputChange}
+                          onKeyPress={event => {
+                            if (event.key === 'Enter') {
+                              if (!(Object.keys(clusterData).includes(newIntentName))) {
+                                updateClusterName(newIntentName,selectedClusterName)
+                                setSelectedClusterName(newIntentName)
+                                setCheckedIntentName(null)
+                                setSnackBar({ type: "success", show: true, message: "Name  cluster has been updated" });
+                              }
+                            }
+                          }}
                         />
+
+                        </Box>
+                        
+                         <Box alignSelf="center">
+                          
+                          {checkedIntentName==true &&
+                            <Fade in={checkedIntentName}>
+                              <CancelIcon style={{ color: "red"}}/>
+                            </Fade>}
+                          {checkedIntentName==false &&
+                             <Fade in={!checkedIntentName}>
+                              <CheckCircleRoundedIcon style={{ color: "green"}}/>
+                            </Fade>}
+                          </Box>
+
+                        </Box>
+                        
                       </Grid>
                       <Grid item md={3} lg={3}>
                         <Box display="flex" justifyContent="flex-end" alignItems="center"
@@ -479,5 +534,5 @@ const myCustomeInput = {
   "helloIntent": ["hey", "hi", "hello", "hiiiiiiiii", "heyyyyyyyyyyyy"],
   "byeIntent": ["b", "by", "bye", "byee", "byeee"],
   "goodIntent": ["good", "bettter", "best", "happy", "smile"],
-  "hateIntent": ["worst", "bad", "sad", "kill"]
+  "hateIntent": ["worst", "bad", "sad", "kill","hello"]
 }
