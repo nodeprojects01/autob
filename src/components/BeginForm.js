@@ -9,7 +9,7 @@ import image1 from '../images/abstract.jpg'
 import '../index.css'
 import { StylesProvider } from '@material-ui/styles';
 import { appStyle, appTheme } from '../styles/global';
-import SnackBarComponent from './SnackbarComponent';
+import SnackBarComponent from './SnackBarComponent';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 {/* <StylesProvider injectFirst>

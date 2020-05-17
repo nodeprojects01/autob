@@ -10,12 +10,15 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { appStyle, appTheme } from '../../styles/global';
 import { Button } from '@material-ui/core';
-import SnackBarComponent from '../SnackbarComponent';
+import SnackBarComponent from '../SnackBarComponent';
 import Chip from '@material-ui/core/Chip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import DeleteIcon from '@material-ui/icons/Delete';
-
-
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import Divider from '@material-ui/core/Divider';
+import CancelIcon from '@material-ui/icons/Cancel';
+import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
+import Fade from '@material-ui/core/Fade';
 const useStyles = makeStyles((theme) => ({
   '@global': {
     '*::-webkit-scrollbar': {
@@ -39,15 +42,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-// const ChipTextField = withStyles({
-//   root: {
-//     '& .MuiOutlinedInput-root': {
-//       '& fieldset': {
-//         borderRadius: `50px `,
-//       },
-//     },
-//   },
-// })(TextField);
+
 const CssTextField = withStyles({
   root: {
     '& label.Mui-focused': {
@@ -107,10 +102,14 @@ const strToArray = (str) => {
 
 export default function Intents() {
   const classes = useStyles();
-  const originalDataset = intentValues;
-  const [clusterData, setClusterData] = React.useState(intentValues);
+  const originalDataset = myCustomeInput;
+  const [clusterData, setClusterData] = React.useState(myCustomeInput);
   const [selectedClusterName, setSelectedClusterName] = React.useState(Object.keys(clusterData)[0]);
-  const [mergeKeyName, setmergeKeyName] = React.useState('');
+  const [clusterNames, setClusterNames] = React.useState(Object.keys(clusterData));
+  const [addIntent, setAddIntent] = React.useState('');
+  const [mergedClusters, setMergedClusters] = React.useState({});
+  const [fixedOptions, setFixedOptions] = React.useState([selectedClusterName]);
+  const [checked, setChecked] = React.useState();
 
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
@@ -119,45 +118,59 @@ export default function Intents() {
   };
 
   const handleInputChange = (e) => {
+    console.log(e)
     const { name, value } = e.target
     console.log(name, "+", value);
-    if (name === "MergeIntent") {
-      setmergeKeyName(value)
+    if (name == "addNewIntent") {
+      setAddIntent(value)
+      if (Object.keys(clusterData).includes(value)) {
+        setChecked(true)
+      }
+      else {
+        setChecked(false)
+      }
     }
     else {
+      // **************** what is this else condition? ****** need to handle as else if ************
       const updatedValue = strToArray(value);
       setClusterData({ ...clusterData, [name]: updatedValue })
     }
 
   }
 
-  const mergeIntent = (e) => {
-    const { name, value } = e.target
-    if (e.keyCode == 13) {
-      if ((value in clusterData)) {
-        const updatedValue = (clusterData[selectedClusterName] + "," + clusterData[value]).split(',');
-        setClusterData({ ...clusterData, [selectedClusterName]: updatedValue, [value]: '' })
-        setSnackBar({ type: "success", show: true, message: "Merge successfull" });
-      }
-      else {
-        setSnackBar({ type: "error", show: true, message: "Please enter correct Intent" });
-      }
+  const handleOnChangeMergeClusters = (event, newValue) => {
+    console.log("handleOnChangeMergeClusters - ", newValue);
+    setFixedOptions([
+      ...fixedOptions,
+      ...newValue.filter(option => fixedOptions.indexOf(option) === -1)
+    ]);
 
-      // const deleteIntentKey =[value];
-      // setClusterData(Object.fromEntries(
-      //   Object.entries(clusterData).filter(
-      //      ([key, val])=>!deleteIntentKey.includes(key)
-      //   )
-      // ));
-    }
+    //update value in the intent after merge
+    var updatedValue = (clusterData[selectedClusterName] + "," + clusterData[newValue[newValue.length -1]]).split(',')
+    setClusterData({...clusterData,[selectedClusterName] : updatedValue})
 
+    newValue.splice(selectedClusterName, 1);
+    mergedClusters[selectedClusterName] = newValue;
+    console.log("mergedClusters - ", mergedClusters);
+    setMergedClusters(mergedClusters);
+    getFilteredClusterNames();
   }
 
+  const getFilteredClusterNames = () => {
+    console.log("getFilteredClusterNames...")
+    const mergedClusts = [].concat.apply([], (Object.values(mergedClusters)));
+    const filClusterNames = (Object.keys(clusterData)).filter(function (el) {
+      return (mergedClusts).indexOf(el) < 0;
+    });
+    console.log(filClusterNames)
+    setClusterNames(filClusterNames);
+  }
+  
   const deleteIntent = (e) => {
 
     if (window.confirm('Are you sure you want to delete?')) {
       const deleteIntentKey = [selectedClusterName];
-
+      console.log(deleteIntentKey)
       var position = Object.keys(clusterData).indexOf(selectedClusterName);
       (parseInt(position) > 0) ? (position = parseInt(position) - 1) : (position = parseInt(position) + 1)
       const updatedKeyName = Object.keys(clusterData)[position]
@@ -170,52 +183,31 @@ export default function Intents() {
         )
       ));
     }
-
   }
 
-  const slotValues = [
-    {
-      "value": "action",
-      "synonyms": ["add", "remove", "register", "signup"]
-    },
-    {
-      "value": "bank",
-      "synonyms": ["hdfc", "axis", "citi", "indus"]
-    },
-    {
-      "value": "action",
-      "synonyms": ["add", "remove", "register", "signup"]
-    },
-    {
-      "value": "bank",
-      "synonyms": ["hdfc", "axis", "citi", "indus"]
-    }
-  ]
   return (
 
     <Grid container style={{
-      // backgroundColor: "#4F5457" 
       backgroundImage: `url(${image1})`,
-      height: "100%",
+      // height: "100%",
       backgroundPosition: "center",
       backgroundRepeat: "no-repeat",
       backgroundSize: "cover",
       backgroundAttachment: "fixed",
-      minHeight: "100vh",
+      // minHeight: "100vh",
       padding: "3em 0 0 0",
     }}>
       <Box display="flex" justifyContent="flex-end" style={{ width: "100%" }}>
         <Box style={{
           background: "rgba(255, 255, 255, 0.9)",
           borderRadius: "32px 0 0 0",
-          minHeight: "100%",
+          // minHeight: "100%",
           width: "96%",
           textAlign: "left"
-          // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
         }}>
 
           <Grid item xs={12}>
-            <div style={{ padding: "1.7em 2em", height: "80vh" }}>
+            <div style={{ padding: "1.7em 2em"}}>
               <div>
                 <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Identify Intents</Typography>
               </div>
@@ -223,28 +215,13 @@ export default function Intents() {
               <div style={{ margin: "2em 2em" }}>
                 <Grid container spacing={2}>
                   <Grid item xs={3} >
-                    <div style={{ background: "#FFF", padding: "1em" }}>
-                      <List style={{ maxHeight: '500px', overflowY: 'scroll' }}>
-                        {Object.keys(clusterData).map((clusterName) => (
-                          <StyledListItem button key={clusterName} divider={1}
-                            style={selectedClusterName == clusterName ? { background: "rgb(235, 112, 119, 0.5)", color: "#fff" } : {}}
-                            onClick={() => { setSelectedClusterName(clusterName) }}>
-                            <ListItemText primary={clusterName} />
-                          </StyledListItem>
-                        ))}
-
-                      </List>
-                    </div>
-                  </Grid>
-                  <Grid item xs={9}>
-                    <div style={{ background: "#FFF", padding: "1em" }}>
-                      <Grid xs={12} container spacing={1} >
-                        <Grid item md={6} lg={6}>
+                    <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
+                      <Box display="flex">
+                          <Box flexGrow={1}>
                           <CssTextField id="outlined-full-width"
                             placeholder=""
                             fullWidth
                             margin="dense"
-                            name="botName"
                             InputProps={{
                               style: appTheme.textDefault
                             }}
@@ -252,96 +229,163 @@ export default function Intents() {
                               shrink: true,
                             }}
                             variant="outlined"
-                          />
-                        </Grid>
-                        <Grid item md={6} lg={6}>
-                          <Box display="flex" justifyContent="flex-end" alignItems="center"
-                            p={1} m={1} style={{ marginRight: "0", paddingRight: "0" }}>
-                            <DeleteIcon onClick={deleteIntent}
-                              style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
-                              fontSize="medium"></DeleteIcon>
-                          </Box>
-                        </Grid>
-                      </Grid>
-                      <Grid xs={12}>
-                        <div style={{ width: "100%" }}>
-                          <Autocomplete
-                            multiple
-                            id="tags-filled"
-                            options={Object.keys(clusterData)}
-                            defaultValue={[selectedClusterName]}
-                            freeSolo
-                            renderTags={(value, getTagProps) =>
-                              value.map((option, index) => (
-                                <Chip key={option} variant="outlined" label={option} {...getTagProps({ index })} />
-                              ))
-                            }
-                            renderInput={(params) => (
-                              <TextField {...params} margin="normal" variant="outlined"
-                                label="synonyms" placeholder="Enter one or cluster names to merge with this cluster" />
-                            )}
-                          />
-                        </div>
-                      </Grid>
-                      <Grid xd={12} >
-                        <div>
-                          <CssTextField id="outlined-multiline-static"
-                            fullWidth
-                            multiline
-                            rows={20}
-                            value={arrayToString(clusterData[selectedClusterName])}
-                            margin="dense"
-                            InputProps={{
-                              style: {
-                                color: appStyle.colorOffBlack,
-                                fontSize: appStyle.fontSizeDefault,
-                                lineHeight: "2.3"
-                              }
-                            }}
+                            placeholder="Add New Cluster"
+                            name="addNewIntent"
+                            value={addIntent}
                             InputLabelProps={{
                               shrink: true,
                             }}
-                            variant="outlined"
-                            name={selectedClusterName}
                             onChange={handleInputChange}
-
+                            onKeyPress={event => {
+                              if (event.key === 'Enter') {
+                                if (!(Object.keys(clusterData).includes(addIntent))) {
+                                  setClusterData({ ...clusterData, [addIntent]: [] })
+                                  setClusterNames(([addIntent].concat(clusterNames)))
+                                  setAddIntent('')
+                                  setChecked(null)
+                                  setSnackBar({ type: "success", show: true, message: "New cluster has been created" });
+                                }
+                              }
+                            }}
                           />
-                        </div>
-                      </Grid>
+
+                          </Box>
+                          
+                          <Box alignSelf="center">
+                          
+                          {checked==true &&
+                            <Fade in={checked}>
+                              <CancelIcon style={{ color: "red"}}/>
+                            </Fade>}
+                          {checked==false &&
+                             <Fade in={!checked}>
+                              <CheckCircleRoundedIcon style={{ color: "green"}}/>
+                            </Fade>}
+                          </Box>
+
+                      </Box>
+                      
+                        
+                      <Divider style={{ marginTop: "10px" }} />
+
+                      <List style={{ maxHeight: '500px', overflowY: 'scroll' }}>
+                        {clusterNames.map((clusterName) => (
+                          <StyledListItem button key={clusterName} divider={1}
+                            style={selectedClusterName == clusterName ? { background: "rgb(235, 112, 119, 0.5)", color: "#fff" } : {}}
+                            onClick={()=>{
+                              setSelectedClusterName(clusterName);
+                              var mgdCluts = mergedClusters[clusterName];
+                              const nexFixOptions = mgdCluts != undefined && mgdCluts.length >= 1 ? [clusterName].concat(mgdCluts) : [clusterName];
+                              setFixedOptions(nexFixOptions);}}>
+                            <ListItemText primary={clusterName} />
+                          </StyledListItem>
+                        ))}
+
+                      </List>
                     </div>
-                  </Grid>
                 </Grid>
-                <Grid xs={12} container justify="right" >
-                  <StyledButton onClick={() => { setClusterData(originalDataset) }}>Reset</StyledButton>
-                  <StyledButton onClick={() => { console.log("New Page") }}>Next</StyledButton>
-                  {snackBar.show ?
-                    <SnackBarComponent open={snackBar.show}
-                      type={snackBar.type}
-                      message={snackBar.message}
-                      callBack={handleCloseSnackBar} />
-                    : null}
+                <Grid item xs={9}>
+                  <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
+                    <Grid xs={12} container spacing={1} >
+                      <Grid item md={9} lg={9}>
+                        <CssTextField id="outlined-full-width"
+                          placeholder=""
+                          fullWidth
+                          margin="dense"
+                          name="botName"
+                          value={selectedClusterName}
+                          InputProps={{
+                            style: appTheme.textDefault
+                          }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          variant="outlined"
+                        />
+                      </Grid>
+                      <Grid item md={3} lg={3}>
+                        <Box display="flex" justifyContent="flex-end" alignItems="center"
+                          p={1} m={1} style={{ marginRight: "0", paddingRight: "0" }}>
+                          <DeleteIcon onClick={deleteIntent}
+                            style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
+                            fontSize="medium"></DeleteIcon>
+                        </Box>
+                      </Grid>
+                    </Grid>
+                    <Grid xs={12}>
+                      <div style={{ width: "100%" }}>
+                        <Autocomplete
+                          multiple
+                          id="tags-filled"
+                          value={fixedOptions}
+                          onChange={handleOnChangeMergeClusters}
+                          options={Object.keys(clusterData)}
+                          filterSelectedOptions
+                          getOptionLabel={option => option}
+                          renderTags={(tagValue, getTagProps) =>
+                            tagValue.map((option, index) => (
+                              <Chip
+                                label={option}
+                                {...getTagProps({ index })}
+                                disabled={fixedOptions.indexOf(option) !== -1}
+                              />
+                            ))
+                          }
+                          renderInput={(params) => (
+                            <TextField {...params} margin="normal" variant="outlined"
+                              label="Merge Clusters" placeholder="Choose one or more cluster names to merge with this cluster" />
+                          )}
+                        />
+                      </div>
+                    </Grid>
+                    <Grid xd={12} >
+                      <div>
+                        <CssTextField id="outlined-multiline-static"
+                          fullWidth
+                          multiline
+                          rows={20}
+                          value={arrayToString(clusterData[selectedClusterName])}
+                          margin="dense"
+                          InputProps={{
+                            style: {
+                              color: appStyle.colorOffBlack,
+                              fontSize: appStyle.fontSizeDefault,
+                              lineHeight: "2.3"
+                            }
+                          }}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                          variant="outlined"
+                          name={selectedClusterName}
+                          onChange={handleInputChange}
+
+                        />
+                      </div>
+                    </Grid>
+                  </div>
                 </Grid>
-              </div>
+                </Grid>
+              <Grid xs={12} container justify="right" >
+                <StyledButton onClick={() => { setClusterData(originalDataset) }}>Reset</StyledButton>
+                <StyledButton onClick={() => { console.log("New Page") }}>Next</StyledButton>
+                {snackBar.show ?
+                  <SnackBarComponent open={snackBar.show}
+                    type={snackBar.type}
+                    message={snackBar.message}
+                    callBack={handleCloseSnackBar} />
+                  : null}
+              </Grid>
+            </div>
             </div>
           </Grid>
-        </Box>
       </Box>
-    </Grid>
+      </Box>
+    </Grid >
   );
 }
 
 
-
-const top100Films = [
-  { title: 'The Shawshank Redemption', year: 1994 },
-  { title: 'The Godfather', year: 1972 },
-  { title: 'The Godfather: Part II', year: 1974 },
-  { title: 'The Dark Knight', year: 2008 }]
-
-
-function validateInput() {
-
-}
 
 const intentValues = {
   "greeting": [
