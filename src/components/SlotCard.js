@@ -7,15 +7,24 @@ import { appStyle, appTheme } from '../styles/global'
 
 
 export default function SlotCard(props) {
-
   return (
-    <Card >
-      <CardContent style={{ padding: "1em" }}>
-        <div>
-          <CTextField name="botName" value={props.slotValues.value} />
-        </div>
-        <CAutocomplete options={[]} label="Synonyms" placeholder="synonyms" defaultValue={props.slotValues.synonyms} />
-      </CardContent>
+    <Card>
+          {((props.disabled !=null) && (props.disabled.includes(props.slotValues.value)))?
+            (<CardContent style={{ padding: "1em", pointerEvents: "none",
+            opacity: 0.4 }} >
+            <div>
+              <CTextField name={props.name} onChange={props.onChange} value={props.slotValues.value} />
+            </div>
+            <CAutocomplete options={[]} label="Synonyms" onChange={props.onChange} placeholder="synonyms" defaultValue={props.slotValues.synonyms} />
+            </CardContent>)
+          :
+          (<CardContent style={{ padding: "1em"}} >
+          <div>
+            <CTextField name={props.name} onChange={props.onChange} value={props.slotValues.value} />
+          </div>
+          <CAutocomplete options={[]} label="Synonyms" onChange={props.onChange} placeholder="synonyms" defaultValue={props.slotValues.synonyms} />
+          </CardContent>)
+          }
     </Card>
   );
 }
