@@ -9,35 +9,8 @@ import MenuItem from '@material-ui/core/MenuItem';
 import SnackBarComponent from './SnackBarComponent';
 import { appStyle, appTheme } from '../styles/global';
 import CTextField from './CTextField';
+import CButton from './CButton';
 
-const StyledButton = withStyles({
-    root: appTheme.buttonDefault,
-    label: {
-        textTransform: 'capitalize',
-    },
-})(Button);
-
-const CssTextField = withStyles({
-    root: {
-        '& label.Mui-focused': {
-            color: appStyle.colorBlueGreyDark,
-        },
-        '& .MuiInput-underline:after': {
-            borderBottomColor: appStyle.colorBlueGreyDark,
-        },
-        '& .MuiOutlinedInput-root': {
-            // '& fieldset': {
-            //   borderColor: appStyle.colorBlueGreyDark,
-            // },
-            '&:hover fieldset': {
-                borderColor: appStyle.colorBlueGreyDark,
-            },
-            '&.Mui-focused fieldset': {
-                borderColor: appStyle.colorBlueGreyDark,
-            },
-        },
-    },
-})(TextField);
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -110,25 +83,16 @@ export default function AdvSettings(props) {
                         <Typography style={appTheme.textSmall}>Auto Generate Synonym Mode</Typography>
                     </div>
                     <div>
-                        <CssTextField id="outlined-full-width"
+                        <CTextField
                             select
-                            fullWidth
-                            margin="dense"
-                            variant="outlined"
                             name="autoGenerateSynonymMode"
                             value={props.values.autoGenerateSynonymMode}
                             onChange={props.setValues}
-                            InputProps={{
-                                style: appTheme.textDefault
-                            }}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
                         >
                             <MenuItem value={"strict"}>Strict</MenuItem>
                             <MenuItem value={"moderate"}>Moderate</MenuItem>
                             <MenuItem value={"loose"}>Loose</MenuItem>
-                        </CssTextField>
+                        </CTextField>
                     </div>
                 </Grid>
                 {props.values.customVisible &&
@@ -139,7 +103,7 @@ export default function AdvSettings(props) {
                                     <Typography style={appTheme.textSmall}>Custom Synonyms</Typography>
                                 </Box>
                                 <Box>
-                                    <CssTextField className={classes.hiddenInput} id="contained-button-JSONfile" name="uploadJSONFileHidden" type="file" onChange={props.setValues} />
+                                    <TextField className={classes.hiddenInput} id="contained-button-JSONfile" name="uploadJSONFileHidden" type="file" onChange={props.setValues} />
                                     <label htmlFor="contained-button-JSONfile">
                                         <Button style={{ backgroundColor: 'Transparent', padding: "0px" }} component="span">
                                             <Typography style={appTheme.textSmall}>Browse Json</Typography>
@@ -150,7 +114,6 @@ export default function AdvSettings(props) {
                             <div>
                                 <CTextField
                                     placeholder="Paste the json or upload json file"
-                                    fullWidth
                                     multiline
                                     rows={4}
                                     name="customSynonymsJSON"
@@ -167,20 +130,11 @@ export default function AdvSettings(props) {
                         <Typography style={appTheme.textSmall}>Remove Unimportant Words</Typography>
                     </div>
                     <div>
-                        <CssTextField id="outlined-full-width"
-                            placeholder="Require comma separated values"
+                        <CTextField
+                            placeholder="Enter comma separated values"
                             name="removeUnimportantWords"
                             value={props.values.removeUnimportantWords}
                             onChange={props.setValues}
-                            fullWidth
-                            margin="dense"
-                            InputProps={{
-                                style: appTheme.textDefault
-                            }}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            variant="outlined"
                         />
                     </div>
                 </Grid>
@@ -190,24 +144,15 @@ export default function AdvSettings(props) {
                         <Typography style={appTheme.textSmall}>Output Utterance Type</Typography>
                     </div>
                     <div>
-                        <CssTextField id="outlined-full-width"
+                        <CTextField
                             select
-                            fullWidth
-                            margin="dense"
-                            variant="outlined"
                             name="outputUtterance"
                             value={props.values.outputUtterance}
                             onChange={props.setValues}
-                            InputProps={{
-                                style: appTheme.textDefault
-                            }}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
                         >
                             <MenuItem value={"alphanumeric"}>Alphanumeric</MenuItem>
                             <MenuItem value={"extract_only text"}>Extract Only text</MenuItem>
-                        </CssTextField>
+                        </CTextField>
                     </div>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -215,17 +160,7 @@ export default function AdvSettings(props) {
                         <Typography style={appTheme.textSmall}>Max/Min Length of each cluster</Typography>
                     </div>
                     <div>
-                        <CssTextField id="outlined-full-width"
-                            placeholder=""
-                            fullWidth
-                            margin="dense"
-                            InputProps={{
-                                style: appTheme.textDefault
-                            }}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            variant="outlined"
+                        <CTextField
                             name="maxMinLengthCluster"
                             value={props.values.maxMinLengthCluster}
                             onChange={props.setValues}
@@ -235,7 +170,7 @@ export default function AdvSettings(props) {
                 <br></br>
                 <br></br>
                 <div>
-                    <StyledButton onClick={handleSubmit} >Save</StyledButton>
+                    <CButton onClick={handleSubmit} name="Save" />
                     {snackBar.show ?
                         <SnackBarComponent open={snackBar.show}
                             type={snackBar.type}

@@ -1,5 +1,8 @@
 
 const appStyle = {
+    fontFamilyDefault: "Muli, sans-serif",
+    fontFamilyCalibri: "Muli, Calibri",
+
     colorOffBlack: "rgb(79, 84, 87)",  //#4f5457
     colorGreyLight: "#6D6E6F",
     colorBlueGreyDark: "#5F7B86",
@@ -22,21 +25,29 @@ const appTheme = {
         height: 44,
         padding: '0 40px',
         boxShadow: '0 3px 5px 2px rgba(79, 84, 87, 0.3)',
+        fontFamily: appStyle.fontFamily,
+        fontWeight: "500"
     },
-    textSmall:{
-        color: appStyle.colorGreyLight, 
+    textSmall: {
+        color: appStyle.colorGreyLight,
         fontSize: appStyle.fontSizeSmall,
-        textTransform: 'capitalize'
+        textTransform: 'capitalize',
+        fontFamily: appStyle.fontFamily,
+        fontWeight: "400"
     },
-    textDefault:{
-        color: appStyle.colorOffBlack, 
-        fontSize: appStyle.fontSizeDefault
+    textDefault: {
+        color: appStyle.colorOffBlack,
+        fontSize: appStyle.fontSizeDefault,
+        fontFamily: appStyle.fontFamily,
+        fontWeight: "400"
     },
-    textHeader:{
-        color: appStyle.colorOffBlack, 
+    textHeader: {
+        color: appStyle.colorOffBlack,
         fontSize: appStyle.fontSizeHeader,
-        fontWeight: "bold"
-    }
+        fontWeight: "800",
+        fontFamily: appStyle.fontFamilyCalibri
+    },
+    textAutob: { color: "#FFF", fontWeight: "bold", letterSpacing: "5px" }
 }
 
 module.exports = { appStyle, appTheme }

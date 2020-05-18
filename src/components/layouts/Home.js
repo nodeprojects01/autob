@@ -8,6 +8,7 @@ import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
 import AdvSettings from '../AdvSettings';
 import BeginForm from '../BeginForm';
+import { appStyle, appTheme } from '../../styles/global';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -97,7 +98,7 @@ export default function Layout() {
                             position: "fixed",
                             top: "-12%", margin: "25% 9%", border: "2px solid #fff", padding: "1em 7em"
                         }}>
-                            <Typography variant="h5" style={{ color: "#FFF", fontWeight: "bold", letterSpacing: "5px" }}>AUTOB</Typography>
+                            <Typography variant="h5" style={appTheme.textAutob}>AUTOB</Typography>
                         </div>
                     </div>
                 </Box>

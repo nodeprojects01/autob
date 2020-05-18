@@ -26,10 +26,6 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-function Alert(props) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 export default function SnackBarComponent(props) {
     const classes = useStyles();
     console.log(props);
@@ -49,7 +45,6 @@ export default function SnackBarComponent(props) {
                 open={open}
                 autoHideDuration={props.hasOwnProperty('autoHideDuration') ? props.autoHideDuration : defaultAutoHideDuration}
                 onClose={handleClose}
-
             >
 
                 <SnackbarContent
