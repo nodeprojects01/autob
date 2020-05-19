@@ -67,7 +67,8 @@ export default function CAutocomplete(props) {
                     multiple
                     id="tags-filled"
                     options={props.options}
-                    defaultValue={props.defaultValue}
+                    onChange={props.onChange}
+                    value={props.value}
                     freeSolo
                     renderTags={(value, getTagProps) =>
                         value.map((option, index) => (

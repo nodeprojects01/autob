@@ -12,6 +12,9 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { grey } from '@material-ui/core/colors';
+import { appStyle, appTheme } from '../../styles/global';
+import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
+
 
 
 const slotValues = [
@@ -52,7 +55,7 @@ export default function Slots() {
 
   console.log(values)
 
-  const handleClose = () => {
+  const settingHandleClose = () => {
     setAnchorEl(null);
   };
   const handleDisable = (e, value) => {
@@ -63,22 +66,39 @@ export default function Slots() {
       setDisableValue(disableValue.concat(value))
     }
   }
-  const handleInputchange = (e, index) => {
+  const handleInputchange = (e,synonymValues, index) => {
     console.log("handleInput")
     const { name, value } = e.target
     console.log(name, "+", value);
-    setValues(values.map((data, j) => {
-      if (j === index) {
-        data.value = value
-        return data
-      }
-      else {
-        return data
-      }
-    }));
+    if(name == "slotNames"){
+      setValues(values.map((data, j) => {
+        if (j === index) {
+          data.value = value
+          return data
+        }
+        else {
+          return data
+        }
+      }));
+    }
+    else{
+      // for autoComplete
+      setValues(values.map((data, j) => {
+        if (j === index) {
+          data.synonyms = synonymValues
+          return data
+        }
+        else {
+          return data
+        }
+      }));
+
+    }
   }
-
-
+  const addBlankSlots=()=>{
+    
+  }
+  
 
   return (
     <Grid container style={{
@@ -108,7 +128,7 @@ export default function Slots() {
                   </Box>
                   <Box alignSelf="center" onClick={handleClick}>
                     <SettingsIcon
-                      style={{ cursor: "pointer", "color": grey }}
+                      style={{ cursor: "pointer", "color": appStyle.colorOffBlack }}
                       fontSize="small"
                       aria-controls="simple-menu" aria-haspopup="true"
                     />
@@ -118,11 +138,11 @@ export default function Slots() {
                     anchorEl={anchorEl}
                     keepMounted
                     open={Boolean(anchorEl)}
-                    onClose={handleClose}
+                    onClose={settingHandleClose}
                   >
-                    <MenuItem onClick={handleClose}>Profile</MenuItem>
-                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    <MenuItem value={"strict"} onClick={settingHandleClose}>Strict</MenuItem>
+                    <MenuItem value={"moderate"} onClick={settingHandleClose}>Moderate</MenuItem>
+                    <MenuItem value={"loose"} onClick={settingHandleClose}>Loose</MenuItem>
                   </Menu>
                 </Box>
               </div>
@@ -131,21 +151,23 @@ export default function Slots() {
                 <Grid container justify="left" spacing={2}>
                   {values.map((value, index) => (
                     <Grid item key={value.value} item md={4} lg={4} >
-                      <SlotCard disabled={disableValue} name="slotNames"
+                      <SlotCard disabled={disableValue} 
+                        name="slotNames"
                         slotValues={value}
                         onClickDisable={(e) => { handleDisable(e, value.value) }}
-                        onChange={(e) => { handleInputchange(e, index) }}>
+                        onChange={(e,value) => { handleInputchange(e,value, index) }}                      
+                        >
                       </SlotCard>
                     </Grid>
 
                   ))}
-
+                <AddCircleRoundedIcon onClick={()=>{setValues([...values,{value:"",synonyms :[]}])}}/>
                 </Grid>
                 <br></br>
                 <Grid xs={12}>
                   <Box display="flex" p={1}>
                     <Box flexGrow={1} p={1}>
-                      <CButton onClick={() => { console.log("need to set originl dataset") }} name="Reset" />
+                      <CButton onClick={()=>{ setValues(slotValues);}} name="Reset" />
                     </Box>
                     <Box p={1}>
                       <CButton onClick={() => { console.log("New Page") }} name="Next" />

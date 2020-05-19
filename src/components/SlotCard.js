@@ -8,10 +8,14 @@ import Badge from '@material-ui/core/Badge';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
 
 
+
 export default function SlotCard(props) {
   return (
 
-    <Badge badgeContent={<CheckCircleRoundedIcon onClick={props.onClickDisable} style={{ color: "grey" }} />} >
+    <Badge badgeContent={<CheckCircleRoundedIcon onClick={props.onClickDisable} style={((props.disabled != null) && (props.disabled.includes(props.slotValues.value))) ?
+                 {color: appStyle.colorOffBlack}
+                 : 
+                 {color: appStyle.colorGreyLight}} />} >
       <Card>
         <CardContent style={((props.disabled != null) && (props.disabled.includes(props.slotValues.value))) ?
           {
@@ -22,8 +26,7 @@ export default function SlotCard(props) {
           <div>
             <CTextField name={props.name} onChange={props.onChange} value={props.slotValues.value} />
           </div>
-          <CAutocomplete options={[]} label="Synonyms" onChange={props.onChange} placeholder="synonyms"
-            defaultValue={props.slotValues.synonyms} />
+          <CAutocomplete options={[]} label="Synonyms" value={props.slotValues.synonyms} onChange={props.onChange} placeholder="synonyms" />
         </CardContent>
 
       </Card>

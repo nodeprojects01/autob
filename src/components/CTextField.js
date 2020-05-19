@@ -42,6 +42,7 @@ export default function CTextField(props) {
                 name={props.name}
                 value={props.value}
                 margin="dense"
+                autoFocus="true"
                 onChange={props.onChange}
                 onKeyPress={props.onKeyPress}
                 InputProps={
