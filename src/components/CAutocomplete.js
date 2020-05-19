@@ -4,7 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { appStyle, appTheme } from '../styles/global'
+import { appStyle, appTheme } from '../styles/global';
 
 
 const CssTextField = withStyles({
@@ -43,6 +43,7 @@ export default function CAutocomplete(props) {
                 <Autocomplete
                     multiple
                     id="tags-filled"
+                    fullWidth
                     value={props.value}
                     onChange={props.onChange}
                     options={props.options}
