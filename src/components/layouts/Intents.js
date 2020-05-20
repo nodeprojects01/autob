@@ -8,7 +8,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { appStyle, appTheme } from '../../styles/global';
-import SnackBarComponent from '../SnackBarComponent';
+import SnackBarComponent from '../SnackbarComponent';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -327,6 +327,7 @@ export default function Intents() {
                     <Grid xd={12} >
                       <div>
                         <CTextField
+                          name="utteranceList"
                           multiline
                           rows={10}
                           value={arrayToString(clusterData[selectedClusterName])}
