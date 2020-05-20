@@ -1,6 +1,7 @@
 
 export default function getSlots(props) {
 console.log(props);
+console.log(props.autoGenerateSynonymMode)
 
    
         // const slotValues; //call API with values
@@ -64,7 +65,14 @@ console.log(props);
            
           ]
           
-          
+          if(props.autoGenerateSynonymMode=='moderate')
+            {
+              return moderate
+            }
+          else if(props.autoGenerateSynonymMode=='loose'){
+            return loose
+          }
+          else
           return strict;
           
     

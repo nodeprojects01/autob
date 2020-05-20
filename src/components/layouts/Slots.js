@@ -54,8 +54,7 @@ export default function Slots(props) {
   const handleClick = (event,value) => {
     var mode
     (value==0)?(mode='loose'):((value==50)?(mode='moderate'):(mode='strict'))
-    setPreviousValues({...previousValues,autoGenerateSynonymMode : mode})
-    // const newSlotValues = ;
+    previousValues.autoGenerateSynonymMode = mode
     setValues(GetSlots(previousValues))
   };
 
