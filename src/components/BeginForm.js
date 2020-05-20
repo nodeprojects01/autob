@@ -5,15 +5,14 @@ import { makeStyles, withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import image1 from '../images/abstract.jpg'
 import '../index.css'
-import { StylesProvider } from '@material-ui/styles';
 import { appStyle, appTheme } from '../styles/global';
 import SnackBarComponent from './SnackbarComponent';
 import SettingsIcon from '@material-ui/icons/Settings';
 import CTextField from './CTextField';
 import CButton from './CButton';
-
+import GetSlots from '../API/getSlots';
+import { useHistory } from 'react-router-dom';
 {/* <StylesProvider injectFirst>
     content goes here
 </StylesProvider> */}
@@ -42,7 +41,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function BeginForm(props) {
     const classes = useStyles();
-
+    const history = useHistory();
+    const [navigate,setNavigate]=useState(false)
     //Error Handling Snackbar
     const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
     //Error Handling Snackbar
@@ -59,12 +59,19 @@ export default function BeginForm(props) {
         }
         else {
             //Or go to next page or any other operation
-            // props.onClick();
+            const slotValues = GetSlots(props.values);
+            history.push({
+                pathname: '/slots',
+                slotValues: slotValues,
+                values: props.values
+              });
         }
     }
 
     return (
+        
         <div style={{ padding: "2em", height: "80vh" }}>
+             
             <div>
                 <Typography variant="h5" style={appTheme.textHeader}>Let's Begin</Typography>
             </div>
@@ -109,13 +116,15 @@ export default function BeginForm(props) {
                                     fontSize="small"></SettingsIcon>
                             </Box>
                         </Box>
-                        {/* onClick={() => { props.onClick() }} */}
+                     
                         {snackBar.show ?
                             <SnackBarComponent open={snackBar.show}
                                 type={snackBar.type}
                                 message={snackBar.message}
                                 callBack={handleCloseSnackBar} />
                             : null}
+                       
+                        
                     </div>
                 </form>
             </div>

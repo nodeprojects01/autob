@@ -31,7 +31,7 @@ export default function SlotCard(props) {
             } :
             { padding: "1em" }} >
             <div>
-              <CTextField name={props.name} onChange={props.onChange} value={props.slotValues.value} />
+              <CTextField name={props.name} autoFocus={true} onChange={props.onChange} value={props.slotValues.value} />
             </div>
             <CAutocomplete options={[]} label="Synonyms" value={props.slotValues.synonyms} onChange={props.onChange} placeholder="synonyms" />
           </CardContent>

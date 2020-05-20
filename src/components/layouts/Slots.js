@@ -15,6 +15,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import { grey } from '@material-ui/core/colors';
 import { appStyle, appTheme } from '../../styles/global';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
+import GetSlots from '../../API/getSlots';
 
 
 
@@ -45,20 +46,21 @@ const slotValues = [
   }
 ]
 
-export default function Slots() {
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
+export default function Slots(props) {
+  const originalSlotValues = props.location.slotValues 
   const [disableValue, setDisableValue] = React.useState([]);
-  const [values, setValues] = useState(slotValues)
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const [values, setValues] = useState(originalSlotValues)
+  const [previousValues,setPreviousValues] = useState(props.location.values)
+  const handleClick = (event,value) => {
+    var mode
+    (value==0)?(mode='loose'):((value==50)?(mode='moderate'):(mode='strict'))
+    setPreviousValues({...previousValues,autoGenerateSynonymMode : mode})
+    // const newSlotValues = ;
+    setValues(GetSlots(previousValues))
   };
 
-  console.log(values)
 
-  const settingHandleClose = () => {
-    setAnchorEl(null);
-  };
+  
   const handleDisable = (e, value) => {
     if (disableValue.includes(value)) {
       setDisableValue(disableValue.filter((e) => (e !== value)))
@@ -96,9 +98,7 @@ export default function Slots() {
 
     }
   }
-  const addBlankSlots = () => {
-
-  }
+  
 
 
   return (
@@ -127,25 +127,9 @@ export default function Slots() {
                   <Box flexGrow={1}>
                     <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Identify Slots</Typography>
                   </Box>
-                  <Box alignSelf="center" onClick={handleClick}>
-                    <CSlider></CSlider>
-                    {/* <SettingsIcon
-                      style={{ cursor: "pointer", "color": appStyle.colorOffBlack }}
-                      fontSize="small"
-                      aria-controls="simple-menu" aria-haspopup="true"
-                    /> */}
+                  <Box alignSelf="center" >
+                    <CSlider value={previousValues.autoGenerateSynonymMode} onChange={handleClick}></CSlider>
                   </Box>
-                  {/* <Menu
-                    id="simple-menu"
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={settingHandleClose}
-                  >
-                    <MenuItem value={"strict"} onClick={settingHandleClose}>Strict</MenuItem>
-                    <MenuItem value={"moderate"} onClick={settingHandleClose}>Moderate</MenuItem>
-                    <MenuItem value={"loose"} onClick={settingHandleClose}>Loose</MenuItem>
-                  </Menu> */}
                 </Box>
               </div>
 
