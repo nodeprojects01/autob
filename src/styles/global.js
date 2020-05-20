@@ -1,7 +1,7 @@
 
 const appStyle = {
     fontFamilyDefault: "Muli, sans-serif",
-    fontFamilyCalibri: "Muli, Calibri",
+    fontFamilyRoboto: "Roboto, Calibri",
 
     colorOffBlack: "rgb(79, 84, 87)",  //#4f5457
     colorGreyLight: "#6D6E6F",
@@ -44,8 +44,8 @@ const appTheme = {
     textHeader: {
         color: appStyle.colorOffBlack,
         fontSize: appStyle.fontSizeHeader,
-        fontWeight: "800",
-        fontFamily: appStyle.fontFamilyCalibri
+        fontWeight: "700",
+        fontFamily: appStyle.fontFamilyRoboto
     },
     textAutob: { color: "#FFF", fontWeight: "bold", letterSpacing: "5px" }
 }

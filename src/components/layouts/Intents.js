@@ -328,7 +328,7 @@ export default function Intents() {
                       <div>
                         <CTextField
                           multiline
-                          rows={20}
+                          rows={10}
                           value={arrayToString(clusterData[selectedClusterName])}
                           name={selectedClusterName}
                           onChange={handleInputChange}
