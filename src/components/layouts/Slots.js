@@ -1,65 +1,59 @@
 import React, { useState } from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import image1 from '../../images/abstract.jpg';
 import SlotCard from '../SlotCard';
-import CTextField from '../CTextField';
-import CAutocomplete from '../CAutocomplete';
 import CSlider from '../CSlider';
 import CButton from '../CButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import SettingsIcon from '@material-ui/icons/Settings';
-import { grey } from '@material-ui/core/colors';
 import { appStyle, appTheme } from '../../styles/global';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import GetSlots from '../../API/getSlots';
 
 
 
-const slotValues = [
-  {
-    "value": "actionType",
-    "synonyms": ["add", "remove", "register", "signup"]
-  },
-  {
-    "value": "bankNames",
-    "synonyms": ["hdfc", "axis", "citi", "indus"]
-  },
-  {
-    "value": "cityNames",
-    "synonyms": ["bangalore", "hydrabad", "mumbai", "delhi", "bopal", "ahmadabad"]
-  },
-  {
-    "value": "riverNames2",
-    "synonyms": ["ganga", "yamuna", "tunga"]
-  },
-  {
-    "value": "cityNames1",
-    "synonyms": ["bangalore", "hydrabad", "mumbai", "delhi", "bopal", "ahmadabad"]
-  },
-  {
-    "value": "riverNames1",
-    "synonyms": ["ganga", "yamuna", "tunga"]
-  }
-]
+// const slotValues = [
+//   {
+//     "value": "actionType",
+//     "synonyms": ["add", "remove", "register", "signup"]
+//   },
+//   {
+//     "value": "bankNames",
+//     "synonyms": ["hdfc", "axis", "citi", "indus"]
+//   },
+//   {
+//     "value": "cityNames",
+//     "synonyms": ["bangalore", "hydrabad", "mumbai", "delhi", "bopal", "ahmadabad"]
+//   },
+//   {
+//     "value": "riverNames2",
+//     "synonyms": ["ganga", "yamuna", "tunga"]
+//   },
+//   {
+//     "value": "cityNames1",
+//     "synonyms": ["bangalore", "hydrabad", "mumbai", "delhi", "bopal", "ahmadabad"]
+//   },
+//   {
+//     "value": "riverNames1",
+//     "synonyms": ["ganga", "yamuna", "tunga"]
+//   }
+// ]
 
 export default function Slots(props) {
-  const originalSlotValues = props.location.slotValues 
+  console.log("slots props", props);
+  const originalSlotValues = props.location.slotValues
   const [disableValue, setDisableValue] = React.useState([]);
   const [values, setValues] = useState(originalSlotValues)
-  const [previousValues,setPreviousValues] = useState(props.location.values)
-  const handleClick = (event,value) => {
+  const [previousValues, setPreviousValues] = useState(props.location.values)
+  const handleClick = (event, value) => {
     var mode
-    (value==0)?(mode='loose'):((value==50)?(mode='moderate'):(mode='strict'))
-    previousValues.autoGenerateSynonymMode = mode
-    setValues(GetSlots(previousValues))
+    (value == 0) ? (mode = 'loose') : ((value == 50) ? (mode = 'moderate') : (mode = 'strict'))
+    if (previousValues.autoGenerateSynonymMode != mode) {
+      setPreviousValues({ ...previousValues, ["autoGenerateSynonymMode"]: mode });
+      setValues(GetSlots(previousValues));
+    }
   };
 
-
-  
   const handleDisable = (e, value) => {
     if (disableValue.includes(value)) {
       setDisableValue(disableValue.filter((e) => (e !== value)))
@@ -97,7 +91,7 @@ export default function Slots(props) {
 
     }
   }
-  
+
 
 
   return (
@@ -146,15 +140,15 @@ export default function Slots(props) {
                     </Grid>
 
                   ))}
-                  <AddCircleRoundedIcon 
-                  style={{margin: "2em 0.5em", color: "grey", fontSize:"2em", cursor: "pointer"}}
-                  onClick={() => { setValues([...values, { value: "", synonyms: [] }]) }} />
+                  <AddCircleRoundedIcon
+                    style={{ margin: "2em 0.5em", color: "grey", fontSize: "2em", cursor: "pointer" }}
+                    onClick={() => { setValues([...values, { value: "", synonyms: [] }]) }} />
                 </Grid>
                 <br></br>
                 <Grid xs={12}>
                   <Box display="flex" p={1}>
                     <Box flexGrow={1} p={1}>
-                      <CButton onClick={() => { setValues(slotValues); }} name="Reset" />
+                      <CButton onClick={() => { setValues({}); }} name="Reset" />
                     </Box>
                     <Box p={1}>
                       <CButton onClick={() => { console.log("New Page") }} name="Next" />
