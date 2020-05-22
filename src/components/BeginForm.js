@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -13,6 +13,7 @@ import CTextField from './CTextField';
 import CButton from './CButton';
 import GetSlots from '../API/getSlots';
 import { useHistory } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
 {/* <StylesProvider injectFirst>
     content goes here
 </StylesProvider> */}
@@ -35,14 +36,19 @@ const useStyles = makeStyles((theme) => ({
     inputFocused: {},
     hiddenInput: {
         display: 'none'
+    },
+    loading:{
+        
     }
 }));
+
 
 
 export default function BeginForm(props) {
     const classes = useStyles();
     const history = useHistory();
-    const [navigate,setNavigate]=useState(false)
+    const [slotValues,setSlotValues] = useState(null);
+    const [loading, setLoading] = useState(false);
     //Error Handling Snackbar
     const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
     //Error Handling Snackbar
@@ -59,17 +65,30 @@ export default function BeginForm(props) {
         }
         else {
             //Or go to next page or any other operation
-            const slotValues = GetSlots(props.values);
+            setLoading(true);       
+            GetSlots(props.values).then(result=>{
+                setSlotValues(result)
+                setLoading(false);
+            }).catch(errmessage =>{setSnackBar({ type: "error", show: true, message: errmessage });setLoading(false);});
+            
+        }
+    }
+    
+    React.useEffect(() => {
+        if(slotValues){
             history.push({
                 pathname: '/slots',
                 slotValues: slotValues,
                 values: props.values
               });
-        }
-    }
 
+        }      
+      }, [slotValues]);
     return (
-        
+       
+    <div>
+        {loading && <CircularProgress thickness={5} style={{position: 'fixed',top: '50%',left: '50%',margin: '-50px 0px 0px -50px'     }}       />}
+   
         <div style={{ padding: "2em", height: "80vh" }}>
              
             <div>
@@ -116,6 +135,7 @@ export default function BeginForm(props) {
                                     fontSize="small"></SettingsIcon>
                             </Box>
                         </Box>
+                        
                      
                         {snackBar.show ?
                             <SnackBarComponent open={snackBar.show}
@@ -129,7 +149,7 @@ export default function BeginForm(props) {
                 </form>
             </div>
 
-
+            </div>
         </div>
     );
 }

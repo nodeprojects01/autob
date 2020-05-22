@@ -9,7 +9,8 @@ import CButton from '../CButton';
 import { appStyle, appTheme } from '../../styles/global';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import GetSlots from '../../API/getSlots';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
+import SnackBarComponent from '../SnackbarComponent';
 
 
 // const slotValues = [
@@ -45,12 +46,23 @@ export default function Slots(props) {
   const [disableValue, setDisableValue] = React.useState([]);
   const [values, setValues] = useState(originalSlotValues)
   const [previousValues, setPreviousValues] = useState(props.location.values)
+  const [loading, setLoading] = useState(false);
+  const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
+    //Error Handling Snackbar
+    const handleCloseSnackBar = () => {
+        setSnackBar({ type: "error", show: false, message: "" })
+    };
   const handleClick = (event, value) => {
     var mode
     (value == 0) ? (mode = 'loose') : ((value == 50) ? (mode = 'moderate') : (mode = 'strict'))
     if (previousValues.autoGenerateSynonymMode != mode) {
-      setPreviousValues({ ...previousValues, ["autoGenerateSynonymMode"]: mode });
-      setValues(GetSlots(previousValues));
+        setLoading(true)
+      previousValues.autoGenerateSynonymMode= mode;
+      GetSlots(previousValues).then(result=>{
+        setValues(result)
+        setLoading(false)
+      })
+      .catch(errmessage =>{setSnackBar({ type: "error", show: true, message: errmessage });setLoading(false);});;
     }
   };
 
@@ -104,6 +116,7 @@ export default function Slots(props) {
       backgroundAttachment: "fixed",
       padding: "3em 0 0 0",
     }}>
+        
       <Box display="flex" justifyContent="flex-end" >
         <Box style={{
           background: "rgba(255, 255, 255, 0.9)",
@@ -112,7 +125,7 @@ export default function Slots(props) {
           textAlign: "left"
           // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
         }}>
-
+           {loading && <CircularProgress thickness={5}  style={{position: 'fixed',top: '50%',left: '50%',margin: '-50px 0px 0px -50px',zIndex: '100'    }}       />}
           <Grid item xs={12}>
             <div style={{ padding: "1.7em 2em" }}>
               <div>
@@ -154,6 +167,12 @@ export default function Slots(props) {
                       <CButton onClick={() => { console.log("New Page") }} name="Next" />
                     </Box>
                   </Box>
+                  {snackBar.show ?
+                            <SnackBarComponent open={snackBar.show}
+                                type={snackBar.type}
+                                message={snackBar.message}
+                                callBack={handleCloseSnackBar} />
+                            : null}
                 </Grid>
               </div>
             </div>
@@ -163,3 +182,13 @@ export default function Slots(props) {
     </Grid>
   );
 }
+
+
+//window.addEventListener("keyup", checkForRefresh, false);
+
+window.onkeyup =  function(event) {
+   if (event.keyCode == 116) {
+        alert("Data will be lost if you refresh the page. Are you sure?");
+
+   }
+};
