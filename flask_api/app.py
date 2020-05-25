@@ -7,12 +7,18 @@ from flask import jsonify
 app = Flask(__name__)
 CORS(app)
 
-@app.route('/time', methods=['GET','POST'])
-def get_slot_values():
-    if request.method == "POST":
-        content = request.get_json()
-        print(content)
-        return jsonify(content)
+@app.route('/slots', methods=['POST'])
+def get_slots():
+    input_content = request.get_json()
+    print(input_content)
+    return jsonify(input_content)
+
+@app.route('/intents', methods=['POST'])
+def get_intents():
+    input_content = request.get_json()
+    print(input_content)
+    return jsonify(input_content)
+
 
 if __name__ == '__main__':
     app.run(host= '0.0.0.0',debug=True)

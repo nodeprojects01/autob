@@ -15,6 +15,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 
+
 const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
@@ -58,26 +59,28 @@ export default function Slots(props) {
   const [previousValues, setPreviousValues] = useState(props.location.values)
   const [loading, setLoading] = useState(false);
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
-    //Error Handling Snackbar
-    const handleCloseSnackBar = () => {
-        setSnackBar({ type: "error", show: false, message: "" })
-    };
+  //Error Handling Snackbar
+  const handleCloseSnackBar = () => {
+    setSnackBar({ type: "error", show: false, message: "" })
+  };
   const handleClick = (event, value) => {
     var mode
     (value == 0) ? (mode = 'loose') : ((value == 50) ? (mode = 'moderate') : (mode = 'strict'))
     if (previousValues.autoGenerateSynonymMode != mode) {
-      setPreviousValues({...previousValues,autoGenerateSynonymMode: mode});  
+      setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });
     }
   };
 
   React.useEffect(() => {
     console.log("inside useEffect")
     setLoading(true)
-    GetSlots(previousValues).then(result=>{
-      setValues(result)  
-      setLoading(false)  
-    })
-    .catch(errmessage =>{setSnackBar({ type: "error", show: true, message: errmessage });setLoading(false) })
+    GetSlots(previousValues).then(result => {
+      setValues(result)
+      setLoading(false)
+    }).catch(errmessage => {
+      setSnackBar({ type: "error", show: true, message: errmessage });
+      setLoading(false)
+    });
   }, [previousValues]);
 
   const handleDisable = (e, value) => {
@@ -120,98 +123,97 @@ export default function Slots(props) {
 
   //Handle Submit 
   const handleSubmit = e => {
-        history.push({
-            pathname: '/intents',
-            slotValues: values,
-            inputValues : previousValues
-          });
-    }
+    history.push({
+      pathname: '/intents',
+      slotValues: values,
+      inputValues: previousValues
+    });
+  }
 
 
   return (
     <div>
-       {loading&& 
+      {loading &&
         <Backdrop className={classes.backdrop} open={true} >
-           <CircularProgress thickness={5}  style={{position: 'fixed',top: '50%',left: '50%',margin: '-50px 0px 0px -50px'}}       />
+          <CircularProgress thickness={5} style={{ position: 'fixed', top: '50%', left: '50%', margin: '-50px 0px 0px -50px' }} />
         </Backdrop>
-      
-        }
-   
-    <Grid container style={{
-      // backgroundColor: "#4F5457" 
-      backgroundImage: `url(${image1})`,
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "cover",
-      backgroundAttachment: "fixed",
-      padding: "3em 0 0 0",
-    }}>
-      
-      <Box display="flex" justifyContent="flex-end" >
-        <Box style={{
-          background: "rgba(255, 255, 255, 0.9)",
-          borderRadius: "32px 0 0 0",
-          width: "96%",
-          textAlign: "left"
-          // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
-        }}>
-          
-         <Grid item xs={12}>
-            <div style={{ padding: "1.7em 2em" }}>
-              <div>
-                <Box display="flex">
-                  <Box flexGrow={1}>
-                    <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Identify Slots</Typography>
-                  </Box>
-                  <Box alignSelf="center" >
-                    <CSlider value={previousValues.autoGenerateSynonymMode} onChange={handleClick}></CSlider>
-                  </Box>
-                </Box>
-              </div>
+      }
 
-              <div style={{ margin: "2em 2em" }}>
-                <Grid container justify="left" spacing={2}>
-                  {values.map((value, index) => (
-                    <Grid item key={value.value} item md={4} lg={4} >
-                      <SlotCard disabled={disableValue}
-                        name="slotNames"
-                        slotValues={value}
-                        onClickDisable={(e) => { handleDisable(e, value.value) }}
-                        onChange={(e, value) => { handleInputchange(e, value, index) }}
-                      >
-                      </SlotCard>
-                    </Grid>
+      <Grid container style={{
+        // backgroundColor: "#4F5457" 
+        backgroundImage: `url(${image1})`,
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed",
+        padding: "3em 0 0 0",
+      }}>
 
-                  ))}
-                  <AddCircleRoundedIcon
-                    style={{ margin: "2em 0.5em", color: "grey", fontSize: "2em", cursor: "pointer" }}
-                    onClick={() => { setValues([...values, { value: "", synonyms: [] }]) }} />
-                </Grid>
-                <br></br>
-                <Grid xs={12}>
-                  <Box display="flex" p={1}>
-                    <Box flexGrow={1} p={1}>
-                      <CButton onClick={() => { setPreviousValues(props.location.values); }} name="Reset" />
+        <Box display="flex" justifyContent="flex-end" >
+          <Box style={{
+            background: "rgba(255, 255, 255, 0.9)",
+            borderRadius: "32px 0 0 0",
+            width: "96%",
+            textAlign: "left"
+            // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
+          }}>
+
+            <Grid item xs={12}>
+              <div style={{ padding: "1.7em 2em" }}>
+                <div>
+                  <Box display="flex">
+                    <Box flexGrow={1}>
+                      <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Identify Slots</Typography>
                     </Box>
-                    <Box p={1}>
-                      <CButton onClick={handleSubmit} name="Next" />
+                    <Box alignSelf="center" >
+                      <CSlider value={previousValues.autoGenerateSynonymMode} onChange={handleClick}></CSlider>
                     </Box>
                   </Box>
-                  {snackBar.show ?
-                            <SnackBarComponent open={snackBar.show}
-                                type={snackBar.type}
-                                message={snackBar.message}
-                                callBack={handleCloseSnackBar} />
-                            : null}
-                </Grid>
+                </div>
+
+                <div style={{ margin: "2em 2em" }}>
+                  <Grid container justify="left" spacing={2}>
+                    {values.map((value, index) => (
+                      <Grid item key={value.value} item md={4} lg={4} >
+                        <SlotCard disabled={disableValue}
+                          name="slotNames"
+                          slotValues={value}
+                          onClickDisable={(e) => { handleDisable(e, value.value) }}
+                          onChange={(e, value) => { handleInputchange(e, value, index) }}
+                        >
+                        </SlotCard>
+                      </Grid>
+
+                    ))}
+                    <AddCircleRoundedIcon
+                      style={{ margin: "2em 0.5em", color: "grey", fontSize: "2em", cursor: "pointer" }}
+                      onClick={() => { setValues([...values, { value: "", synonyms: [] }]) }} />
+                  </Grid>
+                  <br></br>
+                  <Grid xs={12}>
+                    <Box display="flex" p={1}>
+                      <Box flexGrow={1} p={1}>
+                        <CButton onClick={() => { setPreviousValues(props.location.values); }} name="Reset" />
+                      </Box>
+                      <Box p={1}>
+                        <CButton onClick={handleSubmit} name="Next" />
+                      </Box>
+                    </Box>
+                    {snackBar.show ?
+                      <SnackBarComponent open={snackBar.show}
+                        type={snackBar.type}
+                        message={snackBar.message}
+                        callBack={handleCloseSnackBar} />
+                      : null}
+                  </Grid>
+                </div>
               </div>
-            </div>
-          </Grid>
+            </Grid>
+          </Box>
+
         </Box>
-                  
-      </Box>
-                  
-    </Grid>
+
+      </Grid>
     </div>
   );
 }
@@ -219,9 +221,9 @@ export default function Slots(props) {
 
 //window.addEventListener("keyup", checkForRefresh, false);
 
-window.onkeyup =  function(event) {
-   if (event.keyCode == 116) {
-        alert("Data will be lost if you refresh the page. Are you sure?");
+window.onkeyup = function (event) {
+  if (event.keyCode == 116) {
+    alert("Data will be lost if you refresh the page. Are you sure?");
 
-   }
+  }
 };
