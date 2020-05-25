@@ -11,7 +11,16 @@ import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import GetSlots from '../../API/getSlots';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import SnackBarComponent from '../SnackbarComponent';
+import Backdrop from '@material-ui/core/Backdrop';
+import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from 'react-router-dom';
 
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
+}));
 
 // const slotValues = [
 //   {
@@ -42,9 +51,10 @@ import SnackBarComponent from '../SnackbarComponent';
 
 export default function Slots(props) {
   console.log("slots props", props);
-  const originalSlotValues = props.location.slotValues
+  const classes = useStyles();
+  const history = useHistory();
   const [disableValue, setDisableValue] = React.useState([]);
-  const [values, setValues] = useState(originalSlotValues)
+  const [values, setValues] = useState([])
   const [previousValues, setPreviousValues] = useState(props.location.values)
   const [loading, setLoading] = useState(false);
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
@@ -56,15 +66,19 @@ export default function Slots(props) {
     var mode
     (value == 0) ? (mode = 'loose') : ((value == 50) ? (mode = 'moderate') : (mode = 'strict'))
     if (previousValues.autoGenerateSynonymMode != mode) {
-        setLoading(true)
-      previousValues.autoGenerateSynonymMode= mode;
-      GetSlots(previousValues).then(result=>{
-        setValues(result)
-        setLoading(false)
-      })
-      .catch(errmessage =>{setSnackBar({ type: "error", show: true, message: errmessage });setLoading(false);});;
+      setPreviousValues({...previousValues,autoGenerateSynonymMode: mode});  
     }
   };
+
+  React.useEffect(() => {
+    console.log("inside useEffect")
+    setLoading(true)
+    GetSlots(previousValues).then(result=>{
+      setValues(result)  
+      setLoading(false)  
+    })
+    .catch(errmessage =>{setSnackBar({ type: "error", show: true, message: errmessage });setLoading(false) })
+  }, [previousValues]);
 
   const handleDisable = (e, value) => {
     if (disableValue.includes(value)) {
@@ -104,9 +118,25 @@ export default function Slots(props) {
     }
   }
 
+  //Handle Submit 
+  const handleSubmit = e => {
+        history.push({
+            pathname: '/intents',
+            slotValues: values,
+            inputValues : previousValues
+          });
+    }
 
 
   return (
+    <div>
+       {loading&& 
+        <Backdrop className={classes.backdrop} open={true} >
+           <CircularProgress thickness={5}  style={{position: 'fixed',top: '50%',left: '50%',margin: '-50px 0px 0px -50px'}}       />
+        </Backdrop>
+      
+        }
+   
     <Grid container style={{
       // backgroundColor: "#4F5457" 
       backgroundImage: `url(${image1})`,
@@ -116,7 +146,7 @@ export default function Slots(props) {
       backgroundAttachment: "fixed",
       padding: "3em 0 0 0",
     }}>
-        
+      
       <Box display="flex" justifyContent="flex-end" >
         <Box style={{
           background: "rgba(255, 255, 255, 0.9)",
@@ -125,8 +155,8 @@ export default function Slots(props) {
           textAlign: "left"
           // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
         }}>
-           {loading && <CircularProgress thickness={5}  style={{position: 'fixed',top: '50%',left: '50%',margin: '-50px 0px 0px -50px',zIndex: '100'    }}       />}
-          <Grid item xs={12}>
+          
+         <Grid item xs={12}>
             <div style={{ padding: "1.7em 2em" }}>
               <div>
                 <Box display="flex">
@@ -161,10 +191,10 @@ export default function Slots(props) {
                 <Grid xs={12}>
                   <Box display="flex" p={1}>
                     <Box flexGrow={1} p={1}>
-                      <CButton onClick={() => { setValues({}); }} name="Reset" />
+                      <CButton onClick={() => { setPreviousValues(props.location.values); }} name="Reset" />
                     </Box>
                     <Box p={1}>
-                      <CButton onClick={() => { console.log("New Page") }} name="Next" />
+                      <CButton onClick={handleSubmit} name="Next" />
                     </Box>
                   </Box>
                   {snackBar.show ?
@@ -178,8 +208,11 @@ export default function Slots(props) {
             </div>
           </Grid>
         </Box>
+                  
       </Box>
+                  
     </Grid>
+    </div>
   );
 }
 

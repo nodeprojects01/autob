@@ -8,7 +8,6 @@ export default function getSlots(props) {
   console.log('call API with values');
   
 
-  
 
   var moderate = [
     {
@@ -84,7 +83,7 @@ export default function getSlots(props) {
           resolve(strict);
       }
       
-      ,2000);}
+      ,1000);}
       catch{
         reject("Error in loading")
       }

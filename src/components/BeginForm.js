@@ -11,9 +11,7 @@ import SnackBarComponent from './SnackbarComponent';
 import SettingsIcon from '@material-ui/icons/Settings';
 import CTextField from './CTextField';
 import CButton from './CButton';
-import GetSlots from '../API/getSlots';
 import { useHistory } from 'react-router-dom';
-import CircularProgress from '@material-ui/core/CircularProgress';
 {/* <StylesProvider injectFirst>
     content goes here
 </StylesProvider> */}
@@ -65,30 +63,17 @@ export default function BeginForm(props) {
         }
         else {
             //Or go to next page or any other operation
-            setLoading(true);       
-            GetSlots(props.values).then(result=>{
-                setSlotValues(result)
-                setLoading(false);
-            }).catch(errmessage =>{setSnackBar({ type: "error", show: true, message: errmessage });setLoading(false);});
-            
+            history.push({
+                pathname: '/slots',
+                values: props.values
+              });
         }
     }
     
-    React.useEffect(() => {
-        if(slotValues){
-            history.push({
-                pathname: '/slots',
-                slotValues: slotValues,
-                values: props.values
-              });
-
-        }      
-      }, [slotValues]);
     return (
        
     <div>
-        {loading && <CircularProgress thickness={5} style={{position: 'fixed',top: '50%',left: '50%',margin: '-50px 0px 0px -50px'     }}       />}
-   
+       
         <div style={{ padding: "2em", height: "80vh" }}>
              
             <div>
