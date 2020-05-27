@@ -12,6 +12,9 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import CTextField from './CTextField';
 import CButton from './CButton';
 import { useHistory } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Backdrop from '@material-ui/core/Backdrop';
+import {getIntents,getSlots} from '../API/dataAccess';
 {/* <StylesProvider injectFirst>
     content goes here
 </StylesProvider> */}
@@ -35,9 +38,10 @@ const useStyles = makeStyles((theme) => ({
     hiddenInput: {
         display: 'none'
     },
-    loading:{
-        
-    }
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+      },
 }));
 
 
@@ -63,14 +67,35 @@ export default function BeginForm(props) {
         }
         else {
             //Or go to next page or any other operation
-            history.push({
-                pathname: '/slots',
-                values: props.values
-              });
+            setLoading(true)
+            getSlots(props.values).then(result => {
+              setSlotValues(result)
+              setLoading(false)
+            }).catch(errmessage => {
+              setSnackBar({ type: "error", show: true, message: errmessage });
+              setLoading(false)
+            });
+           
         }
     }
+    React.useEffect(() => {
+        if(slotValues != null){
+            history.push({
+                pathname: '/slots',
+                values: props.values,
+                slotValues : slotValues
+              });
+        }      
+      }, [slotValues]);
     
     return (
+        <div>
+        {loading &&
+          <Backdrop className={classes.backdrop} open={true} >
+            <CircularProgress thickness={5} style={{ position: 'fixed', top: '50%', left: '50%', margin: '-50px 0px 0px -50px' }} />
+          </Backdrop>
+        }
+  
        
     <div>
        
@@ -135,6 +160,7 @@ export default function BeginForm(props) {
             </div>
 
             </div>
+        </div>
         </div>
     );
 }

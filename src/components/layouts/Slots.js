@@ -8,12 +8,12 @@ import CSlider from '../CSlider';
 import CButton from '../CButton';
 import { appStyle, appTheme } from '../../styles/global';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
-import GetSlots from '../../API/getSlots';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import SnackBarComponent from '../SnackbarComponent';
 import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
+import {getIntents,getSlots} from '../../API/dataAccess';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -55,33 +55,36 @@ export default function Slots(props) {
   const classes = useStyles();
   const history = useHistory();
   const [disableValue, setDisableValue] = React.useState([]);
-  const [values, setValues] = useState([])
+  const [values, setValues] = useState(props.location.slotValues)
   const [previousValues, setPreviousValues] = useState(props.location.values)
   const [loading, setLoading] = useState(false);
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
+  const [intentValues,setintentValues] = React.useState(null);
   //Error Handling Snackbar
   const handleCloseSnackBar = () => {
     setSnackBar({ type: "error", show: false, message: "" })
   };
-  const handleClick = (event, value) => {
+  const handleClick = async (event, value) => {
     var mode
     (value == 0) ? (mode = 'loose') : ((value == 50) ? (mode = 'moderate') : (mode = 'strict'))
     if (previousValues.autoGenerateSynonymMode != mode) {
-      setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });
+      await new Promise(resolve => {setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });resolve()});//setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });
+      console.log(previousValues)
+      setLoading(true)
+      getSlots(previousValues).then(result => {
+        setValues(result)
+        setLoading(false)
+      }).catch(errmessage => {
+        setSnackBar({ type: "error", show: true, message: errmessage });
+        setLoading(false)
+      });
     }
   };
 
-  React.useEffect(() => {
-    console.log("inside useEffect")
-    setLoading(true)
-    GetSlots(previousValues).then(result => {
-      setValues(result)
-      setLoading(false)
-    }).catch(errmessage => {
-      setSnackBar({ type: "error", show: true, message: errmessage });
-      setLoading(false)
-    });
-  }, [previousValues]);
+  // React.useEffect(() => {
+  //   console.log("inside useEffect")
+    
+  // }, [previousValues]);
 
   const handleDisable = (e, value) => {
     if (disableValue.includes(value)) {
@@ -123,13 +126,23 @@ export default function Slots(props) {
 
   //Handle Submit 
   const handleSubmit = e => {
-    history.push({
-      pathname: '/intents',
-      slotValues: values,
-      inputValues: previousValues
-    });
+    setLoading(true) 
+    getIntents(values,previousValues).then(result=>{
+      setintentValues(result)  
+      setLoading(false)  
+    })
+    .catch(errmessage =>{setSnackBar({ type: "error", show: true, message: errmessage });setLoading(false) })
   }
-
+  React.useEffect(() => {
+      console.log("inside useEffect")
+      if(intentValues){
+        history.push({
+          pathname: '/intents',
+          intentValues: intentValues
+        });
+      }
+      
+    }, [intentValues]);
 
   return (
     <div>

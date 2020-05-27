@@ -17,9 +17,9 @@ import Fade from '@material-ui/core/Fade';
 import CTextField from '../CTextField';
 import CAutocomplete from '../CAutocomplete';
 import CButton from '../CButton';
-import getIntents from '../../API/getIntents';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import {getIntents,getSlots} from '../../API/dataAccess';
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -82,11 +82,10 @@ const strToArray = (str) => {
 
 export default function Intents(props) {
   console.log("inside intent.js")
-  console.log(props)
 
   const classes = useStyles();
-  const originalDataset = myCustomeInput;
-  const [clusterData, setClusterData] = React.useState(myCustomeInput);
+  const originalDataset = props.location.intentValues;
+  const [clusterData, setClusterData] = React.useState(originalDataset);
   const [selectedClusterName, setSelectedClusterName] = React.useState(Object.keys(clusterData)[0]);
   const [clusterNames, setClusterNames] = React.useState(Object.keys(clusterData));
   const [addIntent, setAddIntent] = React.useState('');
@@ -104,16 +103,6 @@ export default function Intents(props) {
     setSnackBar({ type: "error", show: false, message: "" })
   };
   
-  React.useEffect(() => {
-    console.log("inside useEffect")
-    // setLoading(true)
-    getIntents(props.location.slotValues,props.location.inputValues).then(result=>{
-      setClusterData(result)  
-      setLoading(false)  
-    })
-    .catch(errmessage =>{setSnackBar({ type: "error", show: true, message: errmessage });setLoading(false) })
-  }, []);
-
   const handleInputChange = (e) => {
     console.log(e)
     const { name, value } = e.target
@@ -400,90 +389,10 @@ export default function Intents(props) {
 
 
 
-// const intentValues = {
-//   "greeting": [
-//     "What is the national animal of Canada?",
-//     "What is the national animal of Albania?",
-//     "Which dog used to be sacred in China",
-//     "Urticaria is a skin disease otherwise known as what?	Hives",
-//     "What kind of animal is the largest living creature on Earth",
-//     "Give another name for the study of fossils?	",
-//     "Which bird can swim but cannot fly?",
-//     "What do dragonflies prefer to eat",
-//     "What do you get when you crossbreed a donkey and a horse?",
-//     "Which insects cannot fly, but can jump higher than 30 cm,What kind of animal is the largest living creature on Earth",
-//     "What is the name of the European Bison",
-//     "What is called a fish with a snake-like body?",
-//     "In which city is the oldest zoo in the world?",
-//     "After which animals are the Canary Islands named?",
-//     "Which plant does the Canadian flag contain?",
-//     "What is the food of penguins?	",
-//     "Which is the largest species of the tiger?	",
-//     "The bite of which insect causes the Lyme Disease?	",
-//     "Which mammal cannot jump?",
-//     "In which city is the oldest zoo in the world?",
-//     "After which animals are the Canary Islands named?",
-//     "Which plant does the Canadian flag contain?",
-//     "What is the food of penguins?	",
-//     "Which is the largest species of the tiger?	",
-//     "The bite of which insect causes the Lyme Disease?	",
-//     "Which mammal cannot jump?"
 
-//   ],
-//   "fallback": [
-
-//   ],
-//   "C1_0.5_321": [
-//     "fghjbgunninioliimojomomimgugiunhinhslg",
-//     "fghjbgunninioliimojomomimgugiunhinhslg",
-//     "fghjbgunninioliimojomomimgugiunhinhslg",
-//     "fghjbgunninioliimojomomimgugiunhinhslg",
-//     "fghjbgunninioliimojomomimgugiunhinhslg",
-//     "fghjbgunninioliimojomomimgugiunhinhslg",
-//   ],
-//   "C2_0.5_3211": [
-//     "fghjbgunninioliimojomomimgugiunhinhslg",
-//     "fghjbgunninioliimojomomimgugiunhinhslg",
-//     "fghjbgunninioliimojomomimgugiunhinhslg",
-//     "fghjbgunninioliimojomomimgugiunhinhslg",
-//     "fghjbgunninioliimojomomimgugiunhinhslg",
-//     "fghjbgunninioliimojomomimgugiunhinhslg",
-//   ],
-//   "C3_0.7_321": [
-//     "What is the national animal of Canada?",
-//     "What is the national animal of Albania?",
-//     "Which dog used to be sacred in China",
-//     "Urticaria is a skin disease otherwise known as what?	Hives",
-//     "What kind of animal is the largest living creature on Earth",
-//     "Give another name for the study of fossils?	",
-//     "Which bird can swim but cannot fly?",
-//     "What do dragonflies prefer to eat",
-//     "What do you get when you crossbreed a donkey and a horse?",
-//     "Which insects cannot fly, but can jump higher than 30 cm,What kind of animal is the largest living creature on Earth",
-//     "What is the name of the European Bison",
-//     "What is called a fish with a snake-like body?",
-//     "In which city is the oldest zoo in the world?",
-//     "After which animals are the Canary Islands named?",
-//     "Which plant does the Canadian flag contain?",
-//     "What is the food of penguins?	",
-//     "Which is the largest species of the tiger?	",
-//     "The bite of which insect causes the Lyme Disease?	",
-//     "Which mammal cannot jump?"
-//   ],
-//   "C4_0.5_321": [],
-//   "C5_0.5_321": [],
-//   "C6_0.5_321": [],
-//   "C7_0.5_321": [],
-//   "C8_0.5_321": [],
-//   "C9_0.5_321": [],
-//   "C10_0.5_321": [],
-//   "C11_0.5_321": [],
-
+// const myCustomeInput = {
+//   "helloIntent": ["hey", "hi", "hello", "hiiiiiiiii", "heyyyyyyyyyyyy"],
+//   "byeIntent": ["b", "by", "bye", "byee", "byeee"],
+//   "goodIntent": ["good", "bettter", "best", "happy", "smile"],
+//   "hateIntent": ["worst", "bad", "sad", "kill","hello"]
 // }
-
-const myCustomeInput = {
-  "helloIntent": ["hey", "hi", "hello", "hiiiiiiiii", "heyyyyyyyyyyyy"],
-  "byeIntent": ["b", "by", "bye", "byee", "byeee"],
-  "goodIntent": ["good", "bettter", "best", "happy", "smile"],
-  "hateIntent": ["worst", "bad", "sad", "kill","hello"]
-}

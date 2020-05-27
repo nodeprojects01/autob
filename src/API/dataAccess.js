@@ -1,13 +1,13 @@
 import axios from 'axios';
 
-function getIntents(){
+function getIntents(slotValues,inputValues){
     const path = "/intents";
-    const data = "";
+    const data = {inputValues:inputValues,slotValues:slotValues};
 
     return new Promise((resolve, reject) => {
         axios.post(path, data)
             .then(function (response) {
-                resolve(response);
+                resolve(response.data);
             })
             .catch(function (error) {
                 reject(error);
@@ -15,14 +15,14 @@ function getIntents(){
     });
 }
 
-function getSlots(){
+  function getSlots(value) {
     const path = "/slots";
-    const data = "";
+    const data = value;
 
     return new Promise((resolve, reject) => {
         axios.post(path, data)
             .then(function (response) {
-                resolve(response);
+                resolve(response.data);
             })
             .catch(function (error) {
                 reject(error);
@@ -31,7 +31,7 @@ function getSlots(){
 }
 
 
-module.exports = {
+export {
     getIntents,
     getSlots
 }
