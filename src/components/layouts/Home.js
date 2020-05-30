@@ -9,7 +9,8 @@ import Paper from '@material-ui/core/Paper';
 import AdvSettings from '../AdvSettings';
 import BeginForm from '../BeginForm';
 import { appStyle, appTheme } from '../../styles/global';
-
+import * as XLSX from 'xlsx';
+import {getUtterance,setUtterances} from '../../global/appVariable'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -26,9 +27,11 @@ const useStyles = makeStyles((theme) => ({
     inputFocused: {}
 }));
 
+
 export default function Layout() {
     const classes = useStyles();
     const [checked, setChecked] = React.useState(false);
+    const [jsonData,setJsonData]=React.useState(null)
     const [values, setValues] = useState({
         botName: "",
         uploadExcelFile: "",
@@ -41,10 +44,29 @@ export default function Layout() {
         uploadJSONFileHidden: '',
         customVisible: false
     })
-
+    
+    
     const handleChange = () => {
         setChecked((prev) => !prev);
     };
+    const uploadExcelFileData = (e)=>{
+        var files = e.target.files, f = files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => { // evt = on_file_select event
+                /* Parse data */
+                const bstr = e.target.result;
+                const wb = XLSX.read(bstr, {type:'binary'});
+                /* Get first worksheet */
+                const wsname = wb.SheetNames[0];
+                const ws = wb.Sheets[wsname];
+                /* Convert array of arrays */
+                const data = XLSX.utils.sheet_to_json(ws);
+                // const data = XLSX.utils.sheet_to_csv(ws, {header:1});
+                /* Update state */
+                setUtterances(data)
+            };
+            reader.readAsBinaryString(f);
+    }
 
     const handleInputchange = (e) => {
         const { name, value } = e.target
@@ -52,6 +74,7 @@ export default function Layout() {
         if (name === "uploadExcelFileHidden") {
             const filename = e.target.files[0].name;
             values.uploadExcelFile = filename;
+            uploadExcelFileData(e)        
         }
         if (name === "synonymGenerating") {
             if (value === "custom_synonyms")
@@ -62,6 +85,8 @@ export default function Layout() {
         if ((name === "uploadJSONFileHidden")) {
             if ((/\.(json)$/i).test(value)) {
                 let file = e.target.files[0];
+                console.log(e.target)
+                console.log(file)
                 var reader = new FileReader();
                 reader.readAsText(file);
                 reader.onload = function (e) {
@@ -134,3 +159,4 @@ export default function Layout() {
         </Grid>
     );
 }
+

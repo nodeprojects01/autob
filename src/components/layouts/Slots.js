@@ -64,27 +64,28 @@ export default function Slots(props) {
   const handleCloseSnackBar = () => {
     setSnackBar({ type: "error", show: false, message: "" })
   };
-  const handleClick = async (event, value) => {
+  const handleClick = (event, value) => {
     var mode
     (value == 0) ? (mode = 'loose') : ((value == 50) ? (mode = 'moderate') : (mode = 'strict'))
     if (previousValues.autoGenerateSynonymMode != mode) {
-      await new Promise(resolve => {setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });resolve()});//setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });
-      console.log(previousValues)
-      setLoading(true)
-      getSlots(previousValues).then(result => {
-        setValues(result)
-        setLoading(false)
-      }).catch(errmessage => {
-        setSnackBar({ type: "error", show: true, message: errmessage });
-        setLoading(false)
-      });
+      setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });
     }
   };
 
-  // React.useEffect(() => {
-  //   console.log("inside useEffect")
+  React.useEffect(() => {
+    console.log("inside useEffect")
+    if(previousValues){
+      setLoading(true)
+      getSlots(previousValues).then(result => {
+       setValues(result)
+       setLoading(false)
+     }).catch(errmessage => {
+       setSnackBar({ type: "error", show: true, message: errmessage });
+       setLoading(false)
+     });
+    }
     
-  // }, [previousValues]);
+  }, [previousValues]);
 
   const handleDisable = (e, value) => {
     if (disableValue.includes(value)) {

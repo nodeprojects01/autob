@@ -4,6 +4,7 @@ import json
 from flask_cors import CORS
 from flask import jsonify
 from temp_data import temp_data
+import flask_excel as excel
 
 app = Flask(__name__)
 CORS(app)
@@ -12,9 +13,10 @@ CORS(app)
 def get_slots():
     input_content = request.get_json()
     print(input_content)
-    if(input_content['autoGenerateSynonymMode'] == 'moderate' ):
+    # return input_content
+    if(input_content['inputValues']['autoGenerateSynonymMode'] == 'moderate' ):
         return jsonify(temp_data['slotsModerate'])
-    elif(input_content['autoGenerateSynonymMode'] == 'loose' ):
+    elif(input_content['inputValues']['autoGenerateSynonymMode'] == 'loose' ):
         return jsonify(temp_data['slotsLoose'])
     else:
         return jsonify(temp_data['slotsStrict'])

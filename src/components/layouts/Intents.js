@@ -200,8 +200,7 @@ export default function Intents(props) {
     {loading&& 
      <Backdrop className={classes.backdrop} open={true} >
         <CircularProgress thickness={5}  style={{position: 'fixed',top: '50%',left: '50%',margin: '-50px 0px 0px -50px'}}       />
-     </Backdrop>
-   
+     </Backdrop>  
      }
 
     <Grid container style={{
