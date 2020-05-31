@@ -6,6 +6,7 @@ import { Route, Link, BrowserRouter as Router } from 'react-router-dom';
 import Home from './components/layouts/Home';
 import Slots from './components/layouts/Slots';
 import Intents from './components/layouts/Intents';
+import CreateBot from './components/layouts/CreateBot';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -13,6 +14,7 @@ ReactDOM.render(
       <Route exact path="/" component={Home} />
       <Route path="/slots" component={Slots} />
       <Route path="/intents" component={Intents} />
+      <Route path="/createBot" component={CreateBot} />
     </Router>
   </React.StrictMode>,
   document.getElementById('root')
