@@ -19,7 +19,7 @@ import CAutocomplete from '../CAutocomplete';
 import CButton from '../CButton';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {getIntents,getSlots} from '../../API/dataAccess';
+import { getIntents, getSlots } from '../../external/textCluster';
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -77,7 +77,7 @@ const arrayToString = (arr) => {
 }
 
 const strToArray = (str) => {
-  return  str.replace(/(?:\r\n|\r|\n)/g, ',').replace(/\s+/g, ' ').split(',');
+  return str.replace(/(?:\r\n|\r|\n)/g, ',').replace(/\s+/g, ' ').split(',');
 }
 
 export default function Intents(props) {
@@ -93,7 +93,7 @@ export default function Intents(props) {
   const [fixedOptions, setFixedOptions] = React.useState([selectedClusterName]);
   const [checked, setChecked] = React.useState();
   const [checkedIntentName, setCheckedIntentName] = React.useState();
-  const [newIntentName,setNewIntentName]=React.useState(Object.keys(clusterData)[0]);
+  const [newIntentName, setNewIntentName] = React.useState(Object.keys(clusterData)[0]);
   const [loading, setLoading] = useState(false);
 
   console.log(clusterData)
@@ -102,7 +102,7 @@ export default function Intents(props) {
   const handleCloseSnackBar = () => {
     setSnackBar({ type: "error", show: false, message: "" })
   };
-  
+
   const handleInputChange = (e) => {
     console.log(e)
     const { name, value } = e.target
@@ -116,7 +116,7 @@ export default function Intents(props) {
         setChecked(false)
       }
     }
-    else if(name == "intentName"){
+    else if (name == "intentName") {
       setNewIntentName(value)
       if (Object.keys(clusterData).includes(value)) {
         setCheckedIntentName(true)
@@ -142,11 +142,11 @@ export default function Intents(props) {
     ]);
 
     //update value in the intent after merge
-   
-    var updatedValue = (clusterData[selectedClusterName] + "," + clusterData[newValue[newValue.length -1]]).split(',')
+
+    var updatedValue = (clusterData[selectedClusterName] + "," + clusterData[newValue[newValue.length - 1]]).split(',')
     //Remove duplicates
     updatedValue = updatedValue.filter((item, index) => updatedValue.indexOf(item) === index)
-    setClusterData({...clusterData,[selectedClusterName] : updatedValue})
+    setClusterData({ ...clusterData, [selectedClusterName]: updatedValue })
 
     newValue.splice(selectedClusterName, 1);
     mergedClusters[selectedClusterName] = newValue;
@@ -164,14 +164,14 @@ export default function Intents(props) {
     console.log(filClusterNames)
     setClusterNames(filClusterNames);
   }
-  const updateClusterName = (newIntentName,selectedClusterName) => {
+  const updateClusterName = (newIntentName, selectedClusterName) => {
     clusterNames[clusterNames.indexOf(selectedClusterName)] = newIntentName
     clusterData[newIntentName] = clusterData[selectedClusterName]
     mergedClusters[newIntentName] = mergedClusters[selectedClusterName]
     delete clusterData[selectedClusterName]
-    delete  mergedClusters[selectedClusterName]
+    delete mergedClusters[selectedClusterName]
   }
-  
+
   const deleteIntent = (e) => {
 
     if (window.confirm('Are you sure you want to delete?')) {
@@ -193,195 +193,196 @@ export default function Intents(props) {
   }
 
   const handleSubmit = e => {
-     getIntents()
-}
+    getIntents()
+  }
   return (
     <div>
-    {loading&& 
-     <Backdrop className={classes.backdrop} open={true} >
-        <CircularProgress thickness={5}  style={{position: 'fixed',top: '50%',left: '50%',margin: '-50px 0px 0px -50px'}}       />
-     </Backdrop>  
-     }
+      {loading &&
+        <Backdrop className={classes.backdrop} open={true} >
+          <CircularProgress thickness={5} style={{ position: 'fixed', top: '50%', left: '50%', margin: '-50px 0px 0px -50px' }} />
+        </Backdrop>
+      }
 
-    <Grid container style={{
-      backgroundImage: `url(${image1})`,
-      // height: "100%",
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "cover",
-      backgroundAttachment: "fixed",
-      // minHeight: "100vh",
-      padding: "3em 0 0 0",
-    }}>
-      <Box display="flex" justifyContent="flex-end" style={{ width: "100%" }}>
-        <Box style={{
-          background: "rgba(255, 255, 255, 0.9)",
-          borderRadius: "32px 0 0 0",
-          // minHeight: "100%",
-          width: "96%",
-          textAlign: "left"
-        }}>
+      <Grid container style={{
+        backgroundImage: `url(${image1})`,
+        // height: "100%",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed",
+        // minHeight: "100vh",
+        padding: "3em 0 0 0",
+      }}>
+        <Box display="flex" justifyContent="flex-end" style={{ width: "100%" }}>
+          <Box style={{
+            background: "rgba(255, 255, 255, 0.9)",
+            borderRadius: "32px 0 0 0",
+            // minHeight: "100%",
+            width: "96%",
+            textAlign: "left"
+          }}>
 
-          <Grid item xs={12}>
-            <div style={{ padding: "1.7em 2em"}}>
-              <div>
-                <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Identify Intents</Typography>
-              </div>
+            <Grid item xs={12}>
+              <div style={{ padding: "1.7em 2em" }}>
+                <div>
+                  <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Identify Intents</Typography>
+                </div>
 
-              <div style={{ margin: "2em 2em" }}>
-                <Grid container spacing={2}>
-                  <Grid item xs={3} >
-                    <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
-                      <Box display="flex">
-                          <Box flexGrow={1}>
-                          <CTextField 
-                            placeholder="Add New Cluster"
-                            name="addNewIntent"
-                            value={addIntent}
-                            onChange={handleInputChange}
-                            onKeyPress={event => {
-                              if (event.key === 'Enter') {
-                                if (!(Object.keys(clusterData).includes(addIntent))) {
-                                  setClusterData({ ...clusterData, [addIntent]: [] })
-                                  setClusterNames(([addIntent].concat(clusterNames)))
-                                  setAddIntent('')
-                                  setChecked(null)
-                                  setSnackBar({ type: "success", show: true, message: "New cluster has been created" });
-                                }
-                              }
-                            }}
-                          />
-                          </Box>
-                          
-                          <Box alignSelf="center">
-                          {checked==true &&
-                            <Fade in={checked}>
-                              <CancelIcon style={{ color: "red"}}/>
-                            </Fade>}
-                          {checked==false &&
-                             <Fade in={!checked}>
-                              <CheckCircleRoundedIcon style={{ color: "green"}}/>
-                            </Fade>}
-                          </Box>
-
-                      </Box>
-                      
-                        
-                      <Divider style={{ marginTop: "10px" }} />
-
-                      <List style={{ maxHeight: '500px', overflowY: 'scroll' }}>
-                        {clusterNames.map((clusterName) => (
-                          <StyledListItem button key={clusterName} divider={1}
-                            style={selectedClusterName == clusterName ? { background: "rgb(235, 112, 119, 0.5)", color: "#fff" } : {}}
-                            onClick={()=>{
-                              setSelectedClusterName(clusterName);
-                              setNewIntentName(clusterName)
-                              var mgdCluts = mergedClusters[clusterName];
-                              const nexFixOptions = mgdCluts != undefined && mgdCluts.length >= 1 ? [clusterName].concat(mgdCluts) : [clusterName];
-                              setFixedOptions(nexFixOptions);}}>
-                            <ListItemText primary={clusterName} />
-                          </StyledListItem>
-                        ))}
-
-                      </List>
-                    </div>
-                </Grid>
-                <Grid item xs={9}>
-                  <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
-                    <Grid xs={12} container spacing={1} >
-                      <Grid item md={9} lg={9}>
+                <div style={{ margin: "2em 2em" }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={3} >
+                      <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
                         <Box display="flex">
-                        <Box flexGrow={1}>
-                        <CTextField
-                          name="intentName"
-                          value={newIntentName}
-                          onChange={handleInputChange}
-                          onKeyPress={event => {
-                            if (event.key === 'Enter') {
-                              if (!(Object.keys(clusterData).includes(newIntentName))) {
-                                updateClusterName(newIntentName,selectedClusterName)
-                                setSelectedClusterName(newIntentName)
-                                setCheckedIntentName(null)
-                                setSnackBar({ type: "success", show: true, message: "Name  cluster has been updated" });
-                              }
-                            }
-                          }}
-                        />
+                          <Box flexGrow={1}>
+                            <CTextField
+                              placeholder="Add New Cluster"
+                              name="addNewIntent"
+                              value={addIntent}
+                              onChange={handleInputChange}
+                              onKeyPress={event => {
+                                if (event.key === 'Enter') {
+                                  if (!(Object.keys(clusterData).includes(addIntent))) {
+                                    setClusterData({ ...clusterData, [addIntent]: [] })
+                                    setClusterNames(([addIntent].concat(clusterNames)))
+                                    setAddIntent('')
+                                    setChecked(null)
+                                    setSnackBar({ type: "success", show: true, message: "New cluster has been created" });
+                                  }
+                                }
+                              }}
+                            />
+                          </Box>
 
-                        </Box>
-                        
-                         <Box alignSelf="center">
-                          
-                          {checkedIntentName==true &&
-                            <Fade in={checkedIntentName}>
-                              <CancelIcon style={{ color: "red"}}/>
-                            </Fade>}
-                          {checkedIntentName==false &&
-                             <Fade in={!checkedIntentName}>
-                              <CheckCircleRoundedIcon style={{ color: "green"}}/>
-                            </Fade>}
+                          <Box alignSelf="center">
+                            {checked == true &&
+                              <Fade in={checked}>
+                                <CancelIcon style={{ color: "red" }} />
+                              </Fade>}
+                            {checked == false &&
+                              <Fade in={!checked}>
+                                <CheckCircleRoundedIcon style={{ color: "green" }} />
+                              </Fade>}
                           </Box>
 
                         </Box>
-                        
-                      </Grid>
-                      <Grid item md={3} lg={3}>
-                        <Box display="flex" justifyContent="flex-end" alignItems="center"
-                          p={1} m={1} style={{ marginRight: "0", paddingRight: "0" }}>
-                          <DeleteIcon onClick={deleteIntent}
-                            style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
-                            fontSize="medium"></DeleteIcon>
-                        </Box>
-                      </Grid>
-                    </Grid>
-                    <Grid xs={12}>
-                      <div style={{ width: "100%" }}>
-                        <CAutocomplete
-                          value={fixedOptions}
-                          onChange={handleOnChangeMergeClusters}
-                          options={clusterNames}
-                        />
+
+
+                        <Divider style={{ marginTop: "10px" }} />
+
+                        <List style={{ maxHeight: '500px', overflowY: 'scroll' }}>
+                          {clusterNames.map((clusterName) => (
+                            <StyledListItem button key={clusterName} divider={1}
+                              style={selectedClusterName == clusterName ? { background: "rgb(235, 112, 119, 0.5)", color: "#fff" } : {}}
+                              onClick={() => {
+                                setSelectedClusterName(clusterName);
+                                setNewIntentName(clusterName)
+                                var mgdCluts = mergedClusters[clusterName];
+                                const nexFixOptions = mgdCluts != undefined && mgdCluts.length >= 1 ? [clusterName].concat(mgdCluts) : [clusterName];
+                                setFixedOptions(nexFixOptions);
+                              }}>
+                              <ListItemText primary={clusterName} />
+                            </StyledListItem>
+                          ))}
+
+                        </List>
                       </div>
                     </Grid>
-                    <Grid xd={12} >
-                      <div>
-                        <CTextField
-                          name="utteranceList"
-                          multiline
-                          rows={20}
-                          value={arrayToString(clusterData[selectedClusterName])}
-                          name={selectedClusterName}
-                          onChange={handleInputChange}
-                        />
+                    <Grid item xs={9}>
+                      <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
+                        <Grid xs={12} container spacing={1} >
+                          <Grid item md={9} lg={9}>
+                            <Box display="flex">
+                              <Box flexGrow={1}>
+                                <CTextField
+                                  name="intentName"
+                                  value={newIntentName}
+                                  onChange={handleInputChange}
+                                  onKeyPress={event => {
+                                    if (event.key === 'Enter') {
+                                      if (!(Object.keys(clusterData).includes(newIntentName))) {
+                                        updateClusterName(newIntentName, selectedClusterName)
+                                        setSelectedClusterName(newIntentName)
+                                        setCheckedIntentName(null)
+                                        setSnackBar({ type: "success", show: true, message: "Name  cluster has been updated" });
+                                      }
+                                    }
+                                  }}
+                                />
+
+                              </Box>
+
+                              <Box alignSelf="center">
+
+                                {checkedIntentName == true &&
+                                  <Fade in={checkedIntentName}>
+                                    <CancelIcon style={{ color: "red" }} />
+                                  </Fade>}
+                                {checkedIntentName == false &&
+                                  <Fade in={!checkedIntentName}>
+                                    <CheckCircleRoundedIcon style={{ color: "green" }} />
+                                  </Fade>}
+                              </Box>
+
+                            </Box>
+
+                          </Grid>
+                          <Grid item md={3} lg={3}>
+                            <Box display="flex" justifyContent="flex-end" alignItems="center"
+                              p={1} m={1} style={{ marginRight: "0", paddingRight: "0" }}>
+                              <DeleteIcon onClick={deleteIntent}
+                                style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
+                                fontSize="medium"></DeleteIcon>
+                            </Box>
+                          </Grid>
+                        </Grid>
+                        <Grid xs={12}>
+                          <div style={{ width: "100%" }}>
+                            <CAutocomplete
+                              value={fixedOptions}
+                              onChange={handleOnChangeMergeClusters}
+                              options={clusterNames}
+                            />
+                          </div>
+                        </Grid>
+                        <Grid xd={12} >
+                          <div>
+                            <CTextField
+                              name="utteranceList"
+                              multiline
+                              rows={20}
+                              value={arrayToString(clusterData[selectedClusterName])}
+                              name={selectedClusterName}
+                              onChange={handleInputChange}
+                            />
+                          </div>
+                        </Grid>
                       </div>
                     </Grid>
-                  </div>
-                </Grid>
-                </Grid>
-              <Grid xs={12}>
-                <Box display="flex"  p={1}>
-                  <Box flexGrow={1}  p={1}>
-                    <CButton onClick={() => { setClusterData(originalDataset) }} name="Reset" />
-                  </Box>
-                  <Box  p={1}>
-                    <CButton onClick={handleSubmit} name="Next" />
-                  </Box>
-                </Box>
-                
-                
-                {snackBar.show ?
-                  <SnackBarComponent open={snackBar.show}
-                    type={snackBar.type}
-                    message={snackBar.message}
-                    callBack={handleCloseSnackBar} />
-                  : null}
-              </Grid>
-            </div>
-            </div>
-          </Grid>
-      </Box>
-      </Box>
-    </Grid >
+                  </Grid>
+                  <Grid xs={12}>
+                    <Box display="flex" p={1}>
+                      <Box flexGrow={1} p={1}>
+                        <CButton onClick={() => { setClusterData(originalDataset) }} name="Reset" />
+                      </Box>
+                      <Box p={1}>
+                        <CButton onClick={handleSubmit} name="Next" />
+                      </Box>
+                    </Box>
+
+
+                    {snackBar.show ?
+                      <SnackBarComponent open={snackBar.show}
+                        type={snackBar.type}
+                        message={snackBar.message}
+                        callBack={handleCloseSnackBar} />
+                      : null}
+                  </Grid>
+                </div>
+              </div>
+            </Grid>
+          </Box>
+        </Box>
+      </Grid >
     </div>
   );
 }

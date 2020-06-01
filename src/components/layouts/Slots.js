@@ -13,7 +13,7 @@ import SnackBarComponent from '../SnackbarComponent';
 import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
-import {getIntents,getSlots} from '../../API/dataAccess';
+import { getIntents, getSlots } from '../../external/textCluster';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -59,7 +59,7 @@ export default function Slots(props) {
   const [previousValues, setPreviousValues] = useState(props.location.values)
   const [loading, setLoading] = useState(false);
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
-  const [intentValues,setintentValues] = React.useState(null);
+  const [intentValues, setintentValues] = React.useState(null);
   //Error Handling Snackbar
   const handleCloseSnackBar = () => {
     setSnackBar({ type: "error", show: false, message: "" })
@@ -74,17 +74,17 @@ export default function Slots(props) {
 
   React.useEffect(() => {
     console.log("inside useEffect")
-    if(previousValues){
+    if (previousValues) {
       setLoading(true)
       getSlots(previousValues).then(result => {
-       setValues(result)
-       setLoading(false)
-     }).catch(errmessage => {
-       setSnackBar({ type: "error", show: true, message: errmessage });
-       setLoading(false)
-     });
+        setValues(result)
+        setLoading(false)
+      }).catch(errmessage => {
+        setSnackBar({ type: "error", show: true, message: errmessage });
+        setLoading(false)
+      });
     }
-    
+
   }, [previousValues]);
 
   const handleDisable = (e, value) => {
@@ -127,23 +127,23 @@ export default function Slots(props) {
 
   //Handle Submit 
   const handleSubmit = e => {
-    setLoading(true) 
-    getIntents(values,previousValues).then(result=>{
-      setintentValues(result)  
-      setLoading(false)  
+    setLoading(true)
+    getIntents(values, previousValues).then(result => {
+      setintentValues(result)
+      setLoading(false)
     })
-    .catch(errmessage =>{setSnackBar({ type: "error", show: true, message: errmessage });setLoading(false) })
+      .catch(errmessage => { setSnackBar({ type: "error", show: true, message: errmessage }); setLoading(false) })
   }
   React.useEffect(() => {
-      console.log("inside useEffect")
-      if(intentValues){
-        history.push({
-          pathname: '/intents',
-          intentValues: intentValues
-        });
-      }
-      
-    }, [intentValues]);
+    console.log("inside useEffect")
+    if (intentValues) {
+      history.push({
+        pathname: '/intents',
+        intentValues: intentValues
+      });
+    }
+
+  }, [intentValues]);
 
   return (
     <div>

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import {saveAs} from 'file-saver'
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -16,7 +15,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import { grey } from '@material-ui/core/colors';
 import { appStyle, appTheme } from '../../styles/global';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
-import createBotFiles from '../../API/createBotFiles';
+import createBotFiles from '../../botModel/lex/createBotFiles';
 import appVariable from '../../global/appVariable'
 
 const onDownload = async () => {
