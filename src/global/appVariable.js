@@ -1,6 +1,7 @@
-var utterances = [];
+var excelData = [];
 //initializing the values for development purpose
-var slots = {
+var slots = null
+const defaultSlotValues = {
     "slotsModerate": [
         {
             "value": "actionType",
@@ -57,7 +58,8 @@ var slots = {
     ]
 }
 //initializing the values for development purpose
-var intents = {
+var intents=""
+var defaultIntents = {
     "greeting": [
         "What is the national animal of Canada?",
         "What is the national animal of Albania?",
@@ -125,38 +127,38 @@ var intents = {
     ]
 };
 
-function getUtterance() {
-    return utterances;
+function getExcelData() {
+    return excelData;
 }
 
-function setUtterances(data) {
-    utterances = data;
-    console.log(utterances)
+function setExcelData(data) {
+    excelData = data;
+    console.log(excelData)
 }
 
-function getSlots() {
+function getSlotValue() {
     return slots;
 }
 
-function setSlots(data) {
-    utterances = data;
+function setSlotValue(data) {
+    slots = data;
     console.log(slots)
 }
 
-function getIntents() {
-    return intents;
+function getIntentValue() {
+    return intents   
 }
 
-function setIntents(data) {
-    utterances = data;
+function setIntentValue(data) {
+    intents = data;
     console.log(intents)
 }
 
 module.exports = {
-    getUtterance,
-    setUtterances,
-    getSlots,
-    setSlots,
-    getIntents,
-    setIntents
+    getExcelData,
+    setExcelData,
+    getSlotValue,
+    setSlotValue,
+    getIntentValue,
+    setIntentValue
 }

@@ -14,6 +14,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import { getIntents, getSlots } from '../../external/textCluster';
+import { getSlotValue,setSlotValue } from '../../global/appVariable'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -55,7 +56,7 @@ export default function Slots(props) {
   const classes = useStyles();
   const history = useHistory();
   const [disableValue, setDisableValue] = React.useState([]);
-  const [values, setValues] = useState(props.location.slotValues)
+  const [values, setValues] = useState(getSlotValue())
   const [previousValues, setPreviousValues] = useState(props.location.values)
   const [loading, setLoading] = useState(false);
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
@@ -71,13 +72,13 @@ export default function Slots(props) {
       setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });
     }
   };
-
+  console.log(values)
   React.useEffect(() => {
     console.log("inside useEffect")
     if (previousValues) {
       setLoading(true)
       getSlots(previousValues).then(result => {
-        setValues(result)
+        setValues(getSlotValue())
         setLoading(false)
       }).catch(errmessage => {
         setSnackBar({ type: "error", show: true, message: errmessage });
@@ -127,23 +128,26 @@ export default function Slots(props) {
 
   //Handle Submit 
   const handleSubmit = e => {
-    setLoading(true)
-    getIntents(values, previousValues).then(result => {
-      setintentValues(result)
+    setSlotValue(values)
+    setLoading(true)  
+    getIntents(previousValues).then(result => {
       setLoading(false)
+      history.push({
+        pathname: '/intents'
+      });
     })
       .catch(errmessage => { setSnackBar({ type: "error", show: true, message: errmessage }); setLoading(false) })
   }
-  React.useEffect(() => {
-    console.log("inside useEffect")
-    if (intentValues) {
-      history.push({
-        pathname: '/intents',
-        intentValues: intentValues
-      });
-    }
+  // React.useEffect(() => {
+  //   console.log("inside useEffect")
+  //   if (intentValues) {
+  //     history.push({
+  //       pathname: '/intents',
+  //       intentValues: intentValues
+  //     });
+  //   }
 
-  }, [intentValues]);
+  // }, [intentValues]);
 
   return (
     <div>
@@ -233,11 +237,3 @@ export default function Slots(props) {
 }
 
 
-//window.addEventListener("keyup", checkForRefresh, false);
-
-window.onkeyup = function (event) {
-  if (event.keyCode == 116) {
-    alert("Data will be lost if you refresh the page. Are you sure?");
-
-  }
-};

@@ -20,6 +20,7 @@ import CButton from '../CButton';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { getIntents, getSlots } from '../../external/textCluster';
+import { getSlotValue,setSlotValue,getIntentValue,setIntentValue} from '../../global/appVariable'
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -84,7 +85,7 @@ export default function Intents(props) {
   console.log("inside intent.js")
 
   const classes = useStyles();
-  const originalDataset = props.location.intentValues;
+  const originalDataset = getIntentValue();
   const [clusterData, setClusterData] = React.useState(originalDataset);
   const [selectedClusterName, setSelectedClusterName] = React.useState(Object.keys(clusterData)[0]);
   const [clusterNames, setClusterNames] = React.useState(Object.keys(clusterData));
@@ -193,7 +194,8 @@ export default function Intents(props) {
   }
 
   const handleSubmit = e => {
-    getIntents()
+    setIntentValue(clusterData)
+    console.log("route to new page")
   }
   return (
     <div>

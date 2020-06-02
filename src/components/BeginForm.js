@@ -15,6 +15,7 @@ import { useHistory } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Backdrop from '@material-ui/core/Backdrop';
 import { getIntents, getSlots } from '../external/textCluster';
+
 //import * as XLSX from 'xlsx';
 {/* <StylesProvider injectFirst>
     content goes here
@@ -50,7 +51,6 @@ const useStyles = makeStyles((theme) => ({
 export default function BeginForm(props) {
     const classes = useStyles();
     const history = useHistory();
-    const [slotValues, setSlotValues] = useState(null);
     const [loading, setLoading] = useState(false);
     //Error Handling Snackbar
     const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
@@ -70,8 +70,11 @@ export default function BeginForm(props) {
             //Or go to next page or any other operation
             setLoading(true)
             getSlots(props.values).then(result => {
-                setSlotValues(result)
                 setLoading(false)
+                history.push({
+                    pathname: '/slots',
+                    values: props.values,
+                });
             }).catch(errmessage => {
                 setSnackBar({ type: "error", show: true, message: errmessage });
                 setLoading(false)
@@ -79,15 +82,14 @@ export default function BeginForm(props) {
 
         }
     }
-    React.useEffect(() => {
-        if (slotValues != null) {
-            history.push({
-                pathname: '/slots',
-                values: props.values,
-                slotValues: slotValues
-            });
-        }
-    }, [slotValues]);
+    // React.useEffect(() => {
+    //     if (execution == true) {
+    //         history.push({
+    //             pathname: '/slots',
+    //             values: props.values,
+    //         });
+    //     }
+    // }, [execution]);
 
     return (
         <div>

@@ -10,7 +10,7 @@ import AdvSettings from '../AdvSettings';
 import BeginForm from '../BeginForm';
 import { appStyle, appTheme } from '../../styles/global';
 import * as XLSX from 'xlsx';
-import {getUtterance,setUtterances} from '../../global/appVariable'
+import {getExcelData,setExcelData} from '../../global/appVariable'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -63,7 +63,8 @@ export default function Layout() {
                 const data = XLSX.utils.sheet_to_json(ws);
                 // const data = XLSX.utils.sheet_to_csv(ws, {header:1});
                 /* Update state */
-                setUtterances(data)
+                setExcelData(data)
+                console.log(getExcelData())
             };
             reader.readAsBinaryString(f);
     }

@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SlotCard(props) {
+  console.log(props)
   const classes = useStyles();
   return (
     <div className={classes.root}>
@@ -23,7 +24,7 @@ export default function SlotCard(props) {
         { color: appStyle.colorOffBlack }
         :
         { color: appStyle.colorGreyLight }} />} >
-        <Card style={{ width: "100%" }}>
+        <Card container style={{ width: "100%" }}>
           <CardContent style={((props.disabled != null) && (props.disabled.includes(props.slotValues.value))) ?
             {
               padding: "1em", pointerEvents: "none",
