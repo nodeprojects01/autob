@@ -1,64 +1,70 @@
 import React, { useState } from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import image1 from '../../images/abstract.jpg';
 import SlotCard from '../SlotCard';
-import CTextField from '../CTextField';
-import CAutocomplete from '../CAutocomplete';
 import CSlider from '../CSlider';
 import CButton from '../CButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import SettingsIcon from '@material-ui/icons/Settings';
-import { grey } from '@material-ui/core/colors';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import { appStyle, appTheme } from '../../styles/global';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import SnackBarComponent from '../SnackbarComponent';
+import Backdrop from '@material-ui/core/Backdrop';
+import { makeStyles } from '@material-ui/core/styles';
+import { useHistory } from 'react-router-dom';
+import { getIntents, getSlots } from '../../external/textCluster';
+import { getSlotValue, setSlotValue, setInputParams, getInputParams } from '../../global/appVariable'
 
 
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
+}));
 
-const slotValues = [
-  {
-    "value": "actionType",
-    "synonyms": ["add", "remove", "register", "signup"]
-  },
-  {
-    "value": "bankNames",
-    "synonyms": ["hdfc", "axis", "citi", "indus"]
-  },
-  {
-    "value": "cityNames",
-    "synonyms": ["bangalore", "hydrabad", "mumbai", "delhi", "bopal", "ahmadabad"]
-  },
-  {
-    "value": "riverNames2",
-    "synonyms": ["ganga", "yamuna", "tunga"]
-  },
-  {
-    "value": "cityNames1",
-    "synonyms": ["bangalore", "hydrabad", "mumbai", "delhi", "bopal", "ahmadabad"]
-  },
-  {
-    "value": "riverNames1",
-    "synonyms": ["ganga", "yamuna", "tunga"]
-  }
-]
-
-export default function Slots() {
-
-  const [anchorEl, setAnchorEl] = React.useState(null);
+export default function Slots(props) {
+  console.log("slots props", props, getInputParams());
+  const classes = useStyles();
+  const history = useHistory();
   const [disableValue, setDisableValue] = React.useState([]);
-  const [values, setValues] = useState(slotValues)
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const [values, setValues] = useState(getSlotValue())
+  const [previousValues, setPreviousValues] = useState(getInputParams())
+  const [loading, setLoading] = useState(false);
+  const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
+  const [intentValues, setintentValues] = React.useState(null);
+  //Error Handling Snackbar
+  const handleCloseSnackBar = () => {
+    setSnackBar({ type: "error", show: false, message: "" })
   };
-
-  console.log(values)
-
-  const settingHandleClose = () => {
-    setAnchorEl(null);
+  const handleClick = (event, value) => {
+    var mode
+    (value == 0) ? (mode = 'loose') : ((value == 50) ? (mode = 'moderate') : (mode = 'strict'))
+    if (previousValues.autoGenerateSynonymMode != mode) {
+      setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });
+    }
   };
+  console.log("values", values)
+  React.useEffect(() => {
+    console.log("inside useEffect")
+    if (previousValues.constructor === Object && Object.keys(previousValues).length >= 1) {
+      // setSlotValue(values)
+      console.log("previousValues", previousValues)
+      setLoading(true)
+      getSlots(previousValues).then(() => {
+        setValues(getSlotValue())
+        setLoading(false)
+      }).catch(errmessage => {
+        setSnackBar({ type: "error", show: true, message: errmessage });
+        setLoading(false)
+      });
+    }
+
+  }, [previousValues]);
+
   const handleDisable = (e, value) => {
     if (disableValue.includes(value)) {
       setDisableValue(disableValue.filter((e) => (e !== value)))
@@ -96,93 +102,127 @@ export default function Slots() {
 
     }
   }
-  const addBlankSlots = () => {
 
+  //Handle Submit 
+  const handleSubmit = e => {
+    setSlotValue(values);
+    setInputParams(previousValues);
+    setLoading(true);
+    getIntents(previousValues).then(result => {
+      setLoading(false);
+      history.push({
+        pathname: '/intents'
+      });
+    })
+      .catch(errmessage => { setSnackBar({ type: "error", show: true, message: errmessage }); setLoading(false) })
   }
+  // React.useEffect(() => {
+  //   console.log("inside useEffect")
+  //   if (intentValues) {
+  //     history.push({
+  //       pathname: '/intents',
+  //       intentValues: intentValues
+  //     });
+  //   }
 
+  // }, [intentValues]);
 
   return (
-    <Grid container style={{
-      // backgroundColor: "#4F5457" 
-      backgroundImage: `url(${image1})`,
-      backgroundPosition: "center",
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "cover",
-      backgroundAttachment: "fixed",
-      padding: "3em 0 0 0",
-    }}>
-      <Box display="flex" justifyContent="flex-end" >
-        <Box style={{
-          background: "rgba(255, 255, 255, 0.9)",
-          borderRadius: "32px 0 0 0",
-          width: "96%",
-          textAlign: "left"
-          // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
-        }}>
+    <div>
+      {loading &&
+        <Backdrop className={classes.backdrop} open={true} >
+          <CircularProgress thickness={5} style={{ position: 'fixed', top: '50%', left: '50%', margin: '-50px 0px 0px -50px' }} />
+        </Backdrop>
+      }
 
-          <Grid item xs={12}>
-            <div style={{ padding: "1.7em 2em" }}>
-              <div>
-                <Box display="flex">
-                  <Box flexGrow={1}>
-                    <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Identify Slots</Typography>
-                  </Box>
-                  <Box alignSelf="center" onClick={handleClick}>
-                    <CSlider></CSlider>
-                    {/* <SettingsIcon
-                      style={{ cursor: "pointer", "color": appStyle.colorOffBlack }}
-                      fontSize="small"
-                      aria-controls="simple-menu" aria-haspopup="true"
-                    /> */}
-                  </Box>
-                  {/* <Menu
-                    id="simple-menu"
-                    anchorEl={anchorEl}
-                    keepMounted
-                    open={Boolean(anchorEl)}
-                    onClose={settingHandleClose}
-                  >
-                    <MenuItem value={"strict"} onClick={settingHandleClose}>Strict</MenuItem>
-                    <MenuItem value={"moderate"} onClick={settingHandleClose}>Moderate</MenuItem>
-                    <MenuItem value={"loose"} onClick={settingHandleClose}>Loose</MenuItem>
-                  </Menu> */}
-                </Box>
-              </div>
+      <Grid style={{
+        // backgroundColor: "#4F5457" 
+        backgroundImage: `url(${image1})`,
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundAttachment: "fixed",
+        padding: "3em 0 0 0",
+        width: "100%",
+        minHeight: "100vh"
+      }}>
 
-              <div style={{ margin: "2em 2em" }}>
-                <Grid container justify="left" spacing={2}>
-                  {values.map((value, index) => (
-                    <Grid item key={value.value} item md={4} lg={4} >
-                      <SlotCard disabled={disableValue}
-                        name="slotNames"
-                        slotValues={value}
-                        onClickDisable={(e) => { handleDisable(e, value.value) }}
-                        onChange={(e, value) => { handleInputchange(e, value, index) }}
-                      >
-                      </SlotCard>
+        <Box display="flex" justifyContent="flex-end" >
+          <Box style={{
+            background: "rgba(255, 255, 255, 0.9)",
+            borderRadius: "32px 0 0 0",
+            width: "96%",
+            textAlign: "left",
+            minHeight: "100vh"
+            // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
+          }}>
+
+            <Grid item xs={12}>
+              <div style={{ padding: "1.7em 2em" }}>
+                <div>
+                  <Box display="flex">
+                    <Box flexGrow={1}>
+                      <Typography style={appTheme.textHeader}>Identify Slots</Typography>
+                    </Box>
+                    <Box alignSelf="center" >
+                      <CSlider value={previousValues.autoGenerateSynonymMode} onChange={handleClick}></CSlider>
+                    </Box>
+                  </Box>
+                </div>
+
+                <div style={{ margin: "2em 2em" }}>
+                  <Grid container justify="left" spacing={2}>
+                    {values.map((value, index) => (
+                      <Grid item key={value.value} item md={4} lg={4} >
+                        <SlotCard disabled={disableValue}
+                          name="slotNames"
+                          slotValues={value}
+                          onClickDisable={(e) => { handleDisable(e, value.value) }}
+                          onChange={(e, value) => { handleInputchange(e, value, index) }}
+                        >
+                        </SlotCard>
+                      </Grid>
+
+                    ))}
+                    <Grid item md={4} lg={4}>
+                      <Card container style={{ cursor: "pointer", }}
+                        onClick={() => { setValues([...values, { value: "", synonyms: [] }]) }}>
+                        <CardContent style={{ padding: "3.5em", textAlign: "center" }} >
+                          <Typography>Add New</Typography>
+                          <AddCircleRoundedIcon
+                            style={{ color: "grey", fontSize: "2em" }} />
+                        </CardContent>
+
+                      </Card>
                     </Grid>
-
-                  ))}
-                  <AddCircleRoundedIcon 
-                  style={{margin: "2em 0.5em", color: "grey", fontSize:"2em", cursor: "pointer"}}
-                  onClick={() => { setValues([...values, { value: "", synonyms: [] }]) }} />
-                </Grid>
-                <br></br>
-                <Grid xs={12}>
-                  <Box display="flex" p={1}>
-                    <Box flexGrow={1} p={1}>
-                      <CButton onClick={() => { setValues(slotValues); }} name="Reset" />
+                  </Grid>
+                  <br></br>
+                  <Grid xs={12}>
+                    <Box display="flex" p={1}>
+                      <Box flexGrow={1} p={1}>
+                        <CButton onClick={() => { setValues(getSlotValue()) }} name="Reset" />
+                      </Box>
+                      <Box p={1}>
+                        <CButton onClick={handleSubmit} name="Next" />
+                      </Box>
                     </Box>
-                    <Box p={1}>
-                      <CButton onClick={() => { console.log("New Page") }} name="Next" />
-                    </Box>
-                  </Box>
-                </Grid>
+                    {snackBar.show ?
+                      <SnackBarComponent open={snackBar.show}
+                        type={snackBar.type}
+                        message={snackBar.message}
+                        callBack={handleCloseSnackBar} />
+                      : null}
+                  </Grid>
+                </div>
               </div>
-            </div>
-          </Grid>
+            </Grid>
+          </Box>
+
         </Box>
-      </Box>
-    </Grid>
+
+      </Grid>
+    </div>
   );
 }
+
+

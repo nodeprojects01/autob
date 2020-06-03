@@ -1,19 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
-import image1 from '../images/abstract.jpg'
 import '../index.css'
-import { StylesProvider } from '@material-ui/styles';
 import { appStyle, appTheme } from '../styles/global';
 import SnackBarComponent from './SnackbarComponent';
 import SettingsIcon from '@material-ui/icons/Settings';
 import CTextField from './CTextField';
 import CButton from './CButton';
+import { useHistory } from 'react-router-dom';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Backdrop from '@material-ui/core/Backdrop';
+import { getIntents, getSlots } from '../external/textCluster';
+import {getInuptParams, setInputParams} from '../global/appVariable';
 
+//import * as XLSX from 'xlsx';
 {/* <StylesProvider injectFirst>
     content goes here
 </StylesProvider> */}
@@ -36,13 +40,19 @@ const useStyles = makeStyles((theme) => ({
     inputFocused: {},
     hiddenInput: {
         display: 'none'
-    }
+    },
+    backdrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
 }));
+
 
 
 export default function BeginForm(props) {
     const classes = useStyles();
-
+    const history = useHistory();
+    const [loading, setLoading] = useState(false);
     //Error Handling Snackbar
     const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
     //Error Handling Snackbar
@@ -59,68 +69,92 @@ export default function BeginForm(props) {
         }
         else {
             //Or go to next page or any other operation
-            // props.onClick();
+            setLoading(true);
+            setInputParams(props.values);
+            getSlots(props.values).then(() => {
+                setLoading(false);
+                history.push({
+                    pathname: '/slots',
+                    values: props.values,
+                });
+            }).catch(errmessage => {
+                setSnackBar({ type: "error", show: true, message: errmessage });
+                setLoading(false);
+            });
+
         }
     }
-
+    
     return (
-        <div style={{ padding: "2em", height: "80vh" }}>
+        <div>
+            {loading &&
+                <Backdrop className={classes.backdrop} open={true} >
+                    <CircularProgress thickness={5} style={{ position: 'fixed', top: '50%', left: '50%', margin: '-50px 0px 0px -50px' }} />
+                </Backdrop>
+            }
+
             <div>
-                <Typography variant="h5" style={appTheme.textHeader}>Let's Begin</Typography>
-            </div>
+                <div style={{ padding: "2em", height: "80vh" }}>
+                    <div>
+                        <Typography style={appTheme.textHeader}>Let's Begin</Typography>
+                    </div>
 
-            <div style={{ margin: "2em 2em" }}>
-                <form className={classes.root} noValidate autoComplete="off">
-                    <div>
-                        <Typography style={appTheme.textSmall}>Botname</Typography>
-                    </div>
-                    <div>
-                        <CTextField name="botName" value={props.values.botName} onChange={props.setValues} />
-                    </div>
-                    <br></br>
-                    <Box display="flex">
-                        <Box flexGrow={1}>
-                            <Typography style={appTheme.textSmall}>Upload Excel</Typography>
-                        </Box>
-                        <Box alignSelf="center">
-                            <TextField className={classes.hiddenInput} id="contained-button-Excelfile"
-                                name="uploadExcelFileHidden" type="file" onChange={props.setValues} />
-                            <label htmlFor="contained-button-Excelfile">
-                                <Button style={{ backgroundColor: 'Transparent', padding: "0px" }} component="span">
-                                    <Typography style={appTheme.textSmall}>Browse File</Typography>
-                                </Button>
-                            </label>
-                        </Box>
-                    </Box>
-
-                    <div>
-                        <CTextField name="uploadExcelFile" value={props.values.uploadExcelFile}
-                            onChange={props.setValues} />
-                    </div>
-                    <br></br>
-                    <div>
-                        <Box display="flex">
-                            <Box flexGrow={1}>
-                                <CButton onClick={handleSubmit} name="Next" />
+                    <div style={{ margin: "2em" }}>
+                        <form className={classes.root} noValidate autoComplete="off">
+                            <div>
+                                <Typography style={appTheme.textSmall}>Botname</Typography>
+                            </div>
+                            <div>
+                                <CTextField name="botName" value={props.values.botName} onChange={props.setValues} />
+                            </div>
+                            <br></br>
+                            <Box display="flex">
+                                <Box flexGrow={1}>
+                                    <Typography style={appTheme.textSmall}>Upload Excel</Typography>
+                                </Box>
+                                <Box alignSelf="center">
+                                    <TextField className={classes.hiddenInput} id="contained-button-Excelfile"
+                                        name="uploadExcelFileHidden" type="file" onChange={props.setValues} />
+                                    <label htmlFor="contained-button-Excelfile">
+                                        <Button style={{ backgroundColor: 'Transparent', padding: "0px" }} component="span">
+                                            <Typography style={appTheme.textSmall}>Browse File</Typography>
+                                        </Button>
+                                    </label>
+                                </Box>
                             </Box>
-                            <Box alignSelf="center" onClick={props.onClick}>
-                                <SettingsIcon
-                                    style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
-                                    fontSize="small"></SettingsIcon>
-                            </Box>
-                        </Box>
-                        {/* onClick={() => { props.onClick() }} */}
-                        {snackBar.show ?
-                            <SnackBarComponent open={snackBar.show}
-                                type={snackBar.type}
-                                message={snackBar.message}
-                                callBack={handleCloseSnackBar} />
-                            : null}
+
+                            <div>
+                                <CTextField name="uploadExcelFile" value={props.values.uploadExcelFile}
+                                    onChange={props.setValues} />
+                            </div>
+                            <br></br>
+                            <div>
+                                <Box display="flex">
+                                    <Box flexGrow={1}>
+                                        <CButton onClick={handleSubmit} name="Next" />
+                                    </Box>
+                                    <Box alignSelf="center" onClick={props.onClick}>
+                                        <SettingsIcon
+                                            style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
+                                            fontSize="small"></SettingsIcon>
+                                    </Box>
+                                </Box>
+
+
+                                {snackBar.show ?
+                                    <SnackBarComponent open={snackBar.show}
+                                        type={snackBar.type}
+                                        message={snackBar.message}
+                                        callBack={handleCloseSnackBar} />
+                                    : null}
+
+
+                            </div>
+                        </form>
                     </div>
-                </form>
+
+                </div>
             </div>
-
-
         </div>
     );
 }

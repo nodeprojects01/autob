@@ -3,14 +3,14 @@ import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import image1 from '../../images/abstract.jpg'
-import Fade from '@material-ui/core/Fade';
-import Paper from '@material-ui/core/Paper';
-import AdvSettings from '../AdvSettings';
-import BeginForm from '../BeginForm';
+import image1 from '../../images/abstract.jpg';
 import { appStyle, appTheme } from '../../styles/global';
 import * as XLSX from 'xlsx';
-import {getExcelData,setExcelData} from '../../global/appVariable'
+import { getExcelData, setExcelData } from '../../global/appVariable';
+import CButton from '../CButton';
+import createBotFiles from '../../botModel/lex/createBotFiles';
+import appVariable from '../../global/appVariable';
+import PostCard from '../PostCard';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -28,6 +28,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
+const onDownload = async () => {
+    console.log("download start");
+    // let downloadResult = await createBotFiles.createBotFiles(appVariable.getSlots(),appVariable.getIntents());
+    // const blob = await downloadResult.blob();
+    // saveAs(blob, "downloaded.zip");
+    await createBotFiles(appVariable.getSlots(), appVariable.getIntents());
+    console.log("onClick start");
+};
+
 export default function Layout() {
     const classes = useStyles();
     const [checked, setChecked] = React.useState(false);
@@ -43,28 +52,28 @@ export default function Layout() {
         uploadJSONFileHidden: '',
         customVisible: false
     })
-    
-    
+
+
     const handleChange = () => {
         setChecked((prev) => !prev);
     };
-    const uploadExcelFileData = (e)=>{
+    const uploadExcelFileData = (e) => {
         var files = e.target.files, f = files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => { // evt = on_file_select event
-                /* Parse data */
-                const bstr = e.target.result;
-                const wb = XLSX.read(bstr, {type:'binary'});
-                /* Get first worksheet */
-                const wsname = wb.SheetNames[0];
-                const ws = wb.Sheets[wsname];
-                /* Convert array of arrays */
-                const data = XLSX.utils.sheet_to_csv(ws).split('\n');
-                // const data = XLSX.utils.sheet_to_csv(ws, {header:1});
-                /* Update state */
-                setExcelData(data)
-            };
-            reader.readAsBinaryString(f);
+        const reader = new FileReader();
+        reader.onload = (e) => { // evt = on_file_select event
+            /* Parse data */
+            const bstr = e.target.result;
+            const wb = XLSX.read(bstr, { type: 'binary' });
+            /* Get first worksheet */
+            const wsname = wb.SheetNames[0];
+            const ws = wb.Sheets[wsname];
+            /* Convert array of arrays */
+            const data = XLSX.utils.sheet_to_csv(ws).split('\n');
+            // const data = XLSX.utils.sheet_to_csv(ws, {header:1});
+            /* Update state */
+            setExcelData(data)
+        };
+        reader.readAsBinaryString(f);
     }
 
     const handleInputchange = (e) => {
@@ -73,7 +82,7 @@ export default function Layout() {
         if (name === "uploadExcelFileHidden") {
             const filename = e.target.files[0].name;
             values.uploadExcelFile = filename;
-            uploadExcelFileData(e)        
+            uploadExcelFileData(e)
         }
         if (name === "synonymGenerating") {
             if (value === "custom_synonyms")
@@ -118,12 +127,14 @@ export default function Layout() {
                     minHeight: "100%"
                 }}>
                     <div style={{ padding: "2em" }}>
-                        <div style={{
-                            position: "fixed",
-                            top: "-12%", margin: "25% 9%", border: "2px solid #fff", padding: "1em 7em"
+                        <Box textAlign="center" style={{ margin:"5em 2em 0 2em",
+                            border: "2px solid #fff", padding: "1em 7em"
                         }}>
                             <Typography variant="h5" style={appTheme.textAutob}>AUTOB</Typography>
-                        </div>
+                        </Box>
+                        {/* <Box justifyContent="center">
+                            <PostCard />
+                        </Box> */}
                     </div>
                 </Box>
             </Grid>
@@ -135,27 +146,41 @@ export default function Layout() {
                     textAlign: "left"
                     // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
                 }}>
-                    {checked ?
-                        <Fade in={checked}>
-                            <AdvSettings values={values} setValues={(e) => { handleInputchange(e) }}
-                                onClick={handleChange}></AdvSettings>
-                        </Fade>
-                        :
-                        <Fade in={!checked}>
-                            <Paper elevation={40} className={classes.paper}
-                                style={{
-                                    width: "50%", background: "rgba(255, 255, 255, 0.1)",
-                                    borderRadius: "32px 0 0 0"
-                                }}>
-                                <BeginForm values={values} setValues={(e) => { handleInputchange(e) }}
-                                    onClick={handleChange}></BeginForm>
-                            </Paper>
-                        </Fade>
-                    }
+
+                    <div style={{ padding: "2em", height: "80vh" }}>
+                        <div>
+                            <Typography style={appTheme.textHeader}>Here You Go!</Typography>
+                        </div>
+
+                        <div style={{ margin: "2em" }}>
+                            <Box >
+                                <CButton name="Download Excel File" style={{ width: "100%", height: "4em" }} />
+                            </Box>
+                            <Box textAlign="center" m={3}>
+                                <Typography style={appTheme.textDefault}>OR</Typography>
+                            </Box>
+                            <Box style={{
+                                margin: "1em 0", padding: "0 1.5em 1.5em", border: "1px solid #dde3e1",
+                                borderRadius: "5px", borderTop: "3px solid #ccd5d2", background: "#f6f8f7"
+                            }}>
+                                <Box textAlign="center" m={3}>
+                                    <Typography style={appTheme.textSubHeader}>Create Bot Files</Typography>
+                                </Box>
+                                <Grid container spacing={2}>
+                                    <Grid item lg={6}>
+                                        <CButton onClick={onDownload} style={{ width: "100%" }} name="LEX" />
+                                    </Grid>
+                                    <Grid item lg={6}>
+                                        <CButton onClick={() => { console.log("New Page") }} style={{ width: "100%" }} name="LUIS" />
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                        </div>
+                    </div>
                 </Box>
             </Grid>
-           
-        </Grid>
+
+        </Grid >
     );
 }
 

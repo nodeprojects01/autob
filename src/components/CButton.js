@@ -12,6 +12,6 @@ const StyledButton = withStyles({
 
 export default function CButton(props) {
     return (
-        <StyledButton onClick={props.onClick}>{props.name}</StyledButton>
+        <StyledButton style={props.style} onClick={props.onClick}>{props.name}</StyledButton>
     )
 }

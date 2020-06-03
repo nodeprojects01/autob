@@ -7,33 +7,37 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { appStyle, appTheme } from '../styles/global';
 
 
-const CssTextField = withStyles({
-    root: {
-        '& label.Mui-focused': {
-            color: appStyle.colorBlueGreyDark
-        },
-        '& .MuiInput-underline:after': {
-            borderBottomColor: appStyle.colorBlueGreyDark,
-        },
-        '& .MuiOutlinedInput-inputMarginDense': {
-            padding: "1em"
-        },
-        '& .MuiAutocomplete-clearIndicator': {
-            display: "none"
-        },
-        '& .MuiOutlinedInput-root': {
-            // '& fieldset': {
-            //   borderColor: appStyle.colorBlueGreyDark,
-            // },
-            '&:hover fieldset': {
-                borderColor: appStyle.colorBlueGreyDark,
-            },
-            '&.Mui-focused fieldset': {
-                borderColor: appStyle.colorBlueGreyDark,
-            },
-        },
-    },
-})(TextField);
+// const CssTextField = withStyles({
+//     root: {
+//         '& label.Mui-focused': {
+//             color: appStyle.colorBlueGreyDark
+//         },
+//         '& .MuiInput-underline:after': {
+//             borderBottomColor: appStyle.colorBlueGreyDark,
+//         },
+//         '& .MuiOutlinedInput-inputMarginDense': {
+//             padding: "1em"
+//         },
+//         '& .MuiAutocomplete-clearIndicator': {
+//             display: "none"
+//         },
+//         '& .MuiOutlinedInput-root': {
+//             '& fieldset': {
+//               borderColor: 'black',
+//               height: '100px',overflowY: 'scroll', overflowX: 'hidden',
+//             },
+            
+//             '&:hover fieldset': {
+//                 borderColor: 'blue',
+//             },
+//             '&.Mui-focused fieldset': {
+//                 borderColor: 'red',
+//             },
+//         },
+//     },
+// })(TextField);
+
+
 
 export default function CAutocomplete(props) {
 
@@ -62,6 +66,7 @@ export default function CAutocomplete(props) {
                         <TextField {...params} margin="normal" variant="outlined"
                             label={props.label} placeholder={props.placeholder} />
                     )}
+
                 />
                 :
                 <Autocomplete
@@ -77,8 +82,9 @@ export default function CAutocomplete(props) {
                         ))
                     }
                     renderInput={(params) => (
-                        <TextField {...params} margin="normal" variant="outlined"
-                            label={props.label} placeholder={props.placeholder} />
+                        <TextField {...params} margin="normal" variant="outlined" 
+                            
+                            label={props.label}  />
                     )}
                 />
             }

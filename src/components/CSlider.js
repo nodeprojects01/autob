@@ -32,24 +32,21 @@ const marks = [
   },
 ];
 
-function valuetext(value) {
-  console.log(value)
-}
 
-export default function DiscreteSlider() {
+
+export default function DiscreteSlider(props) {
+  var defaultvalue
+  (props.value=='loose')?(defaultvalue=0):((props.value=='moderate')?(defaultvalue=50):(defaultvalue=100))
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      {/* <Typography id="discrete-slider-custom" gutterBottom>
-        Autogenerate Synonym Mode
-      </Typography> */}
       <Slider
-        defaultValue={50}
-        getAriaValueText={valuetext}
+        value={defaultvalue}
         aria-labelledby="discrete-slider-custom"
         step={50}
         marks={marks}
+        onChange={props.onChange}
       />
     </div>
   );
