@@ -293,7 +293,7 @@ export default function Intents(props) {
                     <Grid item xs={9}>
                       <div style={{ background: "#FFF", padding: "1em", borderRadius: "7px" }}>
                         <Grid xs={12} container spacing={1} >
-                          <Grid item md={9} lg={9}>
+                          <Grid item md={6} lg={6}>
                             <Box display="flex">
                               <Box flexGrow={1}>
                                 <CTextField
@@ -329,7 +329,7 @@ export default function Intents(props) {
                             </Box>
 
                           </Grid>
-                          <Grid item md={3} lg={3}>
+                          <Grid item md={6} lg={6}>
                             <Box display="flex" justifyContent="flex-end" alignItems="center"
                               p={1} m={1} style={{ marginRight: "0", paddingRight: "0" }}>
                               <DeleteIcon onClick={deleteIntent}
@@ -352,7 +352,7 @@ export default function Intents(props) {
                             <CTextField
                               name="utteranceList"
                               multiline
-                              rows={20}
+                              rows={10}
                               value={arrayToString(clusterData[selectedClusterName])}
                               name={selectedClusterName}
                               onChange={handleInputChange}
@@ -363,7 +363,7 @@ export default function Intents(props) {
                     </Grid>
                   </Grid>
                   <Grid xs={12}>
-                    <Box display="flex" p={1}>
+                    <Box display="flex" p={1} style={{marginTop:"1em"}}>
                       <Box flexGrow={1} p={1}>
                         <CButton onClick={() => { setClusterData(originalDataset) }} name="Reset" />
                       </Box>

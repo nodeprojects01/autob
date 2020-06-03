@@ -6,6 +6,8 @@ import image1 from '../../images/abstract.jpg';
 import SlotCard from '../SlotCard';
 import CSlider from '../CSlider';
 import CButton from '../CButton';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import { appStyle, appTheme } from '../../styles/global';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -182,9 +184,17 @@ export default function Slots(props) {
                       </Grid>
 
                     ))}
-                    <AddCircleRoundedIcon
-                      style={{ margin: "2em 0.5em", color: "grey", fontSize: "2em", cursor: "pointer" }}
-                      onClick={() => { setValues([...values, { value: "", synonyms: [] }]) }} />
+                    <Grid item md={4} lg={4}>
+                      <Card container style={{ cursor: "pointer", }}
+                        onClick={() => { setValues([...values, { value: "", synonyms: [] }]) }}>
+                        <CardContent style={{ padding: "3.5em", textAlign: "center" }} >
+                          <Typography>Add New</Typography>
+                          <AddCircleRoundedIcon
+                            style={{ color: "grey", fontSize: "2em" }} />
+                        </CardContent>
+
+                      </Card>
+                    </Grid>
                   </Grid>
                   <br></br>
                   <Grid xs={12}>

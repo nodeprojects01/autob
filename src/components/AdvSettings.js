@@ -167,17 +167,16 @@ export default function AdvSettings(props) {
                         />
                     </div>
                 </Grid>
-                <br></br>
-                <br></br>
-                <div>
-                    <CButton onClick={handleSubmit} name="Save" />
-                    {snackBar.show ?
-                        <SnackBarComponent open={snackBar.show}
-                            type={snackBar.type}
-                            message={snackBar.message}
-                            callBack={handleCloseSnackBar} />
-                        : null}
-                </div>
+        
+                    <Box style={{marginTop:"1em"}}>
+                        <CButton onClick={handleSubmit} name="Save" />
+                        {snackBar.show ?
+                            <SnackBarComponent open={snackBar.show}
+                                type={snackBar.type}
+                                message={snackBar.message}
+                                callBack={handleCloseSnackBar} />
+                            : null}
+                    </Box>
             </Grid>
 
         </div>
