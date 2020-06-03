@@ -6,11 +6,13 @@ const appStyle = {
     colorGreyLight: "#6D6E6F",
     colorBlueGreyDark: "#5F7B86",
     colorBlueGrey: "#85A2A8",
+    colorBlueGreyLight:"#AAB9B4",
     colorRed: "#EB7077",
     colorGreen: "#2BBBAD",
 
     fontSizeSmall: "0.8rem",
     fontSizeDefault: "0.88rem",
+    fontSizeSubHeader: "1rem",
     fontSizeHeader: "1.5rem"
 }
 
@@ -39,6 +41,12 @@ const appTheme = {
         fontSize: appStyle.fontSizeDefault,
         fontFamily: appStyle.fontFamilyWorkSans,
         fontWeight: "400"
+    },
+    textSubHeader: {
+        color: appStyle.colorOffBlack,
+        fontSize: appStyle.fontSizeSubHeader,
+        fontWeight: "500",
+        letterSpacing: "0.6px"
     },
     textHeader: {
         color: appStyle.colorOffBlack,
