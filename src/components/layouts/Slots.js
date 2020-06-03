@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Slots(props) {
-  console.log("slots props", props);
+  console.log("slots props", props, getSlotValue());
   const classes = useStyles();
   const history = useHistory();
   const [disableValue, setDisableValue] = React.useState([]);
@@ -45,11 +45,12 @@ export default function Slots(props) {
       setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });
     }
   };
-  console.log(values)
+  console.log("values", values)
   React.useEffect(() => {
     console.log("inside useEffect")
-    if (previousValues) {
+    if (previousValues.constructor === Object && Object.keys(previousValues).length >= 1) {
       // setSlotValue(values)
+      console.log("previousValues", previousValues)
       setLoading(true)
       getSlots(previousValues).then(() => {
         setValues(getSlotValue())
@@ -132,7 +133,7 @@ export default function Slots(props) {
         </Backdrop>
       }
 
-      <Grid container style={{
+      <Grid style={{
         // backgroundColor: "#4F5457" 
         backgroundImage: `url(${image1})`,
         backgroundPosition: "center",
@@ -140,6 +141,8 @@ export default function Slots(props) {
         backgroundSize: "cover",
         backgroundAttachment: "fixed",
         padding: "3em 0 0 0",
+        width: "100%",
+        minHeight: "100vh"
       }}>
 
         <Box display="flex" justifyContent="flex-end" >
@@ -147,7 +150,8 @@ export default function Slots(props) {
             background: "rgba(255, 255, 255, 0.9)",
             borderRadius: "32px 0 0 0",
             width: "96%",
-            textAlign: "left"
+            textAlign: "left",
+            minHeight: "100vh"
             // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
           }}>
 

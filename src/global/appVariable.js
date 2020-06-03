@@ -1,7 +1,7 @@
 var inputParams = {};
 var excelData = [];
 //initializing the values for development purpose
-var slots = null;
+var slots = [];
 const defaultSlotValues = {
     "slotsModerate": [
         {

@@ -214,6 +214,7 @@ export default function Intents(props) {
         backgroundAttachment: "fixed",
         // minHeight: "100vh",
         padding: "3em 0 0 0",
+        width: "100%"
       }}>
         <Box display="flex" justifyContent="flex-end" style={{ width: "100%" }}>
           <Box style={{
