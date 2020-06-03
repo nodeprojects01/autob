@@ -76,6 +76,7 @@ export default function Slots(props) {
   React.useEffect(() => {
     console.log("inside useEffect")
     if (previousValues) {
+      setSlotValue(values)
       setLoading(true)
       getSlots(previousValues).then(result => {
         setValues(getSlotValue())

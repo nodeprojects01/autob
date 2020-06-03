@@ -31,7 +31,6 @@ const useStyles = makeStyles((theme) => ({
 export default function Layout() {
     const classes = useStyles();
     const [checked, setChecked] = React.useState(false);
-    const [jsonData,setJsonData]=React.useState(null)
     const [values, setValues] = useState({
         botName: "",
         uploadExcelFile: "",
@@ -60,11 +59,10 @@ export default function Layout() {
                 const wsname = wb.SheetNames[0];
                 const ws = wb.Sheets[wsname];
                 /* Convert array of arrays */
-                const data = XLSX.utils.sheet_to_json(ws);
+                const data = XLSX.utils.sheet_to_csv(ws).split('\n');
                 // const data = XLSX.utils.sheet_to_csv(ws, {header:1});
                 /* Update state */
                 setExcelData(data)
-                console.log(getExcelData())
             };
             reader.readAsBinaryString(f);
     }

@@ -82,15 +82,7 @@ export default function BeginForm(props) {
 
         }
     }
-    // React.useEffect(() => {
-    //     if (execution == true) {
-    //         history.push({
-    //             pathname: '/slots',
-    //             values: props.values,
-    //         });
-    //     }
-    // }, [execution]);
-
+    
     return (
         <div>
             {loading &&
