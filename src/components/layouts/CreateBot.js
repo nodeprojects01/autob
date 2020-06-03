@@ -16,14 +16,15 @@ import { grey } from '@material-ui/core/colors';
 import { appStyle, appTheme } from '../../styles/global';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import createBotFiles from '../../botModel/lex/createBotFiles';
-import appVariable from '../../global/appVariable'
+import appVariable from '../../global/appVariable';
+import Container from '@material-ui/core/Container';
 
 const onDownload = async () => {
   console.log("download start");
   // let downloadResult = await createBotFiles.createBotFiles(appVariable.getSlots(),appVariable.getIntents());
   // const blob = await downloadResult.blob();
   // saveAs(blob, "downloaded.zip");
-  await createBotFiles(appVariable.getSlots(),appVariable.getIntents());
+  await createBotFiles(appVariable.getSlots(), appVariable.getIntents());
   console.log("onClick start");
 };
 
@@ -50,15 +51,17 @@ export default function CreateBot() {
       backgroundSize: "cover",
       backgroundAttachment: "fixed",
       padding: "3em 0 0 0",
-      justify:"center",
+      justify: "center",
+      minHeight: "100%"
     }}>
-      <Box display="flex" justifyContent="flex-end" >
+      <Container style={{maxWidth:"75%"}}>
         <Box style={{
           background: "rgba(255, 255, 255, 0.9)",
           borderRadius: "32px 32px 0 0",
-          width: "96%",
+          width: "100%",
           textAlign: "left",
-          justify:"center",
+          justify: "center",
+          minHeight:"100vh"
           // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
         }}>
 
@@ -75,27 +78,27 @@ export default function CreateBot() {
               <div style={{ margin: "2em 2em" }}>
                 <Grid xs={12}>
                   <Box p={1}>
-                    <CButton name="Download ExcelFile" CButton/>
+                    <CButton name="Download ExcelFile" />
                   </Box>
                   <Box p={1}>
                     <Box flexGrow={1}>
                       <Typography >Create Bot Files</Typography>
                     </Box>
                     <Box display="flex" p={1}>
-                    <Box flexGrow={1} p={1}>
-                      <CButton onClick={onDownload} name="LEX" />
+                      <Box flexGrow={1} p={1}>
+                        <CButton onClick={onDownload} name="LEX" />
+                      </Box>
+                      <Box p={1}>
+                        <CButton onClick={() => { console.log("New Page") }} name="LUIS" />
+                      </Box>
                     </Box>
-                    <Box p={1}>
-                      <CButton onClick={() => { console.log("New Page") }} name="LUIS" />
-                    </Box>
-                  </Box>
                   </Box>
                 </Grid>
               </div>
             </div>
           </Grid>
         </Box>
-      </Box>
+      </Container>
     </Grid>
   );
 }

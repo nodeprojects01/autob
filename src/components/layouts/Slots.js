@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Slots(props) {
-  console.log("slots props", props, getSlotValue());
+  console.log("slots props", props, getInputParams());
   const classes = useStyles();
   const history = useHistory();
   const [disableValue, setDisableValue] = React.useState([]);
