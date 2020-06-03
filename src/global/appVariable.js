@@ -1,6 +1,7 @@
+var inputParams = {};
 var excelData = [];
 //initializing the values for development purpose
-var slots = null
+var slots = null;
 const defaultSlotValues = {
     "slotsModerate": [
         {
@@ -58,7 +59,7 @@ const defaultSlotValues = {
     ]
 }
 //initializing the values for development purpose
-var intents=""
+var intents = "";
 var defaultIntents = {
     "greeting": [
         "What is the national animal of Canada?",
@@ -127,6 +128,15 @@ var defaultIntents = {
     ]
 };
 
+function getInputParams() {
+    return inputParams;
+}
+
+function setInputParams(data) {
+    inputParams = data;
+}
+
+
 function getExcelData() {
     return excelData;
 }
@@ -146,7 +156,7 @@ function setSlotValue(data) {
 }
 
 function getIntentValue() {
-    return intents   
+    return intents
 }
 
 function setIntentValue(data) {
@@ -157,6 +167,8 @@ function setIntentValue(data) {
 module.exports = {
     getExcelData,
     setExcelData,
+    getInputParams,
+    setInputParams,
     getSlotValue,
     setSlotValue,
     getIntentValue,

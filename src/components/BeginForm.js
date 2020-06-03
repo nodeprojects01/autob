@@ -15,6 +15,7 @@ import { useHistory } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Backdrop from '@material-ui/core/Backdrop';
 import { getIntents, getSlots } from '../external/textCluster';
+import {getInuptParams, setInputParams} from '../global/appVariable';
 
 //import * as XLSX from 'xlsx';
 {/* <StylesProvider injectFirst>
@@ -68,16 +69,17 @@ export default function BeginForm(props) {
         }
         else {
             //Or go to next page or any other operation
-            setLoading(true)
-            getSlots(props.values).then(result => {
-                setLoading(false)
+            setLoading(true);
+            setInputParams(props.values);
+            getSlots(props.values).then(() => {
+                setLoading(false);
                 history.push({
                     pathname: '/slots',
                     values: props.values,
                 });
             }).catch(errmessage => {
                 setSnackBar({ type: "error", show: true, message: errmessage });
-                setLoading(false)
+                setLoading(false);
             });
 
         }

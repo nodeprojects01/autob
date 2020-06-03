@@ -14,7 +14,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import { getIntents, getSlots } from '../../external/textCluster';
-import { getSlotValue,setSlotValue } from '../../global/appVariable'
+import { getSlotValue, setSlotValue, setInputParams, getInputParams } from '../../global/appVariable'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -24,40 +24,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const slotValues = [
-//   {
-//     "value": "actionType",
-//     "synonyms": ["add", "remove", "register", "signup"]
-//   },
-//   {
-//     "value": "bankNames",
-//     "synonyms": ["hdfc", "axis", "citi", "indus"]
-//   },
-//   {
-//     "value": "cityNames",
-//     "synonyms": ["bangalore", "hydrabad", "mumbai", "delhi", "bopal", "ahmadabad"]
-//   },
-//   {
-//     "value": "riverNames2",
-//     "synonyms": ["ganga", "yamuna", "tunga"]
-//   },
-//   {
-//     "value": "cityNames1",
-//     "synonyms": ["bangalore", "hydrabad", "mumbai", "delhi", "bopal", "ahmadabad"]
-//   },
-//   {
-//     "value": "riverNames1",
-//     "synonyms": ["ganga", "yamuna", "tunga"]
-//   }
-// ]
-
 export default function Slots(props) {
   console.log("slots props", props);
   const classes = useStyles();
   const history = useHistory();
   const [disableValue, setDisableValue] = React.useState([]);
   const [values, setValues] = useState(getSlotValue())
-  const [previousValues, setPreviousValues] = useState(props.location.values)
+  const [previousValues, setPreviousValues] = useState(getInputParams())
   const [loading, setLoading] = useState(false);
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
   const [intentValues, setintentValues] = React.useState(null);
@@ -76,9 +49,9 @@ export default function Slots(props) {
   React.useEffect(() => {
     console.log("inside useEffect")
     if (previousValues) {
-      setSlotValue(values)
+      // setSlotValue(values)
       setLoading(true)
-      getSlots(previousValues).then(result => {
+      getSlots(previousValues).then(() => {
         setValues(getSlotValue())
         setLoading(false)
       }).catch(errmessage => {
@@ -129,10 +102,11 @@ export default function Slots(props) {
 
   //Handle Submit 
   const handleSubmit = e => {
-    setSlotValue(values)
-    setLoading(true)  
+    setSlotValue(values);
+    setInputParams(previousValues);
+    setLoading(true);
     getIntents(previousValues).then(result => {
-      setLoading(false)
+      setLoading(false);
       history.push({
         pathname: '/intents'
       });
@@ -212,7 +186,7 @@ export default function Slots(props) {
                   <Grid xs={12}>
                     <Box display="flex" p={1}>
                       <Box flexGrow={1} p={1}>
-                        <CButton onClick={() => { setPreviousValues(props.location.values); }} name="Reset" />
+                        <CButton onClick={() => { setValues(getSlotValue()) }} name="Reset" />
                       </Box>
                       <Box p={1}>
                         <CButton onClick={handleSubmit} name="Next" />
