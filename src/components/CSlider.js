@@ -41,9 +41,6 @@ export default function DiscreteSlider(props) {
 
   return (
     <div className={classes.root}>
-      {/* <Typography id="discrete-slider-custom" gutterBottom>
-        Autogenerate Synonym Mode
-      </Typography> */}
       <Slider
         value={defaultvalue}
         aria-labelledby="discrete-slider-custom"

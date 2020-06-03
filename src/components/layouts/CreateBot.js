@@ -70,7 +70,7 @@ export default function CreateBot() {
               <div>
                 <Box display="flex">
                   <Box flexGrow={1}>
-                    <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Here You Go!</Typography>
+                    <Typography style={appTheme.textHeader}>Here You Go!</Typography>
                   </Box>
                 </Box>
               </div>

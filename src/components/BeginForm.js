@@ -93,16 +93,13 @@ export default function BeginForm(props) {
                 </Backdrop>
             }
 
-
             <div>
-
                 <div style={{ padding: "2em", height: "80vh" }}>
-
                     <div>
-                        <Typography variant="h5" style={appTheme.textHeader}>Let's Begin</Typography>
+                        <Typography style={appTheme.textHeader}>Let's Begin</Typography>
                     </div>
 
-                    <div style={{ margin: "2em 2em" }}>
+                    <div style={{ margin: "2em" }}>
                         <form className={classes.root} noValidate autoComplete="off">
                             <div>
                                 <Typography style={appTheme.textSmall}>Botname</Typography>

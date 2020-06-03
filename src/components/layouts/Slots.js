@@ -162,7 +162,7 @@ export default function Slots(props) {
                 <div>
                   <Box display="flex">
                     <Box flexGrow={1}>
-                      <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Identify Slots</Typography>
+                      <Typography style={appTheme.textHeader}>Identify Slots</Typography>
                     </Box>
                     <Box alignSelf="center" >
                       <CSlider value={previousValues.autoGenerateSynonymMode} onChange={handleClick}></CSlider>

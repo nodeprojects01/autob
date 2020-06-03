@@ -57,10 +57,10 @@ export default function AdvSettings(props) {
     return (
         <div style={{ padding: "2em" }}>
             <div>
-                <Typography variant="h5" style={appTheme.textHeader}>Settings</Typography>
+                <Typography style={appTheme.textHeader}>Settings</Typography>
             </div>
 
-            <Grid container spacing={2} style={{ margin: "2em 2em", width: "90%" }}>
+            <Grid container spacing={2} style={{ margin: "1.5em", width: "90%" }}>
                 <Grid item xs={12} sm={6}>
                     <div>
                         <Typography style={appTheme.textSmall}>Synonym Generating Type</Typography>

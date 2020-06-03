@@ -228,7 +228,7 @@ export default function Intents(props) {
             <Grid item xs={12}>
               <div style={{ padding: "1.7em 2em" }}>
                 <div>
-                  <Typography variant="h5" style={{ color: "#4F5457", fontWeight: "bold" }}>Identify Intents</Typography>
+                  <Typography style={appTheme.textHeader}>Identify Intents</Typography>
                 </div>
 
                 <div style={{ margin: "2em 2em" }}>

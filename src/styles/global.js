@@ -1,7 +1,6 @@
 
 const appStyle = {
-    fontFamilyDefault: "Muli, sans-serif",
-    fontFamilyCalibri: "Muli, Calibri",
+    fontFamilyWorkSans: "Work Sans, sans-serif",
 
     colorOffBlack: "rgb(79, 84, 87)",  //#4f5457
     colorGreyLight: "#6D6E6F",
@@ -25,27 +24,27 @@ const appTheme = {
         height: 44,
         padding: '0 40px',
         boxShadow: '0 3px 5px 2px rgba(79, 84, 87, 0.3)',
-        fontFamily: appStyle.fontFamily,
+        fontFamily: appStyle.fontFamilyWorkSans,
         fontWeight: "500"
     },
     textSmall: {
         color: appStyle.colorGreyLight,
         fontSize: appStyle.fontSizeSmall,
         textTransform: 'capitalize',
-        fontFamily: appStyle.fontFamily,
+        fontFamily: appStyle.fontFamilyWorkSans,
         fontWeight: "400"
     },
     textDefault: {
         color: appStyle.colorOffBlack,
         fontSize: appStyle.fontSizeDefault,
-        fontFamily: appStyle.fontFamily,
+        fontFamily: appStyle.fontFamilyWorkSans,
         fontWeight: "400"
     },
     textHeader: {
         color: appStyle.colorOffBlack,
         fontSize: appStyle.fontSizeHeader,
-        fontWeight: "800",
-        fontFamily: appStyle.fontFamilyCalibri
+        fontWeight: "700",
+        letterSpacing: "0.6px"
     },
     textAutob: { color: "#FFF", fontWeight: "bold", letterSpacing: "5px" }
 }
