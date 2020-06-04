@@ -76,6 +76,7 @@ export default function Slots(props) {
   const handleInputchange = (e, synonymValues, index) => {
     console.log("handleInput")
     const { name, value } = e.target
+    console.log(index)
     console.log(name, "+", value);
     if (name == "slotNames") {
       setValues(values.map((data, j) => {
@@ -101,6 +102,16 @@ export default function Slots(props) {
       }));
 
     }
+    console.log(values)
+  }
+  const validateSlotBlank = () => {
+    var slotBlank = false;
+    values.map((data) => {
+      if (data.value == '') {
+        slotBlank = true
+      }
+    })
+    return slotBlank
   }
 
   //Handle Submit 
@@ -116,16 +127,6 @@ export default function Slots(props) {
     })
       .catch(errmessage => { setSnackBar({ type: "error", show: true, message: errmessage }); setLoading(false) })
   }
-  // React.useEffect(() => {
-  //   console.log("inside useEffect")
-  //   if (intentValues) {
-  //     history.push({
-  //       pathname: '/intents',
-  //       intentValues: intentValues
-  //     });
-  //   }
-
-  // }, [intentValues]);
 
   return (
     <div>
@@ -186,7 +187,16 @@ export default function Slots(props) {
                     ))}
                     <Grid item md={4} lg={4}>
                       <Card container style={{ cursor: "pointer", }}
-                        onClick={() => { setValues([...values, { value: "", synonyms: [] }]) }}>
+                        onClick={() => {
+                          if (!validateSlotBlank()) {
+                            setValues([...values, { value: "", synonyms: [] }])
+                          }
+                          else {
+                            setSnackBar({ type: "error", show: true, message: "Slot name can not be blank" })
+                          }
+                        }
+                        }
+                      >
                         <CardContent style={{ padding: "3.5em", textAlign: "center" }} >
                           <Typography>Add New</Typography>
                           <AddCircleRoundedIcon

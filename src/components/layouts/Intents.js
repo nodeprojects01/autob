@@ -119,7 +119,7 @@ export default function Intents(props) {
     }
     else if (name == "intentName") {
       setNewIntentName(value)
-      if (Object.keys(clusterData).includes(value)) {
+      if (Object.keys(clusterData).includes(value)||value=='') {
         setCheckedIntentName(true)
       }
       else {
@@ -190,6 +190,7 @@ export default function Intents(props) {
           ([key, val]) => !deleteIntentKey.includes(key)
         )
       ));
+      clusterNames.splice(selectedClusterName, 1);
     }
   }
 
@@ -244,12 +245,15 @@ export default function Intents(props) {
                               onChange={handleInputChange}
                               onKeyPress={event => {
                                 if (event.key === 'Enter') {
-                                  if (!(Object.keys(clusterData).includes(addIntent))) {
+                                  if (!(Object.keys(clusterData).includes(addIntent)) && (addIntent!='')) {
                                     setClusterData({ ...clusterData, [addIntent]: [] })
                                     setClusterNames(([addIntent].concat(clusterNames)))
                                     setAddIntent('')
                                     setChecked(null)
                                     setSnackBar({ type: "success", show: true, message: "New cluster has been created" });
+                                  }
+                                  else{
+                                    setSnackBar({ type: "error", show: true, message: "Enter correct name of the cluster" });
                                   }
                                 }
                               }}
@@ -302,11 +306,14 @@ export default function Intents(props) {
                                   onChange={handleInputChange}
                                   onKeyPress={event => {
                                     if (event.key === 'Enter') {
-                                      if (!(Object.keys(clusterData).includes(newIntentName))) {
+                                      if (!(Object.keys(clusterData).includes(newIntentName))&& (newIntentName!='')) {
                                         updateClusterName(newIntentName, selectedClusterName)
                                         setSelectedClusterName(newIntentName)
                                         setCheckedIntentName(null)
                                         setSnackBar({ type: "success", show: true, message: "Name  cluster has been updated" });
+                                      }
+                                      else{
+                                        setSnackBar({ type: "error", show: true, message: "Enter correct name of the cluster" });
                                       }
                                     }
                                   }}

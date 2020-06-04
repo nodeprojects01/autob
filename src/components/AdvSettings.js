@@ -151,7 +151,7 @@ export default function AdvSettings(props) {
                             onChange={props.setValues}
                         >
                             <MenuItem value={"alphanumeric"}>Alphanumeric</MenuItem>
-                            <MenuItem value={"extract_only text"}>Extract Only text</MenuItem>
+                            <MenuItem value={"extract_only_text"}>Extract Only text</MenuItem>
                         </CTextField>
                     </div>
                 </Grid>
