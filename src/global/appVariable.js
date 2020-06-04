@@ -59,7 +59,7 @@ const defaultSlotValues = {
     ]
 }
 //initializing the values for development purpose
-var intents = "";
+var intents = {};
 var defaultIntents = {
     "greeting": [
         "What is the national animal of Canada?",

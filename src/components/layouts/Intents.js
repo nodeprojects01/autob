@@ -19,8 +19,12 @@ import CAutocomplete from '../CAutocomplete';
 import CButton from '../CButton';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { useHistory } from 'react-router-dom';
 import { getIntents, getSlots } from '../../external/textCluster';
-import { getSlotValue,setSlotValue,getIntentValue,setIntentValue} from '../../global/appVariable'
+import {
+  getSlotValue, setSlotValue, getIntentValue,
+  setIntentValue, setInputParams, getInputParams
+} from '../../global/appVariable';
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -74,19 +78,32 @@ const StyledListItem = withStyles({
 
 
 const arrayToString = (arr) => {
-  return arr.toString().replace(/,/g, "\n");
+  if (arr != undefined && arr.length != 0) {
+    return arr.toString().replace(/,/g, "\n");
+  }
+  else {
+    return "";
+  }
 }
 
 const strToArray = (str) => {
   return str.replace(/(?:\r\n|\r|\n)/g, ',').replace(/\s+/g, ' ').split(',');
 }
 
-export default function Intents(props) {
+export default function Intents() {
   console.log("inside intent.js")
-
+  const history = useHistory();
   const classes = useStyles();
-  const originalDataset = getIntentValue();
-  const [clusterData, setClusterData] = React.useState(originalDataset);
+  const intentValues = getIntentValue();
+  if (Object.keys(intentValues).length == 0) {
+    console.log("inside if");
+    if (window.confirm('Redirecting to the home page. Would you like to continue?')) {
+      history.push({
+        pathname: '/',
+      });
+    }
+  }
+  const [clusterData, setClusterData] = React.useState(intentValues);
   const [selectedClusterName, setSelectedClusterName] = React.useState(Object.keys(clusterData)[0]);
   const [clusterNames, setClusterNames] = React.useState(Object.keys(clusterData));
   const [addIntent, setAddIntent] = React.useState('');
@@ -97,12 +114,22 @@ export default function Intents(props) {
   const [newIntentName, setNewIntentName] = React.useState(Object.keys(clusterData)[0]);
   const [loading, setLoading] = useState(false);
 
-  console.log(clusterData)
+
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
   const handleCloseSnackBar = () => {
     setSnackBar({ type: "error", show: false, message: "" })
   };
+
+  function reset() {
+    setClusterData(getIntentValue())
+    setSelectedClusterName(Object.keys(clusterData)[0])
+    setClusterNames(Object.keys(clusterData))
+    setAddIntent('')
+    setMergedClusters({})
+    setFixedOptions([selectedClusterName])
+    setNewIntentName(Object.keys(clusterData)[0])
+  }
 
   const handleInputChange = (e) => {
     console.log(e)
@@ -119,7 +146,7 @@ export default function Intents(props) {
     }
     else if (name == "intentName") {
       setNewIntentName(value)
-      if (Object.keys(clusterData).includes(value)) {
+      if (Object.keys(clusterData).includes(value) || value == '') {
         setCheckedIntentName(true)
       }
       else {
@@ -190,8 +217,10 @@ export default function Intents(props) {
           ([key, val]) => !deleteIntentKey.includes(key)
         )
       ));
+      clusterNames.splice(selectedClusterName, 1);
     }
   }
+
 
   const handleSubmit = e => {
     setIntentValue(clusterData)
@@ -244,12 +273,15 @@ export default function Intents(props) {
                               onChange={handleInputChange}
                               onKeyPress={event => {
                                 if (event.key === 'Enter') {
-                                  if (!(Object.keys(clusterData).includes(addIntent))) {
+                                  if (!(Object.keys(clusterData).includes(addIntent)) && (addIntent != '')) {
                                     setClusterData({ ...clusterData, [addIntent]: [] })
                                     setClusterNames(([addIntent].concat(clusterNames)))
                                     setAddIntent('')
                                     setChecked(null)
                                     setSnackBar({ type: "success", show: true, message: "New cluster has been created" });
+                                  }
+                                  else {
+                                    setSnackBar({ type: "error", show: true, message: "Enter correct name of the cluster" });
                                   }
                                 }
                               }}
@@ -302,11 +334,14 @@ export default function Intents(props) {
                                   onChange={handleInputChange}
                                   onKeyPress={event => {
                                     if (event.key === 'Enter') {
-                                      if (!(Object.keys(clusterData).includes(newIntentName))) {
+                                      if (!(Object.keys(clusterData).includes(newIntentName)) && (newIntentName != '')) {
                                         updateClusterName(newIntentName, selectedClusterName)
                                         setSelectedClusterName(newIntentName)
                                         setCheckedIntentName(null)
                                         setSnackBar({ type: "success", show: true, message: "Name  cluster has been updated" });
+                                      }
+                                      else {
+                                        setSnackBar({ type: "error", show: true, message: "Enter correct name of the cluster" });
                                       }
                                     }
                                   }}
@@ -363,9 +398,9 @@ export default function Intents(props) {
                     </Grid>
                   </Grid>
                   <Grid xs={12}>
-                    <Box display="flex" p={1} style={{marginTop:"1em"}}>
+                    <Box display="flex" p={1} style={{ marginTop: "1em" }}>
                       <Box flexGrow={1} p={1}>
-                        <CButton onClick={() => { setClusterData(originalDataset) }} name="Reset" />
+                        <CButton onClick={reset} name="Reset" />
                       </Box>
                       <Box p={1}>
                         <CButton onClick={handleSubmit} name="Next" />

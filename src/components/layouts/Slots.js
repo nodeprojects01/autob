@@ -16,7 +16,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import { getIntents, getSlots } from '../../external/textCluster';
-import { getSlotValue, setSlotValue, setInputParams, getInputParams } from '../../global/appVariable'
+import { getSlotValue, setSlotValue, setInputParams, getInputParams } from '../../global/appVariable';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -26,8 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Slots(props) {
-  console.log("slots props", props, getInputParams());
+export default function Slots() {
   const classes = useStyles();
   const history = useHistory();
   const [disableValue, setDisableValue] = React.useState([]);
@@ -47,14 +46,27 @@ export default function Slots(props) {
       setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });
     }
   };
-  console.log("values", values)
+
+  React.useEffect(() => {
+    const globalParams = getInputParams();
+    console.log("Object.keys(globalParams)", Object.keys(globalParams));
+    if (Object.keys(globalParams).length == 0) {
+      if (window.confirm('Redirecting to the home page. Would you like to continue?')) {
+        history.push({
+          pathname: '/',
+        });
+      }
+    }
+  }, []);
+
+  console.log("values", values);
   React.useEffect(() => {
     console.log("inside useEffect")
     if (previousValues.constructor === Object && Object.keys(previousValues).length >= 1) {
-      // setSlotValue(values)
+      setInputParams(previousValues)
       console.log("previousValues", previousValues)
       setLoading(true)
-      getSlots(previousValues).then(() => {
+      getSlots().then(() => {
         setValues(getSlotValue())
         setLoading(false)
       }).catch(errmessage => {
@@ -76,6 +88,7 @@ export default function Slots(props) {
   const handleInputchange = (e, synonymValues, index) => {
     console.log("handleInput")
     const { name, value } = e.target
+    console.log(index)
     console.log(name, "+", value);
     if (name == "slotNames") {
       setValues(values.map((data, j) => {
@@ -101,6 +114,16 @@ export default function Slots(props) {
       }));
 
     }
+    console.log(values)
+  }
+  const validateSlotBlank = () => {
+    var slotBlank = false;
+    values.map((data) => {
+      if (data.value == '') {
+        slotBlank = true
+      }
+    })
+    return slotBlank
   }
 
   //Handle Submit 
@@ -108,7 +131,7 @@ export default function Slots(props) {
     setSlotValue(values);
     setInputParams(previousValues);
     setLoading(true);
-    getIntents(previousValues).then(result => {
+    getIntents().then(result => {
       setLoading(false);
       history.push({
         pathname: '/intents'
@@ -116,16 +139,6 @@ export default function Slots(props) {
     })
       .catch(errmessage => { setSnackBar({ type: "error", show: true, message: errmessage }); setLoading(false) })
   }
-  // React.useEffect(() => {
-  //   console.log("inside useEffect")
-  //   if (intentValues) {
-  //     history.push({
-  //       pathname: '/intents',
-  //       intentValues: intentValues
-  //     });
-  //   }
-
-  // }, [intentValues]);
 
   return (
     <div>
@@ -186,7 +199,16 @@ export default function Slots(props) {
                     ))}
                     <Grid item md={4} lg={4}>
                       <Card container style={{ cursor: "pointer", }}
-                        onClick={() => { setValues([...values, { value: "", synonyms: [] }]) }}>
+                        onClick={() => {
+                          if (!validateSlotBlank()) {
+                            setValues([...values, { value: "", synonyms: [] }])
+                          }
+                          else {
+                            setSnackBar({ type: "error", show: true, message: "Slot name can not be blank" })
+                          }
+                        }
+                        }
+                      >
                         <CardContent style={{ padding: "3.5em", textAlign: "center" }} >
                           <Typography>Add New</Typography>
                           <AddCircleRoundedIcon
