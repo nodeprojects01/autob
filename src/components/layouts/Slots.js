@@ -16,7 +16,7 @@ import Backdrop from '@material-ui/core/Backdrop';
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import { getIntents, getSlots } from '../../external/textCluster';
-import { getSlotValue, setSlotValue, setInputParams, getInputParams } from '../../global/appVariable'
+import { getSlotValue, setSlotValue, setInputParams, getInputParams } from '../../global/appVariable';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -46,7 +46,20 @@ export default function Slots() {
       setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });
     }
   };
-  console.log("values", values)
+
+  React.useEffect(() => {
+    const globalParams = getInputParams();
+    console.log("Object.keys(globalParams)", Object.keys(globalParams));
+    if (Object.keys(globalParams).length == 0) {
+      if (window.confirm('Redirecting to the home page. Would you like to continue?')) {
+        history.push({
+          pathname: '/',
+        });
+      }
+    }
+  }, []);
+
+  console.log("values", values);
   React.useEffect(() => {
     console.log("inside useEffect")
     if (previousValues.constructor === Object && Object.keys(previousValues).length >= 1) {

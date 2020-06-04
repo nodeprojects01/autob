@@ -19,8 +19,12 @@ import CAutocomplete from '../CAutocomplete';
 import CButton from '../CButton';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import { useHistory } from 'react-router-dom';
 import { getIntents, getSlots } from '../../external/textCluster';
-import { getSlotValue,setSlotValue,getIntentValue,setIntentValue} from '../../global/appVariable'
+import {
+  getSlotValue, setSlotValue, getIntentValue,
+  setIntentValue, setInputParams, getInputParams
+} from '../../global/appVariable';
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -74,7 +78,12 @@ const StyledListItem = withStyles({
 
 
 const arrayToString = (arr) => {
-  return arr.toString().replace(/,/g, "\n");
+  if (arr != undefined && arr.length != 0) {
+    return arr.toString().replace(/,/g, "\n");
+  }
+  else {
+    return "";
+  }
 }
 
 const strToArray = (str) => {
@@ -83,10 +92,18 @@ const strToArray = (str) => {
 
 export default function Intents() {
   console.log("inside intent.js")
-
+  const history = useHistory();
   const classes = useStyles();
-  const originalDataset = getIntentValue();
-  const [clusterData, setClusterData] = React.useState(originalDataset);
+  const intentValues = getIntentValue();
+  if (Object.keys(intentValues).length == 0) {
+    console.log("inside if");
+    if (window.confirm('Redirecting to the home page. Would you like to continue?')) {
+      history.push({
+        pathname: '/',
+      });
+    }
+  }
+  const [clusterData, setClusterData] = React.useState(intentValues);
   const [selectedClusterName, setSelectedClusterName] = React.useState(Object.keys(clusterData)[0]);
   const [clusterNames, setClusterNames] = React.useState(Object.keys(clusterData));
   const [addIntent, setAddIntent] = React.useState('');
@@ -97,13 +114,14 @@ export default function Intents() {
   const [newIntentName, setNewIntentName] = React.useState(Object.keys(clusterData)[0]);
   const [loading, setLoading] = useState(false);
 
-  console.log(clusterData)
+
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
   const handleCloseSnackBar = () => {
     setSnackBar({ type: "error", show: false, message: "" })
   };
-  function reset(){
+
+  function reset() {
     setClusterData(getIntentValue())
     setSelectedClusterName(Object.keys(clusterData)[0])
     setClusterNames(Object.keys(clusterData))
@@ -128,7 +146,7 @@ export default function Intents() {
     }
     else if (name == "intentName") {
       setNewIntentName(value)
-      if (Object.keys(clusterData).includes(value)||value=='') {
+      if (Object.keys(clusterData).includes(value) || value == '') {
         setCheckedIntentName(true)
       }
       else {
@@ -203,6 +221,7 @@ export default function Intents() {
     }
   }
 
+
   const handleSubmit = e => {
     setIntentValue(clusterData)
     console.log("route to new page")
@@ -254,14 +273,14 @@ export default function Intents() {
                               onChange={handleInputChange}
                               onKeyPress={event => {
                                 if (event.key === 'Enter') {
-                                  if (!(Object.keys(clusterData).includes(addIntent)) && (addIntent!='')) {
+                                  if (!(Object.keys(clusterData).includes(addIntent)) && (addIntent != '')) {
                                     setClusterData({ ...clusterData, [addIntent]: [] })
                                     setClusterNames(([addIntent].concat(clusterNames)))
                                     setAddIntent('')
                                     setChecked(null)
                                     setSnackBar({ type: "success", show: true, message: "New cluster has been created" });
                                   }
-                                  else{
+                                  else {
                                     setSnackBar({ type: "error", show: true, message: "Enter correct name of the cluster" });
                                   }
                                 }
@@ -315,13 +334,13 @@ export default function Intents() {
                                   onChange={handleInputChange}
                                   onKeyPress={event => {
                                     if (event.key === 'Enter') {
-                                      if (!(Object.keys(clusterData).includes(newIntentName))&& (newIntentName!='')) {
+                                      if (!(Object.keys(clusterData).includes(newIntentName)) && (newIntentName != '')) {
                                         updateClusterName(newIntentName, selectedClusterName)
                                         setSelectedClusterName(newIntentName)
                                         setCheckedIntentName(null)
                                         setSnackBar({ type: "success", show: true, message: "Name  cluster has been updated" });
                                       }
-                                      else{
+                                      else {
                                         setSnackBar({ type: "error", show: true, message: "Enter correct name of the cluster" });
                                       }
                                     }
@@ -379,7 +398,7 @@ export default function Intents() {
                     </Grid>
                   </Grid>
                   <Grid xs={12}>
-                    <Box display="flex" p={1} style={{marginTop:"1em"}}>
+                    <Box display="flex" p={1} style={{ marginTop: "1em" }}>
                       <Box flexGrow={1} p={1}>
                         <CButton onClick={reset} name="Reset" />
                       </Box>
