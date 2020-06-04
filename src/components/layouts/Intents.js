@@ -81,7 +81,7 @@ const strToArray = (str) => {
   return str.replace(/(?:\r\n|\r|\n)/g, ',').replace(/\s+/g, ' ').split(',');
 }
 
-export default function Intents(props) {
+export default function Intents() {
   console.log("inside intent.js")
 
   const classes = useStyles();
@@ -103,6 +103,15 @@ export default function Intents(props) {
   const handleCloseSnackBar = () => {
     setSnackBar({ type: "error", show: false, message: "" })
   };
+  function reset(){
+    setClusterData(getIntentValue())
+    setSelectedClusterName(Object.keys(clusterData)[0])
+    setClusterNames(Object.keys(clusterData))
+    setAddIntent('')
+    setMergedClusters({})
+    setFixedOptions([selectedClusterName])
+    setNewIntentName(Object.keys(clusterData)[0])
+  }
 
   const handleInputChange = (e) => {
     console.log(e)
@@ -372,7 +381,7 @@ export default function Intents(props) {
                   <Grid xs={12}>
                     <Box display="flex" p={1} style={{marginTop:"1em"}}>
                       <Box flexGrow={1} p={1}>
-                        <CButton onClick={() => { setClusterData(originalDataset) }} name="Reset" />
+                        <CButton onClick={reset} name="Reset" />
                       </Box>
                       <Box p={1}>
                         <CButton onClick={handleSubmit} name="Next" />

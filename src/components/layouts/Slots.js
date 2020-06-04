@@ -26,8 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Slots(props) {
-  console.log("slots props", props, getInputParams());
+export default function Slots() {
   const classes = useStyles();
   const history = useHistory();
   const [disableValue, setDisableValue] = React.useState([]);
@@ -51,10 +50,10 @@ export default function Slots(props) {
   React.useEffect(() => {
     console.log("inside useEffect")
     if (previousValues.constructor === Object && Object.keys(previousValues).length >= 1) {
-      // setSlotValue(values)
+      setInputParams(previousValues)
       console.log("previousValues", previousValues)
       setLoading(true)
-      getSlots(previousValues).then(() => {
+      getSlots().then(() => {
         setValues(getSlotValue())
         setLoading(false)
       }).catch(errmessage => {
@@ -119,7 +118,7 @@ export default function Slots(props) {
     setSlotValue(values);
     setInputParams(previousValues);
     setLoading(true);
-    getIntents(previousValues).then(result => {
+    getIntents().then(result => {
       setLoading(false);
       history.push({
         pathname: '/intents'

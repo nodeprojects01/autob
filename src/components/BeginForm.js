@@ -71,11 +71,10 @@ export default function BeginForm(props) {
             //Or go to next page or any other operation
             setLoading(true);
             setInputParams(props.values);
-            getSlots(props.values).then(() => {
+            getSlots().then(() => {
                 setLoading(false);
                 history.push({
                     pathname: '/slots',
-                    values: props.values,
                 });
             }).catch(errmessage => {
                 setSnackBar({ type: "error", show: true, message: errmessage });
