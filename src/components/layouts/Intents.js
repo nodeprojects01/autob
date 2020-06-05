@@ -25,6 +25,7 @@ import {
   getSlotValue, setSlotValue, getIntentValue,
   setIntentValue, setInputParams, getInputParams
 } from '../../global/appVariable';
+import HomeIcon from '@material-ui/icons/Home';
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -54,7 +55,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const StyledListItem = withStyles({
   root: {
     // backgroundColor: appStyle.colorGreyLight,
@@ -76,7 +76,6 @@ const StyledListItem = withStyles({
 
 })(ListItem);
 
-
 const arrayToString = (arr) => {
   if (arr != undefined && arr.length != 0) {
     return arr.toString().replace(/,/g, "\n");
@@ -91,12 +90,10 @@ const strToArray = (str) => {
 }
 
 export default function Intents() {
-  console.log("inside intent.js")
   const history = useHistory();
   const classes = useStyles();
   const intentValues = getIntentValue();
   if (Object.keys(intentValues).length == 0) {
-    console.log("inside if");
     if (window.confirm('Redirecting to the home page. Would you like to continue?')) {
       history.push({
         pathname: '/',
@@ -132,9 +129,7 @@ export default function Intents() {
   }
 
   const handleInputChange = (e) => {
-    console.log(e)
-    const { name, value } = e.target
-    console.log(name, "+", value);
+    const { name, value } = e.target;
     if (name == "addNewIntent") {
       setAddIntent(value)
       if (Object.keys(clusterData).includes(value)) {
@@ -163,7 +158,6 @@ export default function Intents() {
   }
 
   const handleOnChangeMergeClusters = (event, newValue) => {
-    console.log("handleOnChangeMergeClusters - ", newValue);
     setFixedOptions([
       ...fixedOptions,
       ...newValue.filter(option => fixedOptions.indexOf(option) === -1)
@@ -178,18 +172,16 @@ export default function Intents() {
 
     newValue.splice(selectedClusterName, 1);
     mergedClusters[selectedClusterName] = newValue;
-    console.log("mergedClusters - ", mergedClusters);
     setMergedClusters(mergedClusters);
     getFilteredClusterNames();
   }
 
   const getFilteredClusterNames = () => {
-    console.log("getFilteredClusterNames...")
+    console.log("getFilteredClusterNames...");
     const mergedClusts = [].concat.apply([], (Object.values(mergedClusters)));
     const filClusterNames = (Object.keys(clusterData)).filter(function (el) {
       return (mergedClusts).indexOf(el) < 0;
     });
-    console.log(filClusterNames)
     setClusterNames(filClusterNames);
   }
   const updateClusterName = (newIntentName, selectedClusterName) => {
@@ -204,7 +196,6 @@ export default function Intents() {
 
     if (window.confirm('Are you sure you want to delete?')) {
       const deleteIntentKey = [selectedClusterName];
-      console.log(deleteIntentKey)
       var position = Object.keys(clusterData).indexOf(selectedClusterName);
       (parseInt(position) > 0) ? (position = parseInt(position) - 1) : (position = parseInt(position) + 1)
       const updatedKeyName = Object.keys(clusterData)[position]
@@ -224,7 +215,6 @@ export default function Intents() {
 
   const handleSubmit = e => {
     setIntentValue(clusterData)
-    console.log("route to new page")
   }
   return (
     <div>
@@ -233,6 +223,17 @@ export default function Intents() {
           <CircularProgress thickness={5} style={{ position: 'fixed', top: '50%', left: '50%', margin: '-50px 0px 0px -50px' }} />
         </Backdrop>
       }
+
+      <Box style={{
+        position: "absolute", cursor: "pointer",
+        padding: "5px 7px", background: "#FFF", borderRadius: "20px"
+      }} onClick={() => {
+        history.push({
+          pathname: '/'
+        });
+      }}>
+        <HomeIcon style={{ "color": appStyle.colorGreyLight }} fontSize="small" />
+      </Box>
 
       <Grid container style={{
         backgroundImage: `url(${image1})`,
@@ -245,6 +246,7 @@ export default function Intents() {
         padding: "3em 0 0 0",
         width: "100%"
       }}>
+
         <Box display="flex" justifyContent="flex-end" style={{ width: "100%" }}>
           <Box style={{
             background: "rgba(255, 255, 255, 0.9)",

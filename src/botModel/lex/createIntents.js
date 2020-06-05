@@ -17,20 +17,16 @@ function trainIntent() {
   //read excel file from slotInDir which is defined above
   var files = fs.readdirSync(slotInDir);
   files.forEach(slotFile => {
-    console.log(slotFile);
     let sData = JSON.parse(fs.readFileSync(slotInDir.concat(slotFile), 'utf-8'));
     let slotValArray = [];
     sData.enumerationValues.forEach(val => {
-      console.log('val.value : ', val.value.toLowerCase());
-      slotValArray.push(val.value.toLowerCase())
-      console.log('val.synonyms : ', val.synonyms);
+      slotValArray.push(val.value.toLowerCase());
       val.synonyms.forEach(syn => {
-        slotValArray.push(syn.toLowerCase())
+        slotValArray.push(syn.toLowerCase());
       })
     })
     allSlotArray[slotFile] = [...new Set(slotValArray)]
-  })
-  console.log(JSON.stringify(allSlotArray))
+  });
   //create folder if that is not exist
   if (!fs.existsSync(intentOut)) {
     fs.mkdirSync(intentOut);

@@ -17,7 +17,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from 'react-router-dom';
 import { getIntents, getSlots } from '../../external/textCluster';
 import { getSlotValue, setSlotValue, setInputParams, getInputParams } from '../../global/appVariable';
-
+import HomeIcon from '@material-ui/icons/Home';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -49,7 +49,6 @@ export default function Slots() {
 
   React.useEffect(() => {
     const globalParams = getInputParams();
-    console.log("Object.keys(globalParams)", Object.keys(globalParams));
     if (Object.keys(globalParams).length == 0) {
       if (window.confirm('Redirecting to the home page. Would you like to continue?')) {
         history.push({
@@ -59,12 +58,10 @@ export default function Slots() {
     }
   }, []);
 
-  console.log("values", values);
+  
   React.useEffect(() => {
-    console.log("inside useEffect")
     if (previousValues.constructor === Object && Object.keys(previousValues).length >= 1) {
       setInputParams(previousValues)
-      console.log("previousValues", previousValues)
       setLoading(true)
       getSlots().then(() => {
         setValues(getSlotValue())
@@ -86,10 +83,7 @@ export default function Slots() {
     }
   }
   const handleInputchange = (e, synonymValues, index) => {
-    console.log("handleInput")
-    const { name, value } = e.target
-    console.log(index)
-    console.log(name, "+", value);
+    const { name, value } = e.target;
     if (name == "slotNames") {
       setValues(values.map((data, j) => {
         if (j === index) {
@@ -114,7 +108,6 @@ export default function Slots() {
       }));
 
     }
-    console.log(values)
   }
   const validateSlotBlank = () => {
     var slotBlank = false;
@@ -148,6 +141,17 @@ export default function Slots() {
         </Backdrop>
       }
 
+      <Box style={{
+        position: "absolute", cursor: "pointer",
+        padding: "5px 7px", background: "#FFF", borderRadius: "20px"
+      }} onClick={()=>{
+        history.push({
+          pathname: '/'
+        });
+      }}>
+        <HomeIcon style={{ "color": appStyle.colorGreyLight }} fontSize="small" />
+      </Box>
+
       <Grid style={{
         // backgroundColor: "#4F5457" 
         backgroundImage: `url(${image1})`,
@@ -178,7 +182,9 @@ export default function Slots() {
                       <Typography style={appTheme.textHeader}>Identify Slots</Typography>
                     </Box>
                     <Box alignSelf="center" >
-                      <CSlider value={previousValues.autoGenerateSynonymMode} onChange={handleClick}></CSlider>
+                      {previousValues.synonymGenerating == "auto_generate_synonyms" ?
+                        <CSlider value={previousValues.autoGenerateSynonymMode} onChange={handleClick}></CSlider>
+                        : ""}
                     </Box>
                   </Box>
                 </div>
@@ -209,8 +215,8 @@ export default function Slots() {
                         }
                         }
                       >
-                        <CardContent style={{ padding: "3.5em", textAlign: "center" }} >
-                          <Typography>Add New</Typography>
+                        <CardContent style={{ padding: "3.5em", background: "rgb(246, 248, 247)", textAlign: "center" }} >
+                          <Typography style={appTheme.textDefault} >Add New</Typography>
                           <AddCircleRoundedIcon
                             style={{ color: "grey", fontSize: "2em" }} />
                         </CardContent>

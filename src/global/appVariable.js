@@ -143,7 +143,6 @@ function getExcelData() {
 
 function setExcelData(data) {
     excelData = data;
-    console.log(excelData)
 }
 
 function getSlotValue() {
@@ -152,7 +151,6 @@ function getSlotValue() {
 
 function setSlotValue(data) {
     slots = data;
-    console.log(slots)
 }
 
 function getIntentValue() {
@@ -161,7 +159,6 @@ function getIntentValue() {
 
 function setIntentValue(data) {
     intents = data;
-    console.log(intents)
 }
 
 module.exports = {

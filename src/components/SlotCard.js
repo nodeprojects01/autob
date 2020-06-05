@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SlotCard(props) {
-  console.log(props)
   const classes = useStyles();
   return (
     <div className={classes.root}>

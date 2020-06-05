@@ -48,8 +48,6 @@ export default function AdvSettings(props) {
             setSnackBar({ type: "error", show: true, message: errorstatus });
         }
         else {
-            //Or go to next page or any other operation
-            //    console.log("success")
             props.onClick();
         }
     }
@@ -74,7 +72,7 @@ export default function AdvSettings(props) {
                         >
                             <MenuItem value={"auto_generate_synonyms"}>Auto Generate Synonyms</MenuItem>
                             <MenuItem value={"custom_synonyms"}>Custom Synonyms</MenuItem>
-                            <MenuItem value={"apply_global synonyms"}>Apply Global Synonyms</MenuItem>
+                            <MenuItem value={"apply_global_synonyms"}>Apply Global Synonyms</MenuItem>
                         </CTextField>
                     </div>
                 </Grid>

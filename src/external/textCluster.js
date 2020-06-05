@@ -1,8 +1,9 @@
 import axios from 'axios';
-import { getExcelData, getSlotValue, setSlotValue,getInputParams, setIntentValue,getIntentValue } from '../global/appVariable'
+import { getExcelData, getSlotValue, setSlotValue, getInputParams, setIntentValue, getIntentValue } from '../global/appVariable'
 
 function getIntents() {
-    const data = paramFormatter("intent")
+    const data = paramFormatter("intent");
+    console.log("getIntents() - ", data);
     return new Promise((resolve, reject) => {
         axios.post('/intents', data)
             .then(function (response) {
@@ -19,8 +20,8 @@ function getIntents() {
 }
 
 function getSlots() {
-    
-    const data = paramFormatter("slots")
+    const data = paramFormatter("slots");
+    console.log("getSlots() - ", data);
     return new Promise((resolve, reject) => {
         axios.post('/slots', data)
             .then(function (response) {
@@ -39,22 +40,21 @@ function getSlots() {
 }
 
 function paramFormatter(callApi) {
-    var value=getInputParams()
-    console.log(value)
+    var value = getInputParams();
     const [max, min] = value.maxMinLengthCluster.split("/")
     const unimportantWords = value.removeUnimportantWords.split(',')
     var synonymGenerating;
     var tempArr = getSlotValue()
     var custom_synonyms = {}
-    if ((callApi == "intent") && (tempArr.length>0)) {
+    if ((callApi == "intent") && (tempArr.length > 0)) {
         synonymGenerating = "custom_synonyms"
         tempArr.map((value) => (custom_synonyms[value.value] = value.synonyms));
-    }  
+    }
     else {
         synonymGenerating = value.synonymGenerating
         custom_synonyms = value.customSynonymsJSON
     }
-    console.log(custom_synonyms)
+
     const data = {
         "botname": value.botName,
         "excel_data": getExcelData(),

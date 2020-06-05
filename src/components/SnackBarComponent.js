@@ -28,7 +28,6 @@ const useStyles = makeStyles(theme => ({
 
 export default function SnackBarComponent(props) {
     const classes = useStyles();
-    console.log(props);
     const [open, setOpen] = React.useState(props.open);
     const autoHideDuration = props.hasOwnProperty('autoHideDuration') ? props.autoHideDuration : defaultAutoHideDuration
     const handleClose = () => {

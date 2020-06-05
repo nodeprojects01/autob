@@ -68,8 +68,7 @@ export default function Layout() {
     }
 
     const handleInputchange = (e) => {
-        const { name, value } = e.target
-        console.log(name, "+", value);
+        const { name, value } = e.target;
         if (name === "uploadExcelFileHidden") {
             const filename = e.target.files[0].name;
             values.uploadExcelFile = filename;
@@ -84,8 +83,6 @@ export default function Layout() {
         if ((name === "uploadJSONFileHidden")) {
             if ((/\.(json)$/i).test(value)) {
                 let file = e.target.files[0];
-                console.log(e.target)
-                console.log(file)
                 var reader = new FileReader();
                 reader.readAsText(file);
                 reader.onload = function (e) {
@@ -99,7 +96,7 @@ export default function Layout() {
         }
         setValues({ ...values, [name]: value })
     }
-    console.log(values);
+    
     return (
         <Grid container style={{
             // backgroundColor: "#4F5457" 
