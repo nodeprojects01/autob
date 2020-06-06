@@ -94,7 +94,7 @@ export default function Intents() {
   const classes = useStyles();
   const intentValues = getIntentValue();
   if (Object.keys(intentValues).length == 0) {
-    if (window.confirm('Redirecting to the home page. Would you like to continue?')) {
+    window.onload = function() {
       history.push({
         pathname: '/',
       });
@@ -119,13 +119,14 @@ export default function Intents() {
   };
 
   function reset() {
-    setClusterData(getIntentValue())
-    setSelectedClusterName(Object.keys(clusterData)[0])
-    setClusterNames(Object.keys(clusterData))
+    const intentData = getIntentValue()
+    setClusterData(intentData)
     setAddIntent('')
     setMergedClusters({})
+    setSelectedClusterName(Object.keys(intentData)[0])
+    setClusterNames(Object.keys(intentData))
     setFixedOptions([selectedClusterName])
-    setNewIntentName(Object.keys(clusterData)[0])
+    setNewIntentName(Object.keys(intentData)[0])
   }
 
   const handleInputChange = (e) => {
@@ -156,6 +157,7 @@ export default function Intents() {
     }
 
   }
+  
 
   const handleOnChangeMergeClusters = (event, newValue) => {
     setFixedOptions([
@@ -197,24 +199,26 @@ export default function Intents() {
     if (window.confirm('Are you sure you want to delete?')) {
       const deleteIntentKey = [selectedClusterName];
       var position = Object.keys(clusterData).indexOf(selectedClusterName);
+      clusterNames.splice(parseInt(position), 1);
       (parseInt(position) > 0) ? (position = parseInt(position) - 1) : (position = parseInt(position) + 1)
-      const updatedKeyName = Object.keys(clusterData)[position]
+      var updatedKeyName = Object.keys(clusterData)[position]
       setSelectedClusterName(updatedKeyName)
       setNewIntentName(updatedKeyName)
-
-
       setClusterData(Object.fromEntries(
         Object.entries(clusterData).filter(
           ([key, val]) => !deleteIntentKey.includes(key)
         )
       ));
-      clusterNames.splice(selectedClusterName, 1);
+      
+      
     }
   }
-
-
+  
   const handleSubmit = e => {
     setIntentValue(clusterData)
+      history.push({
+        pathname: '/createBot',
+      });
   }
   return (
     <div>
@@ -226,7 +230,7 @@ export default function Intents() {
 
       <Box style={{
         position: "absolute", cursor: "pointer",
-        padding: "5px 7px", background: "#FFF", borderRadius: "20px"
+        padding: "5px 7px", background: "#FFF",  borderBottomRightRadius:"12px"
       }} onClick={() => {
         history.push({
           pathname: '/'

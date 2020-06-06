@@ -50,10 +50,10 @@ export default function Slots() {
   React.useEffect(() => {
     const globalParams = getInputParams();
     if (Object.keys(globalParams).length == 0) {
-      if (window.confirm('Redirecting to the home page. Would you like to continue?')) {
-        history.push({
-          pathname: '/',
-        });
+          window.onload = function() {
+            history.push({
+              pathname: '/',
+            });
       }
     }
   }, []);
@@ -143,7 +143,7 @@ export default function Slots() {
 
       <Box style={{
         position: "absolute", cursor: "pointer",
-        padding: "5px 7px", background: "#FFF", borderRadius: "20px"
+        padding: "5px 7px", background: "#FFF", borderBottomRightRadius:"12px"
       }} onClick={()=>{
         history.push({
           pathname: '/'
@@ -252,5 +252,6 @@ export default function Slots() {
     </div>
   );
 }
+
 
 
