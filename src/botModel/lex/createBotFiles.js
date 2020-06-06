@@ -1,18 +1,28 @@
 
-import zip from 'jszip';
+// import zip from 'jszip';
 import { saveAs } from 'file-saver';
 var fs = require("fs")
 var slotOutDir = './slots-out/'
+var JSZip = require("jszip");
+var zip = new JSZip();
 
 
 
 function createBotFiles(slots, intents) {
-    createSlot(slots);
+    var custom_synonyms = {}
+    slots.map((value) => (custom_synonyms[value.value] = value.synonyms));
+    createSlot(custom_synonyms);
+    createIntent(intents);
+    zip.generateAsync({ type: "blob" })
+    .then(function (content) {
+        saveAs(content, "example.zip");
+    });
+    
 }
+function createIntent(intents) {}
 
 function createSlot(slots) {
-    var allSlotDict = {}
-
+    var allSlotDict = {}   
     for (let [slotName, enumvals] of Object.entries(slots)) {
         allSlotDict[slotName] = null;
         if (allSlotDict[slotName] == null || allSlotDict[slotName] == undefined) {
@@ -22,28 +32,11 @@ function createSlot(slots) {
                 "valueSelectionStrategy": "TOP_RESOLUTION"
             }
         }
-    };
-
-    // if (!fs.existsSync(slotOutDir)) {
-    //   fs.mkdirSync(slotOutDir);
-    // }
-
-    var slotvals = {}
+    };     
     Object.keys(allSlotDict).forEach((key) => {
-        zip.folder("slots").file(key, allSlotDict[key])
-        // let tmp = allSlotDict[key].enumerationValues
-        // tmp.forEach(val => {
-        //     slotvals[val.value] = val.synonyms
-        // })
-        //   fs.writeFile(`${slotOutDir}${key}`, JSON.stringify(allSlotDict[key], null, 4), 'utf8', function (err, result) {
-        //     if (err) console.log('error', err);
-        //   });
+        var filename=""+key+".json"
+        zip.folder("slots").file(filename, JSON.stringify(allSlotDict[key]))     
     });
-
-    zip.generateAsync({ type: "blob" })
-        .then(function (content) {
-            saveAs(content, "example.zip");
-        });
 }
 
 export default createBotFiles;

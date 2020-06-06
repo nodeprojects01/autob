@@ -32,14 +32,30 @@ const useStyles = makeStyles((theme) => ({
     },
     inputFocused: {}
 }));
-
-
+const slot=[
+    {
+        "value": "actionType",
+        "synonyms": ["add", "remove", "register", "signup"]
+    },
+    {
+        "value": "bankNames",
+        "synonyms": ["hdfc", "axis", "citi", "indus"]
+    }
+]
+const myCustomeInput = {
+      "helloIntent": ["hey", "hi", "hello", "hiiiiiiiii", "heyyyyyyyyyyyy"],
+      "byeIntent": ["b", "by", "bye", "byee", "byeee"],
+      "goodIntent": ["good", "bettter", "best", "happy", "smile"],
+      "hateIntent": ["worst", "bad", "sad", "kill","hello"]
+    }
 const onDownload = async () => {
     console.log("download start");
     // let downloadResult = await createBotFiles.createBotFiles(appVariable.getSlots(),appVariable.getIntents());
+    createBotFiles(appVariable.getSlotValue(),myCustomeInput);
+    // console.log(downloadResult)
     // const blob = await downloadResult.blob();
     // saveAs(blob, "downloaded.zip");
-    await createBotFiles(appVariable.getSlots(), appVariable.getIntents());
+    // await createBotFiles(appVariable.getSlots(), appVariable.getIntents());
     console.log("onClick start");
 };
 
@@ -82,22 +98,6 @@ export default function Layout() {
         };
         reader.readAsBinaryString(f);
     }
-    const myCustomeInput = {
-          "helloIntent": ["hey", "hi", "hello", "hiiiiiiiii", "heyyyyyyyyyyyy"],
-          "byeIntent": ["b", "by", "bye", "byee", "byeee"],
-          "goodIntent": ["good", "bettter", "best", "happy", "smile"],
-          "hateIntent": ["worst", "bad", "sad", "kill","hello"]
-        }
-        var data = [
-            {
-                "value": "actionType",
-                "synonyms": ["add", "remove", "register", "signup"]
-            },
-            {
-                "value": "bankNames",
-                "synonyms": ["hdfc", "axis", "citi", "indus"]
-            }
-        ]
     const downloadExcelFile=(e)=>{
        
         let wb = XLSX.utils.book_new();
