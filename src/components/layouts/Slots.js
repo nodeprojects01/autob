@@ -143,7 +143,7 @@ export default function Slots() {
 
       <Box style={{
         position: "absolute", cursor: "pointer",
-        padding: "5px 7px", background: "#FFF", borderRadius: "20px"
+        padding: "5px 7px", background: "#FFF", borderBottomRightRadius:"12px"
       }} onClick={()=>{
         history.push({
           pathname: '/'
