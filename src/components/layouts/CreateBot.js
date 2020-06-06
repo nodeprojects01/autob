@@ -13,6 +13,10 @@ import appVariable from '../../global/appVariable';
 import PostCard from '../PostCard';
 import HomeIcon from '@material-ui/icons/Home';
 import { useHistory } from 'react-router-dom';
+import {
+    getSlotValue, setSlotValue, getIntentValue,
+    setIntentValue, setInputParams, getInputParams
+  } from '../../global/appVariable';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -78,7 +82,50 @@ export default function Layout() {
         };
         reader.readAsBinaryString(f);
     }
-
+    const myCustomeInput = {
+          "helloIntent": ["hey", "hi", "hello", "hiiiiiiiii", "heyyyyyyyyyyyy"],
+          "byeIntent": ["b", "by", "bye", "byee", "byeee"],
+          "goodIntent": ["good", "bettter", "best", "happy", "smile"],
+          "hateIntent": ["worst", "bad", "sad", "kill","hello"]
+        }
+        var data = [
+            {
+                "value": "actionType",
+                "synonyms": ["add", "remove", "register", "signup"]
+            },
+            {
+                "value": "bankNames",
+                "synonyms": ["hdfc", "axis", "citi", "indus"]
+            }
+        ]
+    const downloadExcelFile=(e)=>{
+       
+        let wb = XLSX.utils.book_new();
+        const ws_intent = XLSX.utils.json_to_sheet(intentFormatter());
+        const ws_slot = XLSX.utils.json_to_sheet(slotFormatter());
+        XLSX.utils.book_append_sheet(wb, ws_intent, 'Cluster Data');
+        XLSX.utils.book_append_sheet(wb, ws_slot, 'Slots');
+        XLSX.writeFile(wb, 'workbook.xlsx');
+      
+    }
+    function intentFormatter() {
+        var intent = []
+        for (let [key, value] of Object.entries(getIntentValue())) {
+            value.map((data) => {
+                intent.push({ "Clusters": key, "Utterance": data })
+            });
+        }
+        return intent;
+    }
+    function slotFormatter() {
+        var slots = []   
+            getSlotValue().map((data) => {
+                data.synonyms.map((synonym) => {
+                    slots.push({ "Slots": data.value, "Values": synonym })
+                });
+            }); 
+        return slots;
+    }
     const handleInputchange = (e) => {
         const { name, value } = e.target
         console.log(name, "+", value);
@@ -170,7 +217,7 @@ export default function Layout() {
 
                             <div style={{ margin: "2em" }}>
                                 <Box >
-                                    <CButton name="Download Excel File" style={{ width: "100%", height: "4em" }} />
+                                    <CButton name="Download Excel File" onClick={downloadExcelFile} style={{ width: "100%", height: "4em" }} />
                                 </Box>
                                 <Box textAlign="center" m={3}>
                                     <Typography style={appTheme.textDefault}>OR</Typography>
