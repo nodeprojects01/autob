@@ -10,7 +10,7 @@ import AdvSettings from '../AdvSettings';
 import BeginForm from '../BeginForm';
 import { appStyle, appTheme } from '../../styles/global';
 import * as XLSX from 'xlsx';
-import {getExcelData,setExcelData} from '../../global/appVariable'
+import { setExcelData } from '../../global/appVariable'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -43,28 +43,24 @@ export default function Layout() {
         uploadJSONFileHidden: '',
         customVisible: false
     })
-    
-    
+
+
     const handleChange = () => {
         setChecked((prev) => !prev);
     };
-    const uploadExcelFileData = (e)=>{
+    const uploadExcelFileData = (e) => {
         var files = e.target.files, f = files[0];
-            const reader = new FileReader();
-            reader.onload = (e) => { // evt = on_file_select event
-                /* Parse data */
-                const bstr = e.target.result;
-                const wb = XLSX.read(bstr, {type:'binary'});
-                /* Get first worksheet */
-                const wsname = wb.SheetNames[0];
-                const ws = wb.Sheets[wsname];
-                /* Convert array of arrays */
-                const data = XLSX.utils.sheet_to_csv(ws).split('\n');
-                // const data = XLSX.utils.sheet_to_csv(ws, {header:1});
-                /* Update state */
-                setExcelData(data)
-            };
-            reader.readAsBinaryString(f);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const bstr = e.target.result;
+            const wb = XLSX.read(bstr, { type: 'binary' });
+            const wsname = wb.SheetNames[0];
+            const ws = wb.Sheets[wsname];
+            const data = XLSX.utils.sheet_to_csv(ws).split('\n');
+            // const data = XLSX.utils.sheet_to_csv(ws, {header:1});
+            setExcelData(data)
+        };
+        reader.readAsBinaryString(f);
     }
 
     const handleInputchange = (e) => {
@@ -72,7 +68,7 @@ export default function Layout() {
         if (name === "uploadExcelFileHidden") {
             const filename = e.target.files[0].name;
             values.uploadExcelFile = filename;
-            uploadExcelFileData(e)        
+            uploadExcelFileData(e)
         }
         if (name === "synonymGenerating") {
             if (value === "custom_synonyms")
@@ -96,7 +92,7 @@ export default function Layout() {
         }
         setValues({ ...values, [name]: value })
     }
-    
+
     return (
         <Grid container style={{
             // backgroundColor: "#4F5457" 
@@ -115,11 +111,10 @@ export default function Layout() {
                     minHeight: "100%"
                 }}>
                     <div style={{ padding: "2em" }}>
-                        <div style={{
-                            position: "fixed",
-                            top: "-12%", margin: "25% 9%", border: "2px solid #fff", padding: "1em 7em"
-                        }}>
-                            <Typography variant="h5" style={appTheme.textAutob}>AUTOB</Typography>
+                        <div style={{ position: "fixed", top: "42%", left: "11%" }}>
+                            <div style={{ border: "2px solid #fff", padding: "1em 7em" }}>
+                                <Typography variant="h5" style={appTheme.textAutob}>AUTOB</Typography>
+                            </div>
                         </div>
                     </div>
                 </Box>
@@ -151,7 +146,7 @@ export default function Layout() {
                     }
                 </Box>
             </Grid>
-           
+
         </Grid>
     );
 }
