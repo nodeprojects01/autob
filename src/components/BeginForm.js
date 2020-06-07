@@ -17,13 +17,6 @@ import Backdrop from '@material-ui/core/Backdrop';
 import { getIntents, getSlots } from '../external/textCluster';
 import {getInuptParams, setInputParams} from '../global/appVariable';
 
-//import * as XLSX from 'xlsx';
-{/* <StylesProvider injectFirst>
-    content goes here
-</StylesProvider> */}
-
-
-
 const useStyles = makeStyles((theme) => ({
     root: {
         '& .MuiTextField-root': {
@@ -47,15 +40,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-
-
 export default function BeginForm(props) {
     const classes = useStyles();
     const history = useHistory();
     const [loading, setLoading] = useState(false);
     //Error Handling Snackbar
     const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
-    //Error Handling Snackbar
     const handleCloseSnackBar = () => {
         setSnackBar({ type: "error", show: false, message: "" })
     };
@@ -80,7 +70,6 @@ export default function BeginForm(props) {
                 setSnackBar({ type: "error", show: true, message: errmessage });
                 setLoading(false);
             });
-
         }
     }
     

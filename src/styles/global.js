@@ -37,6 +37,13 @@ const appTheme = {
         fontFamily: appStyle.fontFamilyWorkSans,
         fontWeight: "400"
     },
+    textSmallWhite: {
+        color: "#FFF",
+        fontSize: appStyle.fontSizeSmall,
+        textTransform: 'capitalize',
+        fontFamily: appStyle.fontFamilyWorkSans,
+        fontWeight: "400"
+    },
     textDefault: {
         color: appStyle.colorOffBlack,
         fontSize: appStyle.fontSizeDefault,

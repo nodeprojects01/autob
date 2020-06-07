@@ -1,31 +1,46 @@
 import React from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import image1 from '../../images/abstract.jpg';
+import Jinraj from '../../images/jinraj.png';
+import Garima from '../../images/garima.png';
+import Ullas from '../../images/ullas.png';
 import { appStyle, appTheme } from '../../styles/global';
 import * as XLSX from 'xlsx';
 import CButton from '../CButton';
 import createBotFiles from '../../botModel/lex/createBotFiles';
-import HomeIcon from '@material-ui/icons/Home';
 import { useHistory } from 'react-router-dom';
-import {getSlotValue, getIntentValue} from '../../global/appVariable';
+import { getSlotValue, getIntentValue } from '../../global/appVariable';
+import PostCard from '../PostCard';
+
+const useStyles = makeStyles((theme) => ({
+    Typography: {
+        '&:hover': {
+            fontWeight: "500 !important",
+            color: appStyle.colorOffBlack,
+        }
+    }
+}));
 
 export default function Layout() {
+    const classes = useStyles();
     const history = useHistory();
-    
+    const [showAbout, setShowAbout] = React.useState(false);
+
     const onDownload = async () => {
-        console.log("download start");
         createBotFiles();
-        console.log("onClick start");
-    }; 
-    const downloadExcelFile=(e)=>{      
+        setShowAbout(true);
+    };
+    const downloadExcelFile = (e) => {
         let wb = XLSX.utils.book_new();
         const ws_intent = XLSX.utils.json_to_sheet(intentFormatter());
         const ws_slot = XLSX.utils.json_to_sheet(slotFormatter());
         XLSX.utils.book_append_sheet(wb, ws_intent, 'Cluster Data');
         XLSX.utils.book_append_sheet(wb, ws_slot, 'Slots');
-        XLSX.writeFile(wb, 'workbook.xlsx');    
+        XLSX.writeFile(wb, 'workbook.xlsx');
+        setShowAbout(true);
     }
     function intentFormatter() {
         var intent = []
@@ -37,27 +52,17 @@ export default function Layout() {
         return intent;
     }
     function slotFormatter() {
-        var slots = []   
-            getSlotValue().map((data) => {
-                data.synonyms.map((synonym) => {
-                    slots.push({ "Slots": data.value, "Values": synonym })
-                });
-            }); 
+        var slots = []
+        getSlotValue().map((data) => {
+            data.synonyms.map((synonym) => {
+                slots.push({ "Slots": data.value, "Values": synonym })
+            });
+        });
         return slots;
     }
-                
+
     return (
         <div>
-            <Box style={{
-                position: "absolute", cursor: "pointer",
-                padding: "5px 7px", background: "#FFF",  borderBottomRightRadius:"12px"
-            }} onClick={() => {
-                history.push({
-                    pathname: '/'
-                });
-            }}>
-                <HomeIcon style={{ "color": appStyle.colorGreyLight }} fontSize="small" />
-            </Box>
             <Grid container style={{
                 // backgroundColor: "#4F5457" 
                 backgroundImage: `url(${image1})`,
@@ -76,15 +81,30 @@ export default function Layout() {
                         minHeight: "100%"
                     }}>
                         <div style={{ padding: "2em" }}>
-                            <Box textAlign="center" style={{
-                                margin: "5em 2em 0 2em",
-                                border: "2px solid #fff", padding: "1em 7em"
-                            }}>
-                                <Typography variant="h5" style={appTheme.textAutob}>AUTOB</Typography>
-                            </Box>
-                            {/* <Box justifyContent="center">
-                            <PostCard />
-                        </Box> */}
+                            <div style={{ position: "fixed", top: "42%", left: "11%" }}>
+                                <div style={{ border: "2px solid #fff", padding: "1em 7em" }}>
+                                    <Typography variant="h5" style={appTheme.textAutob}>AUTOB</Typography>
+                                </div>
+                                {showAbout ?
+                                    <div>
+                                        <Box textAlign="center" style={{ margin: "4em 0 0 0" }}>
+                                            <Typography style={appTheme.textSmall}>Developed by</Typography>
+                                        </Box>
+                                        <Box display="flex" justifyContent="center" m={1}>
+                                            <Box>
+                                                <PostCard image={Jinraj} name="Jinraj K R" />
+                                            </Box>
+                                            <Box>
+                                                <PostCard image={Garima} name="Garima Singh" />
+                                            </Box>
+                                            <Box>
+                                                <PostCard image={Ullas} name="Ullas Naik" />
+                                            </Box>
+                                        </Box>
+                                    </div>
+                                    : ""}
+                            </div>
+
                         </div>
                     </Box>
                 </Grid>
@@ -104,7 +124,7 @@ export default function Layout() {
 
                             <div style={{ margin: "2em" }}>
                                 <Box >
-                                    <CButton name="Download Excel File" onClick={downloadExcelFile} style={{ width: "100%", height: "4em" }} />
+                                    <CButton name="Download Excel File" onClick={downloadExcelFile} style={{ width: "100%" }} />
                                 </Box>
                                 <Box textAlign="center" m={3}>
                                     <Typography style={appTheme.textDefault}>OR</Typography>
@@ -124,6 +144,14 @@ export default function Layout() {
                                             <CButton onClick={() => { console.log("New Page") }} style={{ width: "100%" }} name="LUIS" />
                                         </Grid>
                                     </Grid>
+                                </Box>
+
+                                <Box textAlign="center" m={5} style={{ cursor: "pointer" }} onClick={() => {
+                                    history.push({
+                                        pathname: '/'
+                                    });
+                                }}>
+                                    <Typography className={classes.Typography} style={appTheme.textDefault}>Try With New Dataset</Typography>
                                 </Box>
                             </div>
                         </div>
