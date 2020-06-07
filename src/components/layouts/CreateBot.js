@@ -18,86 +18,17 @@ import {
     setIntentValue, setInputParams, getInputParams
   } from '../../global/appVariable';
 
-const useStyles = makeStyles((theme) => ({
-    paper: {
-        zIndex: 1,
-        position: 'absolute',
-        top: "3em"
-    },
-    inputLabel: {
-        color: "lightgray",
-        "&$inputFocused": {
-            color: "orange"
-        }
-    },
-    inputFocused: {}
-}));
-const slot=[
-    {
-        "value": "actionType",
-        "synonyms": ["add", "remove", "register", "signup"]
-    },
-    {
-        "value": "bankNames",
-        "synonyms": ["hdfc", "axis", "citi", "indus"]
-    }
-]
-const myCustomeInput = {
-      "helloIntent": ["hey", "hi", "hello", "hiiiiiiiii", "heyyyyyyyyyyyy"],
-      "byeIntent": ["b", "by", "bye", "byee", "byeee"],
-      "goodIntent": ["good", "bettter", "best", "happy", "smile"],
-      "hateIntent": ["worst", "bad", "sad", "kill","hello"]
-    }
-const onDownload = async () => {
-    console.log("download start");
-    // let downloadResult = await createBotFiles.createBotFiles(appVariable.getSlots(),appVariable.getIntents());
-    createBotFiles(appVariable.getSlotValue(),myCustomeInput);
-    // console.log(downloadResult)
-    // const blob = await downloadResult.blob();
-    // saveAs(blob, "downloaded.zip");
-    // await createBotFiles(appVariable.getSlots(), appVariable.getIntents());
-    console.log("onClick start");
-};
+
+
 
 export default function Layout() {
-    const classes = useStyles();
     const history = useHistory();
-    const [checked, setChecked] = React.useState(false);
-    const [values, setValues] = useState({
-        botName: "",
-        uploadExcelFile: "",
-        synonymGenerating: 'auto_generate_synonyms',
-        customSynonymsJSON: '',
-        autoGenerateSynonymMode: 'moderate',
-        removeUnimportantWords: '',
-        outputUtterance: 'alphanumeric',
-        maxMinLengthCluster: '0.6/0.2',
-        uploadJSONFileHidden: '',
-        customVisible: false
-    })
-
-
-    const handleChange = () => {
-        setChecked((prev) => !prev);
-    };
-    const uploadExcelFileData = (e) => {
-        var files = e.target.files, f = files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => { // evt = on_file_select event
-            /* Parse data */
-            const bstr = e.target.result;
-            const wb = XLSX.read(bstr, { type: 'binary' });
-            /* Get first worksheet */
-            const wsname = wb.SheetNames[0];
-            const ws = wb.Sheets[wsname];
-            /* Convert array of arrays */
-            const data = XLSX.utils.sheet_to_csv(ws).split('\n');
-            // const data = XLSX.utils.sheet_to_csv(ws, {header:1});
-            /* Update state */
-            setExcelData(data)
-        };
-        reader.readAsBinaryString(f);
-    }
+    
+    const onDownload = async () => {
+        console.log("download start");
+        createBotFiles(appVariable.getSlotValue(),appVariable.getIntentValue());
+        console.log("onClick start");
+    }; 
     const downloadExcelFile=(e)=>{
        
         let wb = XLSX.utils.book_new();
@@ -126,39 +57,8 @@ export default function Layout() {
             }); 
         return slots;
     }
-    const handleInputchange = (e) => {
-        const { name, value } = e.target
-        console.log(name, "+", value);
-        if (name === "uploadExcelFileHidden") {
-            const filename = e.target.files[0].name;
-            values.uploadExcelFile = filename;
-            uploadExcelFileData(e)
-        }
-        if (name === "synonymGenerating") {
-            if (value === "custom_synonyms")
-                values.customVisible = true;
-            else
-                values.customVisible = false;
-        }
-        if ((name === "uploadJSONFileHidden")) {
-            if ((/\.(json)$/i).test(value)) {
-                let file = e.target.files[0];
-                console.log(e.target)
-                console.log(file)
-                var reader = new FileReader();
-                reader.readAsText(file);
-                reader.onload = function (e) {
-                    const content = reader.result;
-                    setValues({ ...values, customSynonymsJSON: content, uploadJSONFileHidden: value })
-                }
-            }
-            else {
-                values.customSynonymsJSON = '';
-            }
-        }
-        setValues({ ...values, [name]: value })
-    }
-    console.log(values);
+    
+              
     return (
         <div>
             <Box style={{
