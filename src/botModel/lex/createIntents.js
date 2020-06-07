@@ -47,7 +47,7 @@ function trainIntent() {
     console.log('slotList : ############# ', slotList)
     let utteranceDataArray = getUtteraceData(intentName, slotList, utteranceList, allSlotArray)
     let slots = []
-    for (i = 0; i < slotList.length; i++) {
+    for (var i = 0; i < slotList.length; i++) {
       let slot = JSON.parse(JSON.stringify(slotentry));
       slot.name = intentConfig.slotAlias[slotList[i]];
       slot.priority = JSON.parse(JSON.stringify(slot.priority + i));
@@ -127,7 +127,7 @@ function checkKeyInString(utterance, slotName, slotSynonymArray) {
     //console.log("Key : "+ key);
     let matchArray = (utterance.match(new RegExp('\\b' + key + '\\b', 'gi')) || [])
     if (matchArray.length > 0) {
-      for (i = 0; i < matchArray.length; i++) {
+      for (var i = 0; i < matchArray.length; i++) {
         console.log(utterance, matchArray[i], slotName, i)
         let tmpUtrnce = replaceWithSlotNames(utterance, matchArray[i], slotName, i + 1)
         res.push(tmpUtrnce)
@@ -138,7 +138,7 @@ function checkKeyInString(utterance, slotName, slotSynonymArray) {
 }
 function replaceWithSlotNames(utrnc, key, slotName, index) {
   let regex = new RegExp('\\b' + key + '\\b', "gi");
-  rkey = ` {${intentConfig.slotAlias[slotName]}} `
+  var rkey = ` {${intentConfig.slotAlias[slotName]}} `
   var i = 0;
   let res = utrnc.replace(regex, function (match) {
     i += 1;
