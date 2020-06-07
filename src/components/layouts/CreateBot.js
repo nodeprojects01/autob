@@ -151,7 +151,7 @@ export default function Layout() {
                                         pathname: '/'
                                     });
                                 }}>
-                                    <Typography className={classes.Typography} style={appTheme.textDefault}>Try With New Dataset</Typography>
+                                    <Typography className={classes.Typography} style={appTheme.textSmall}>Try With New Dataset</Typography>
                                 </Box>
                             </div>
                         </div>
