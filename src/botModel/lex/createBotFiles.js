@@ -1,27 +1,57 @@
-
-// import zip from 'jszip';
 import { saveAs } from 'file-saver';
+import {getInputParams,getSlotValue,getIntentValue } from '../../global/appVariable'
 var JSZip = require("jszip");
 var zip = new JSZip();
-var intentPrefix="ESS_Gabby_Intent_";
 
-
-
-function createBotFiles(slots, intents) {
-    var custom_synonyms = {}
-    slots.map((value) => (custom_synonyms[value.value] = value.synonyms));
-    createSlot(custom_synonyms);
-    createIntent(slots,intents);
+function createBotFiles() { 
+    createBot()
+    createSlot();
+    createIntent();
     zip.generateAsync({ type: "blob" })
     .then(function (content) {
         saveAs(content, "lex_output.zip");
     });
     
 }
-function createIntent(slots,intents) {
+function createBot(){
+    var intentNames=Object.keys(getIntentValue())
+    var inputPrams=getInputParams()
+    var intents =[]
+    intentNames.map((data)=>{
+        intents.push({
+            "intentName":data,
+            "intentVersion":"1"
+        })
+    })
+    var botData={
+        "abortStatement": {"messages":[
+            {
+                "content":"Sorry,I could not understand. Goodbye.",
+                "contentType":"PlainText"
+            }
+        ]},
+        "childDirected":false,
+        "clarificationPrompt": {
+            "maxAttempts":5,
+            "messages":[
+            {
+                "content":"Sorry,can you please repeate that?",
+                "contentType":"PlainText"
+            }
+        ]},
+        "idleSessionTTLInSeconds": 300,
+        "intents":intents,
+        "locale":"en-US",
+        "name":inputPrams.botName,
+        "voiceId" : "0"
+    }
+    var filename=""+inputPrams.botName+".json"
+    zip.folder("bot").file(filename, JSON.stringify(botData))
+}
+function createIntent() {
     var allSlotArray = {}
     
-    slots.map((data) => {
+    getSlotValue().map((data) => {
         let slotLower =[]
           data.synonyms.map((data)=>{
             slotLower.push(data.toLowerCase())
@@ -29,8 +59,7 @@ function createIntent(slots,intents) {
           allSlotArray[data.value.toLowerCase()]=slotLower
       });
      
-      for (let [name, utteranceList] of Object.entries(intents)) {
-        var intentName=intentPrefix+name
+      for (let [intentName, utteranceList] of Object.entries(getIntentValue())) {
         let [utteranceDataArray,slotNamesCount] = getUtteraceData(utteranceList, allSlotArray)
         var slotData=[]
         Object.keys(allSlotArray).map((slotNames)=>{
@@ -81,9 +110,11 @@ function getUtteraceData(utteranceList, allSlotArray){
     return [utteranceResArray,slotNamesCount]
 }
 
-function createSlot(slots) {
+function createSlot() {
+    var custom_synonyms = {}
+    getSlotValue().map((value) => (custom_synonyms[value.value] = value.synonyms));
     var allSlotDict = {}   
-    for (let [slotName, enumvals] of Object.entries(slots)) {
+    for (let [slotName, enumvals] of Object.entries(custom_synonyms)) {
         allSlotDict[slotName] = null;
         if (allSlotDict[slotName] == null || allSlotDict[slotName] == undefined) {
             allSlotDict[slotName] = {

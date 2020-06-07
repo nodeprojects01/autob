@@ -1,43 +1,31 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Box from '@material-ui/core/Box';
 import Grid from '@material-ui/core/Grid';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import image1 from '../../images/abstract.jpg';
 import { appStyle, appTheme } from '../../styles/global';
 import * as XLSX from 'xlsx';
-import { getExcelData, setExcelData } from '../../global/appVariable';
 import CButton from '../CButton';
 import createBotFiles from '../../botModel/lex/createBotFiles';
-import appVariable from '../../global/appVariable';
-import PostCard from '../PostCard';
 import HomeIcon from '@material-ui/icons/Home';
 import { useHistory } from 'react-router-dom';
-import {
-    getSlotValue, setSlotValue, getIntentValue,
-    setIntentValue, setInputParams, getInputParams
-  } from '../../global/appVariable';
-
-
-
+import {getSlotValue, getIntentValue} from '../../global/appVariable';
 
 export default function Layout() {
     const history = useHistory();
     
     const onDownload = async () => {
         console.log("download start");
-        createBotFiles(appVariable.getSlotValue(),appVariable.getIntentValue());
+        createBotFiles();
         console.log("onClick start");
     }; 
-    const downloadExcelFile=(e)=>{
-       
+    const downloadExcelFile=(e)=>{      
         let wb = XLSX.utils.book_new();
         const ws_intent = XLSX.utils.json_to_sheet(intentFormatter());
         const ws_slot = XLSX.utils.json_to_sheet(slotFormatter());
         XLSX.utils.book_append_sheet(wb, ws_intent, 'Cluster Data');
         XLSX.utils.book_append_sheet(wb, ws_slot, 'Slots');
-        XLSX.writeFile(wb, 'workbook.xlsx');
-      
+        XLSX.writeFile(wb, 'workbook.xlsx');    
     }
     function intentFormatter() {
         var intent = []
@@ -57,8 +45,7 @@ export default function Layout() {
             }); 
         return slots;
     }
-    
-              
+                
     return (
         <div>
             <Box style={{

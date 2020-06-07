@@ -10,7 +10,7 @@ import AdvSettings from '../AdvSettings';
 import BeginForm from '../BeginForm';
 import { appStyle, appTheme } from '../../styles/global';
 import * as XLSX from 'xlsx';
-import {getExcelData,setExcelData} from '../../global/appVariable'
+import {setExcelData} from '../../global/appVariable'
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -51,17 +51,13 @@ export default function Layout() {
     const uploadExcelFileData = (e)=>{
         var files = e.target.files, f = files[0];
             const reader = new FileReader();
-            reader.onload = (e) => { // evt = on_file_select event
-                /* Parse data */
+            reader.onload = (e) => {
                 const bstr = e.target.result;
                 const wb = XLSX.read(bstr, {type:'binary'});
-                /* Get first worksheet */
                 const wsname = wb.SheetNames[0];
                 const ws = wb.Sheets[wsname];
-                /* Convert array of arrays */
                 const data = XLSX.utils.sheet_to_csv(ws).split('\n');
                 // const data = XLSX.utils.sheet_to_csv(ws, {header:1});
-                /* Update state */
                 setExcelData(data)
             };
             reader.readAsBinaryString(f);
