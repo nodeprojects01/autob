@@ -26,6 +26,8 @@ import {
   setIntentValue, setInputParams, getInputParams
 } from '../../global/appVariable';
 import HomeIcon from '@material-ui/icons/Home';
+import CSlider2 from '../CSlider2';
+
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -94,7 +96,7 @@ export default function Intents() {
   const classes = useStyles();
   const intentValues = getIntentValue();
   if (Object.keys(intentValues).length == 0) {
-    window.onload = function() {
+    window.onload = function () {
       history.push({
         pathname: '/',
       });
@@ -157,7 +159,7 @@ export default function Intents() {
     }
 
   }
-  
+
 
   const handleOnChangeMergeClusters = (event, newValue) => {
     setFixedOptions([
@@ -209,17 +211,20 @@ export default function Intents() {
           ([key, val]) => !deleteIntentKey.includes(key)
         )
       ));
-      
-      
+
+
     }
   }
-  
+
   const handleSubmit = e => {
     setIntentValue(clusterData)
-      history.push({
-        pathname: '/createBot',
-      });
+    history.push({
+      pathname: '/createBot',
+    });
   }
+
+  const minMax = getInputParams()["maxMinLengthCluster"];
+
   return (
     <div>
       {loading &&
@@ -230,7 +235,7 @@ export default function Intents() {
 
       <Box style={{
         position: "absolute", cursor: "pointer",
-        padding: "5px 7px", background: "#FFF",  borderBottomRightRadius:"12px"
+        padding: "5px 7px", background: "#FFF", borderBottomRightRadius: "12px"
       }} onClick={() => {
         history.push({
           pathname: '/'
@@ -262,8 +267,19 @@ export default function Intents() {
 
             <Grid item xs={12}>
               <div style={{ padding: "1.7em 2em" }}>
-                <div>
+                {/* <div>
                   <Typography style={appTheme.textHeader}>Identify Intents</Typography>
+                </div> */}
+                <div>
+                  <Box display="flex">
+                    <Box flexGrow={1}>
+                      <Typography style={appTheme.textHeader}>Identify Intents</Typography>
+                    </Box>
+                    <Box alignSelf="center" >
+                      <CSlider2 value={minMax.split("/")[0]*100} min={minMax.split("/")[1]*100 + 10} max={100} steps={10} />
+
+                    </Box>
+                  </Box>
                 </div>
 
                 <div style={{ margin: "2em 2em" }}>

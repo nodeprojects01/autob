@@ -39,7 +39,7 @@ export default function Layout() {
         autoGenerateSynonymMode: 'moderate',
         removeUnimportantWords: '',
         outputUtterance: 'alphanumeric',
-        maxMinLengthCluster: '0.6/0.2',
+        maxMinLengthCluster: '0.4/0.1',
         uploadJSONFileHidden: '',
         customVisible: false
     })
