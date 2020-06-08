@@ -138,8 +138,7 @@ export default function Slots() {
     })
       .catch(errmessage => { setSnackBar({ type: "error", show: true, message: errmessage }); setLoading(false) })
   }
-  console.log(values)
-
+  console.log("running slots page")
   return (
     <div>
       {loading &&

@@ -223,8 +223,23 @@ export default function Intents() {
     });
   }
 
+  const onMinMaxChange = (val) => {
+    console.log("onMinMaxChange ", val);
+    var inputParam = getInputParams();
+    inputParam["maxMinLengthCluster"] = val;
+    setInputParams(inputParam);
+    setLoading(true);
+    getIntents().then(result => {
+      setLoading(false);
+      setClusterData(getIntentValue());
+    }).catch(errmessage => {
+      setSnackBar({ type: "error", show: true, message: errmessage });
+      setLoading(false);
+    });
+  }
+  
   const minMax = getInputParams()["maxMinLengthCluster"];
-
+console.log("running intents page")
   return (
     <div>
       {loading &&
@@ -276,8 +291,9 @@ export default function Intents() {
                       <Typography style={appTheme.textHeader}>Identify Intents</Typography>
                     </Box>
                     <Box alignSelf="center" >
-                      <CSlider2 value={minMax.split("/")[0]*100} min={minMax.split("/")[1]*100 + 10} max={100} steps={10} />
-
+                      <CSlider2 value={minMax.split("/")[0] * 100}
+                        onChange={onMinMaxChange}
+                        min={minMax.split("/")[1] * 100 + 10} />
                     </Box>
                   </Box>
                 </div>

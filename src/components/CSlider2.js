@@ -6,16 +6,16 @@ import { appStyle, appTheme } from '../styles/global';
 
 const useStyles = makeStyles((theme) => ({
     root: {
-      '& .MuiSlider-root':{
-          color: appStyle.colorBlueGreyDark
-      },
-      width: "100%",
-      color: appStyle.colorBlueGreyDark
+        '& .MuiSlider-root': {
+            color: appStyle.colorBlueGreyDark
+        },
+        width: "100%",
+        color: appStyle.colorBlueGreyDark
     },
     margin: {
-      height: theme.spacing(3),
+        height: theme.spacing(3),
     },
-  }));
+}));
 
 // const useStyles = makeStyles({
 //     root: {
@@ -29,15 +29,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RangeSlider(props) {
     const classes = useStyles();
-    const steps = props.steps? props.steps : 10;
-    const min = props.min? props.min : 0;
-    const curr = props.value;
-    const max = props.max? props.max : 100;
-    const [value, setValue] = React.useState(curr);
+    const [value, setValue] = React.useState(props.value);
 
     const handleChange = (event, newValue) => {
-        console.log("newValue", newValue);
+        console.log("new max value", value, value / 100 + "/" + ((props.min - 10) / 100));
         setValue(newValue);
+        props.onChange(value / 100 + "/" + ((props.min - 10) / 100));
     };
 
     return (
@@ -51,10 +48,10 @@ export default function RangeSlider(props) {
                 valueLabelDisplay="auto"
                 aria-labelledby="discrete-slider"
                 // getAriaValueText={valuetext}
-                step={steps}
+                step={10}
                 marks
-                min={min}
-                max={max}
+                min={props.min}
+                max={100}
             />
         </div>
     );
