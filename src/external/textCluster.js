@@ -8,13 +8,13 @@ function getIntents() {
         axios.post('/intents', data)
             .then(function (response) {
                 if (response.data.status == "400") {
-                    throw (response.data.message)
+                    reject(response.data.message);
                 }
                 setIntentValue(response.data.data.intents)
                 resolve();
             })
             .catch(function (error) {
-                reject(error);
+                reject(error.message);
             });
     });
 }
@@ -23,19 +23,19 @@ function getSlots() {
     const data = paramFormatter("slots");
     console.log("getSlots() - ", data);
     return new Promise((resolve, reject) => {
-        axios.post('/slots', data)
+        
+            axios.post('/slots', data)
             .then(function (response) {
                 console.log(response.data)
                 if (response.data.status == "400") {
-                    throw (response.data.message)
+                    reject(response.data.message);
                 }
                 setSlotValue(slotsFormatter(response.data.data.identified_slots))
                 resolve();
             })
             .catch(function (error) {
-                reject(error);
+                reject(error.message);
             });
-
     });
 }
 

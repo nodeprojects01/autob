@@ -60,7 +60,11 @@ export default function Layout() {
         });
         return slots;
     }
-
+    window.onload = function() {
+        history.push({
+          pathname: '/',
+        });
+      }
     return (
         <div>
             <Grid container style={{
