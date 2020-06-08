@@ -146,11 +146,13 @@ function setExcelData(data) {
 }
 
 function getSlotValue() {
-    return slots;
+    console.log(slots)
+    return slots;   
 }
 
 function setSlotValue(data) {
     slots = data;
+    console.log(slots)
 }
 
 function getIntentValue() {
