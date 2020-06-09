@@ -17,33 +17,21 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-// const useStyles = makeStyles({
-//     root: {
-//         width: "100%"
-//     }
-// });
-
-// function valuetext(value) {
-//   return `${value}°C`;
-// }
 
 export default function RangeSlider(props) {
     const classes = useStyles();
-    const [value, setValue] = React.useState(props.value);
-
     const handleChange = (event, newValue) => {
-        console.log("new max value", value, value / 100 + "/" + ((props.min - 10) / 100));
-        setValue(newValue);
-        props.onChange(value / 100 + "/" + ((props.min - 10) / 100));
+        console.log("new max value", newValue, newValue / 100 + "/" + ((props.min - 10) / 100));
+        props.onChange(""+(newValue / 100 ).toFixed(1)+ "/" + ((props.min - 10) / 100)+"");
     };
-
+    
     return (
         <div className={classes.root}>
             <Typography id="range-slider" gutterBottom style={appTheme.textDefault}>
-                Cluster with {value}% Similar Utterances
+                Cluster with {props.value}% Similar Utterances
       </Typography>
             <Slider
-                value={value}
+                value={props.value}
                 onChange={handleChange}
                 valueLabelDisplay="auto"
                 aria-labelledby="discrete-slider"
