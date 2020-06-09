@@ -22,9 +22,15 @@ export default function RangeSlider(props) {
     const classes = useStyles();
     const handleChange = (event, newValue) => {
         console.log("new max value", newValue, newValue / 100 + "/" + ((props.min - 10) / 100));
-        props.onChange(""+(newValue / 100 ).toFixed(1)+ "/" + ((props.min - 10) / 100)+"");
+        props.onChange("" + (newValue / 100).toFixed(1) + "/" + ((props.min - 10) / 100) + "");
     };
-    
+
+    const marks = [];
+    for (var i = props.min; i <= 100; i=i+10) {
+        console.log("props.min", props.min);
+        marks.push({ value: i, label: (i).toString() });
+    }
+
     return (
         <div className={classes.root}>
             <Typography id="range-slider" gutterBottom style={appTheme.textDefault}>
@@ -37,7 +43,7 @@ export default function RangeSlider(props) {
                 aria-labelledby="discrete-slider"
                 // getAriaValueText={valuetext}
                 step={10}
-                marks
+                marks={marks}
                 min={props.min}
                 max={100}
             />

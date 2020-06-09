@@ -26,7 +26,10 @@ div .MuiSnackbarContent-root{
   border-radius: 35px;
 }
 
-
+.MuiSlider-markLabel {
+font-size: 0.6rem !important;
+top: 20px !important;
+}
 
 /* button.MuiAutocomplete-clearIndicatorDirty{
   visibility: "hidden" !important
