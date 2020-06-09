@@ -136,7 +136,6 @@ function setInputParams(data) {
     inputParams = data;
 }
 
-
 function getExcelData() {
     return excelData;
 }
@@ -146,7 +145,7 @@ function setExcelData(data) {
 }
 
 function getSlotValue() {
-    return slots;
+    return slots;   
 }
 
 function setSlotValue(data) {

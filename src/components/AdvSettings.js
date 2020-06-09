@@ -59,7 +59,7 @@ export default function AdvSettings(props) {
             </div>
 
             <Grid container spacing={2} style={{ margin: "1.5em", width: "90%" }}>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={12} sm={props.values.synonymGenerating == "auto_generate_synonyms" ? 6 : 12}>
                     <div>
                         <Typography style={appTheme.textSmall}>Synonym Generating Type</Typography>
                     </div>
@@ -76,23 +76,25 @@ export default function AdvSettings(props) {
                         </CTextField>
                     </div>
                 </Grid>
-                <Grid item xs={12} sm={6} >
-                    <div>
-                        <Typography style={appTheme.textSmall}>Auto Generate Synonym Mode</Typography>
-                    </div>
-                    <div>
-                        <CTextField
-                            select
-                            name="autoGenerateSynonymMode"
-                            value={props.values.autoGenerateSynonymMode}
-                            onChange={props.setValues}
-                        >
-                            <MenuItem value={"strict"}>Strict</MenuItem>
-                            <MenuItem value={"moderate"}>Moderate</MenuItem>
-                            <MenuItem value={"loose"}>Loose</MenuItem>
-                        </CTextField>
-                    </div>
-                </Grid>
+                {props.values.synonymGenerating == "auto_generate_synonyms" ?
+                    <Grid item xs={12} sm={6} >
+                        <div>
+                            <Typography style={appTheme.textSmall}>Auto Generate Synonym Mode</Typography>
+                        </div>
+                        <div>
+                            <CTextField
+                                select
+                                name="autoGenerateSynonymMode"
+                                value={props.values.autoGenerateSynonymMode}
+                                onChange={props.setValues}
+                            >
+                                <MenuItem value={"strict"}>Strict</MenuItem>
+                                <MenuItem value={"moderate"}>Moderate</MenuItem>
+                                <MenuItem value={"loose"}>Loose</MenuItem>
+                            </CTextField>
+                        </div>
+                    </Grid>
+                    : ""}
                 {props.values.customVisible &&
                     <Grid item xs={12} sm={12}>
                         <div>
@@ -165,16 +167,16 @@ export default function AdvSettings(props) {
                         />
                     </div>
                 </Grid>
-        
-                    <Box style={{marginTop:"1em"}}>
-                        <CButton onClick={handleSubmit} name="Save" />
-                        {snackBar.show ?
-                            <SnackBarComponent open={snackBar.show}
-                                type={snackBar.type}
-                                message={snackBar.message}
-                                callBack={handleCloseSnackBar} />
-                            : null}
-                    </Box>
+
+                <Box style={{ marginTop: "1em" }}>
+                    <CButton onClick={handleSubmit} name="Save" />
+                    {snackBar.show ?
+                        <SnackBarComponent open={snackBar.show}
+                            type={snackBar.type}
+                            message={snackBar.message}
+                            callBack={handleCloseSnackBar} />
+                        : null}
+                </Box>
             </Grid>
 
         </div>
@@ -203,13 +205,13 @@ function validateInput(values) {
         min = parseFloat(min);
         max = parseFloat(max);
         if ((min == min.toFixed(1)) && (max == max.toFixed(1))) {
-            if ((0.2 <= min) && (min <= 0.9) && (0.2 <= max) && (max <= 1.0)) {
+            if ((0.1 <= min) && (min <= 0.9) && (0.2 <= max) && (max <= 1.0)) {
                 if (min > max) {
                     return "min_utterances_similarity must be less than max_utterances_similarity";
                 }
             }
             else {
-                return "Please Enter 0.2 <= max_utterances_similarity <= 1.0 and 0.2 <= min_utterances_similarity <= 0.9";
+                return "Please Enter 0.2 <= max_utterances_similarity <= 1.0 and 0.1 <= min_utterances_similarity <= 0.9";
             }
         }
         else {
@@ -217,7 +219,7 @@ function validateInput(values) {
         }
     }
     else {
-        return "Please enter max/min similiarity. Eg-0.6/0.2";
+        return "Please enter max/min similiarity. Eg-0.5/0.2";
     }
 
 }

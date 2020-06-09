@@ -26,6 +26,8 @@ import {
   setIntentValue, setInputParams, getInputParams
 } from '../../global/appVariable';
 import HomeIcon from '@material-ui/icons/Home';
+import CSlider2 from '../CSlider2';
+
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -90,11 +92,12 @@ const strToArray = (str) => {
 }
 
 export default function Intents() {
+  console.log("running intents page")
   const history = useHistory();
   const classes = useStyles();
   const intentValues = getIntentValue();
-  if (Object.keys(intentValues).length == 0) {
-    window.onload = function() {
+  if (intentValues==undefined||Object.keys(intentValues).length == 0) {
+    window.onload = function () {
       history.push({
         pathname: '/',
       });
@@ -110,8 +113,7 @@ export default function Intents() {
   const [checkedIntentName, setCheckedIntentName] = React.useState();
   const [newIntentName, setNewIntentName] = React.useState(Object.keys(clusterData)[0]);
   const [loading, setLoading] = useState(false);
-
-
+  const [updateInputParam,setUpdateInputParam]=useState(getInputParams())
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
   const handleCloseSnackBar = () => {
@@ -151,13 +153,12 @@ export default function Intents() {
 
     }
     else {
-      // **************** what is this else condition? ****** need to handle as else if ************
       const updatedValue = strToArray(value);
       setClusterData({ ...clusterData, [name]: updatedValue })
     }
 
   }
-  
+
 
   const handleOnChangeMergeClusters = (event, newValue) => {
     setFixedOptions([
@@ -179,7 +180,6 @@ export default function Intents() {
   }
 
   const getFilteredClusterNames = () => {
-    console.log("getFilteredClusterNames...");
     const mergedClusts = [].concat.apply([], (Object.values(mergedClusters)));
     const filClusterNames = (Object.keys(clusterData)).filter(function (el) {
       return (mergedClusts).indexOf(el) < 0;
@@ -209,17 +209,34 @@ export default function Intents() {
           ([key, val]) => !deleteIntentKey.includes(key)
         )
       ));
-      
-      
+
+
     }
   }
-  
+
   const handleSubmit = e => {
     setIntentValue(clusterData)
-      history.push({
-        pathname: '/createBot',
-      });
+    history.push({
+      pathname: '/createBot',
+    });
   }
+  const onMinMaxChange = (val) => {
+    var updatedValue={...updateInputParam,"maxMinLengthCluster":val}; 
+    setUpdateInputParam(updatedValue)
+    setInputParams(updatedValue);
+    setLoading(true);
+    getIntents().then(result => {
+      setLoading(false);
+      reset()
+    }).catch(errmessage => {
+      setSnackBar({ type: "error", show: true, message: errmessage });
+      setLoading(false);
+    });  
+  }
+  
+
+  
+
   return (
     <div>
       {loading &&
@@ -230,7 +247,7 @@ export default function Intents() {
 
       <Box style={{
         position: "absolute", cursor: "pointer",
-        padding: "5px 7px", background: "#FFF",  borderBottomRightRadius:"12px"
+        padding: "5px 7px", background: "#FFF", borderBottomRightRadius: "12px"
       }} onClick={() => {
         history.push({
           pathname: '/'
@@ -262,8 +279,25 @@ export default function Intents() {
 
             <Grid item xs={12}>
               <div style={{ padding: "1.7em 2em" }}>
-                <div>
+                {/* <div>
                   <Typography style={appTheme.textHeader}>Identify Intents</Typography>
+                </div> */}
+                <div>
+                  <Box display="flex">
+                    <Box flexGrow={1}>
+                      <Typography style={appTheme.textHeader}>Identify Intents</Typography>
+                    </Box>
+                    <Box alignSelf="center" >
+                      {updateInputParam["maxMinLengthCluster"]?
+                        <CSlider2                    
+                        value={updateInputParam["maxMinLengthCluster"].split("/")[0] * 100}
+                        onChange={onMinMaxChange}
+                        min={updateInputParam["maxMinLengthCluster"].split("/")[1] * 100 + 10} />
+                      :""
+                      }
+                      
+                    </Box>
+                  </Box>
                 </div>
 
                 <div style={{ margin: "2em 2em" }}>

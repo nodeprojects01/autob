@@ -121,7 +121,13 @@ export default function Slots() {
 
   //Handle Submit 
   const handleSubmit = e => {
-    setSlotValue(values);
+    var disabledSlotRemove = values.filter((data) => {
+      if (!disableValue.includes(data.value)) {
+        return data
+      }    
+    })
+    setValues(disabledSlotRemove);
+    setSlotValue(disabledSlotRemove);
     setInputParams(previousValues);
     setLoading(true);
     getIntents().then(result => {
@@ -132,7 +138,7 @@ export default function Slots() {
     })
       .catch(errmessage => { setSnackBar({ type: "error", show: true, message: errmessage }); setLoading(false) })
   }
-
+  console.log("running slots page")
   return (
     <div>
       {loading &&
