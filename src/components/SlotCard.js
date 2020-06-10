@@ -20,7 +20,7 @@ export default function SlotCard(props) {
   return (
     <div className={classes.root}>
       <Badge badgeContent={<CheckCircleRoundedIcon onClick={props.onClickDisable} style={((props.disabled != null) && (props.disabled.includes(props.slotValues.value))) ?
-        { color: appStyle.colorOffBlack }
+        { color: appStyle.colorRed }
         :
         { color: appStyle.colorGreyLight }} />} >
         <Card container style={{ width: "100%" }}>

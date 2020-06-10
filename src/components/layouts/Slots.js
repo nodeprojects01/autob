@@ -18,6 +18,10 @@ import { useHistory } from 'react-router-dom';
 import { getIntents, getSlots } from '../../external/textCluster';
 import { getSlotValue, setSlotValue, setInputParams, getInputParams } from '../../global/appVariable';
 import HomeIcon from '@material-ui/icons/Home';
+import Popper from '@material-ui/core/Popper';
+import SettingsIcon from '@material-ui/icons/Settings';
+import Fade from '@material-ui/core/Fade';
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -34,7 +38,7 @@ export default function Slots() {
   const [previousValues, setPreviousValues] = useState(getInputParams())
   const [loading, setLoading] = useState(false);
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
-  const [intentValues, setintentValues] = React.useState(null);
+  const [autoGenerateSynonym, setAutoGenerateSynonym] = React.useState(previousValues.autoGenerateSynonymMode);
   //Error Handling Snackbar
   const handleCloseSnackBar = () => {
     setSnackBar({ type: "error", show: false, message: "" })
@@ -43,10 +47,18 @@ export default function Slots() {
     var mode
     (value == 0) ? (mode = 'loose') : ((value == 50) ? (mode = 'moderate') : (mode = 'strict'))
     if (previousValues.autoGenerateSynonymMode != mode) {
-      setPreviousValues({ ...previousValues, autoGenerateSynonymMode: mode });
+      setAutoGenerateSynonym(mode)
     }
   };
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = React.useState();
 
+  const handlePopperClick = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
+  };
   React.useEffect(() => {
     const globalParams = getInputParams();
     if (Object.keys(globalParams).length == 0) {
@@ -58,21 +70,6 @@ export default function Slots() {
     }
   }, []);
 
-  
-  React.useEffect(() => {
-    if (previousValues.constructor === Object && Object.keys(previousValues).length >= 1) {
-      setInputParams(previousValues)
-      setLoading(true)
-      getSlots().then(() => {
-        setValues(getSlotValue())
-        setLoading(false)
-      }).catch(errmessage => {
-        setSnackBar({ type: "error", show: true, message: errmessage });
-        setLoading(false)
-      });
-    }
-
-  }, [previousValues]);
 
   const handleDisable = (e, value) => {
     if (disableValue.includes(value)) {
@@ -139,6 +136,20 @@ export default function Slots() {
       .catch(errmessage => { setSnackBar({ type: "error", show: true, message: errmessage }); setLoading(false) })
   }
   console.log("running slots page")
+  const onSlotSettingsChange=()=>{
+    var updateInputparams={ ...previousValues, autoGenerateSynonymMode: autoGenerateSynonym }
+    setPreviousValues(updateInputparams);
+    setOpen(false)
+    setInputParams(updateInputparams)
+      setLoading(true)
+      getSlots().then(() => {
+        setValues(getSlotValue())
+        setLoading(false)
+      }).catch(errmessage => {
+        setSnackBar({ type: "error", show: true, message: errmessage });
+        setLoading(false)
+      });
+  }
   return (
     <div>
       {loading &&
@@ -146,7 +157,26 @@ export default function Slots() {
           <CircularProgress thickness={5} style={{ position: 'fixed', top: '50%', left: '50%', margin: '-50px 0px 0px -50px' }} />
         </Backdrop>
       }
-
+      <Popper open={open} anchorEl={anchorEl} placement={placement} transition>
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={350}>
+            <Paper style={{ padding: "2em" }}>
+            <CSlider value={autoGenerateSynonym} onChange={handleClick}></CSlider>
+              <br /><br />
+              <Box display="flex">
+                  <Box flexGrow={1}>
+                      <CButton type="small" onClick={onSlotSettingsChange} name="Done" />
+                  </Box>
+                  <Box>
+                  <CButton type="small"
+                      onClick={()=>{setAutoGenerateSynonym(previousValues.autoGenerateSynonymMode);setOpen(false)}} 
+                      name="Cancel"/>
+                  </Box>
+              </Box>           
+            </Paper>
+          </Fade>
+        )}
+      </Popper>
       <Box style={{
         position: "absolute", cursor: "pointer",
         padding: "5px 7px", background: "#FFF", borderBottomRightRadius:"12px"
@@ -188,9 +218,9 @@ export default function Slots() {
                       <Typography style={appTheme.textHeader}>Identify Slots</Typography>
                     </Box>
                     <Box alignSelf="center" >
-                      {previousValues.synonymGenerating == "auto_generate_synonyms" ?
-                        <CSlider value={previousValues.autoGenerateSynonymMode} onChange={handleClick}></CSlider>
-                        : ""}
+                         <SettingsIcon onClick={handlePopperClick('left-start')}
+                          style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
+                          fontSize="small" />
                     </Box>
                   </Box>
                 </div>

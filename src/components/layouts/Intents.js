@@ -33,7 +33,8 @@ import Paper from '@material-ui/core/Paper';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import RemoveIcon from '@material-ui/icons/Remove';
-
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -134,7 +135,9 @@ export default function Intents() {
     setOpen((prev) => placement !== newPlacement || !prev);
     setPlacement(newPlacement);
   };
-
+  const [maxmin, setMaxmin] = useState(updateInputParam["maxMinLengthCluster"])
+  const [clusterMinCount, setClusterMinCount] = useState(parseInt(updateInputParam["eachClusterMinCount"]))
+ 
   function reset() {
     const intentData = getIntentValue()
     setClusterData(intentData)
@@ -236,10 +239,11 @@ export default function Intents() {
     });
   }
 
-  const onMinMaxChange = (val) => {
-    var updatedValue = { ...updateInputParam, "maxMinLengthCluster": val };
-    setUpdateInputParam(updatedValue)
+  const onIntentSettingsChange = () => {
+    var updatedValue = { ...updateInputParam, "maxMinLengthCluster": maxmin,"eachClusterMinCount":clusterMinCount };
+    setUpdateInputParam(updatedValue);
     setInputParams(updatedValue);
+    setOpen(false)
     setLoading(true);
     getIntents().then(result => {
       setLoading(false);
@@ -249,12 +253,7 @@ export default function Intents() {
       setLoading(false);
     });
   }
-
-  const onIntentSettingsChange = (val) => {
-    var updatedValue = { ...updateInputParam, "eachClusterMinCount": val };
-    setUpdateInputParam(updatedValue);
-  }
-
+ 
   return (
     <div>
       {loading &&
@@ -268,26 +267,38 @@ export default function Intents() {
           <Fade {...TransitionProps} timeout={350}>
             <Paper style={{ padding: "2em" }}>
               <CSlider2
-                value={updateInputParam["maxMinLengthCluster"].split("/")[0] * 100}
-                onChange={onMinMaxChange}
-                min={updateInputParam["maxMinLengthCluster"].split("/")[1] * 100 + 10} />
+                value={maxmin.split("/")[0] * 100}
+                onChange={(val) => { setMaxmin(val) }}
+                min={maxmin.split("/")[1] * 100 + 10} />
               <br />
               <Box>
                 <Typography style={appTheme.textDefault}>Each Cluster Min Count</Typography>
                 <Box style={{ marginTop: "5px" }}>
-                  <Fab style={{ boxShadow: "none" }} size="small" color={appStyle.colorBlueGreyDark}
+                    <Fab style={{ boxShadow: "none" }} size="small" color={appStyle.colorBlueGreyDark}
                     aria-label="add" className={classes.margin}>
-                    <AddIcon />
+                      <AddIcon fontSize="small" onClick={() => { setClusterMinCount(clusterMinCount + 1); }}/>
                   </Fab>
-                  <span style={{ margin: "0 1em", fontWeight: "600" }}>{updateInputParam["eachClusterMinCount"]}</span>
+                  <span style={{ margin: "0 1em", fontWeight: "600" }}>{clusterMinCount}</span>
                   <Fab style={{ boxShadow: "none" }} size="small" color={appStyle.colorBlueGreyDark}
-                    aria-label="add" className={classes.margin}>
-                    <RemoveIcon />
+                    aria-label="reduce" className={classes.margin}>
+                     <RemoveIcon fontSize="small" onClick={() => { setClusterMinCount(Math.max(clusterMinCount - 1, 2)); }}/>
                   </Fab>
                 </Box>
               </Box>
               <br /><br />
-              <CButton type="small" onClick={onIntentSettingsChange} name="Done" />
+              <Box display="flex">
+                  <Box flexGrow={1}>
+                      <CButton type="small" onClick={onIntentSettingsChange} name="Done" />
+                  </Box>
+                  <Box>
+                  <CButton type="small"
+                      onClick={()=>{
+                            setMaxmin(updateInputParam["maxMinLengthCluster"])
+                            setClusterMinCount(updateInputParam["eachClusterMinCount"])
+                            setOpen(false)}} 
+                      name="Cancel"/>
+                  </Box>
+              </Box>           
             </Paper>
           </Fade>
         )}
@@ -336,14 +347,6 @@ export default function Intents() {
                       <Typography style={appTheme.textHeader}>Identify Intents</Typography>
                     </Box>
                     <Box alignSelf="center" >
-                      {/* {updateInputParam["maxMinLengthCluster"]?
-                        <CSlider2                    
-                        value={updateInputParam["maxMinLengthCluster"].split("/")[0] * 100}
-                        onChange={onMinMaxChange}
-                        min={updateInputParam["maxMinLengthCluster"].split("/")[1] * 100 + 10} />
-                      :""
-                      } */}
-
                       <SettingsIcon onClick={handlePopperClick('left-start')}
                         style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
                         fontSize="small" />
