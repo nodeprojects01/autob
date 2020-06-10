@@ -185,26 +185,25 @@ export default function Intents() {
     ]);
 
     //update value in the intent after merge
-
     var updatedValue = (clusterData[selectedClusterName] + "," + clusterData[newValue[newValue.length - 1]]).split(',')
     //Remove duplicates
     updatedValue = updatedValue.filter((item, index) => updatedValue.indexOf(item) === index)
-    setClusterData({ ...clusterData, [selectedClusterName]: updatedValue })
-
+    setClusterData({ ...clusterData, [selectedClusterName]: updatedValue,[newValue[newValue.length - 1]]:undefined})
     newValue.splice(selectedClusterName, 1);
     mergedClusters[selectedClusterName] = newValue;
     setMergedClusters(mergedClusters);
     getFilteredClusterNames();
   }
-
   const getFilteredClusterNames = () => {
     const mergedClusts = [].concat.apply([], (Object.values(mergedClusters)));
     const filClusterNames = (Object.keys(clusterData)).filter(function (el) {
       return (mergedClusts).indexOf(el) < 0;
     });
-    setClusterNames(filClusterNames);
+    setClusterNames(filClusterNames);      
   }
+  
   const updateClusterName = (newIntentName, selectedClusterName) => {
+    console.log(newIntentName,selectedClusterName)
     clusterNames[clusterNames.indexOf(selectedClusterName)] = newIntentName
     clusterData[newIntentName] = clusterData[selectedClusterName]
     mergedClusters[newIntentName] = mergedClusters[selectedClusterName]
@@ -227,18 +226,24 @@ export default function Intents() {
           ([key, val]) => !deleteIntentKey.includes(key)
         )
       ));
-
-
     }
   }
 
   const handleSubmit = e => {
-    setIntentValue(clusterData)
+    var updatedClusterData = (Object.fromEntries(
+      Object.entries(clusterData).filter(
+        ([key, val]) => {
+          if(val != undefined){
+            return clusterData[key]
+          }})
+    ));
+    setClusterData(updatedClusterData)
+    setIntentValue(updatedClusterData)
     history.push({
       pathname: '/createBot',
     });
   }
-
+  
   const onIntentSettingsChange = () => {
     var updatedValue = { ...updateInputParam, "maxMinLengthCluster": maxmin,"eachClusterMinCount":clusterMinCount };
     setUpdateInputParam(updatedValue);

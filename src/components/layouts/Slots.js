@@ -41,6 +41,7 @@ export default function Slots() {
   const [loading, setLoading] = useState(false);
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
   const [autoGenerateSynonym, setAutoGenerateSynonym] = React.useState(previousValues.autoGenerateSynonymMode);
+  const [synonymGenerating,setsynonymGenerating]=useState(previousValues.synonymGenerating)
   //Error Handling Snackbar
   const handleCloseSnackBar = () => {
     setSnackBar({ type: "error", show: false, message: "" })
@@ -140,7 +141,7 @@ export default function Slots() {
   }
   console.log("running slots page")
   const onSlotSettingsChange = () => {
-    var updateInputparams = { ...previousValues, autoGenerateSynonymMode: autoGenerateSynonym }
+    var updateInputparams = { ...previousValues,synonymGenerating : synonymGenerating, autoGenerateSynonymMode: autoGenerateSynonym }
     setPreviousValues(updateInputparams);
     setOpen(false)
     setInputParams(updateInputparams)
@@ -152,6 +153,12 @@ export default function Slots() {
       setSnackBar({ type: "error", show: true, message: errmessage });
       setLoading(false)
     });
+  }
+  
+  const handleSynonymGenerating=(e)=>{
+    var { name, value } = e.target;
+    console.log(value)
+    setsynonymGenerating(value)
   }
   return (
     <div>
@@ -171,15 +178,15 @@ export default function Slots() {
                 <CTextField
                   select
                   name="synonymGenerating"
-                  value={previousValues.synonymGenerating}
-                  onChange={handleClick}
+                  value={synonymGenerating}
+                  onChange={handleSynonymGenerating}
                 >
                   <MenuItem value={"auto_generate_synonyms"}>Auto Generate Synonyms</MenuItem>
                   <MenuItem value={"apply_global_synonyms"}>Apply Global Synonyms</MenuItem>
                 </CTextField>
               </div>
               <br />
-              {previousValues.synonymGenerating == "auto_generate_synonyms" ?
+              {synonymGenerating == "auto_generate_synonyms" ?
                 <div>
                   <div>
                     <Typography style={appTheme.textSmall}>Auto Generate Synonym Mode</Typography>
