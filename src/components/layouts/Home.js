@@ -116,24 +116,24 @@ export default function Layout() {
                             <div style={{ border: "2px solid #fff", padding: "1em 7em" }}>
                                 <Typography variant="h5" style={appTheme.textAutob}>AUTOB</Typography>
                             </div>
-                            {/* {showAbout ? */}
                             <div>
                                 <Box textAlign="center" style={{ margin: "1em 0 0 0" }}>
-                                    <Typography style={appTheme.textSmallWhite}>
+                                    {/* <Typography style={appTheme.textSmallWhite}>
                                         Automatically clean up the utterances and<br />
-                                            generates the possible clusters and slots, <br />
-                                            making it easier to merge those clusters together<br />
-                                            to form as many intents as you need <br />
-                                            to feed a chatbot.
-                                    {/* <span style={appTheme.textDefault}><b>Automatically</b></span> clean up the utterances and<br />
+                                             generates the possible clusters and slots, <br />
+                                             making it easier to merge those clusters together<br />
+                                             to form as many intents as you need <br />
+                                             to feed a chatbot.
+                                             </Typography> */}
+                                    <Typography style={appTheme.textSmallWhite}>
+                                        <span style={appTheme.textDefault}><b>Automatically</b></span> clean up the utterances and<br />
                                             generates the possible <span style={appTheme.textDefault}><b>clusters and slots,</b></span> <br />
                                             makes it easier to merge those clusters together<br />
-                                            <span style={appTheme.textDefault}><b>to</b></span> form as many intents as you need <br />
-                                            to feed a <span style={appTheme.textDefault}><b>chatbot</b></span>. */}
+                                        <span style={appTheme.textDefault}><b>to</b></span> form as many intents as you need <br />
+                                            to feed a <span style={appTheme.textDefault}><b>chatbot</b></span>.
                                     </Typography>
                                 </Box>
                             </div>
-                            {/* : ""} */}
                         </div>
                     </div>
                 </Box>
