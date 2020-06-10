@@ -13,7 +13,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
-import Fade from '@material-ui/core/Fade';
 import CTextField from '../CTextField';
 import CAutocomplete from '../CAutocomplete';
 import CButton from '../CButton';
@@ -27,7 +26,15 @@ import {
 } from '../../global/appVariable';
 import HomeIcon from '@material-ui/icons/Home';
 import CSlider2 from '../CSlider2';
-
+import Popper from '@material-ui/core/Popper';
+import SettingsIcon from '@material-ui/icons/Settings';
+import Fade from '@material-ui/core/Fade';
+import Paper from '@material-ui/core/Paper';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme) => ({
   '@global': {
@@ -96,7 +103,7 @@ export default function Intents() {
   const history = useHistory();
   const classes = useStyles();
   const intentValues = getIntentValue();
-  if (intentValues==undefined||Object.keys(intentValues).length == 0) {
+  if (intentValues == undefined || Object.keys(intentValues).length == 0) {
     window.onload = function () {
       history.push({
         pathname: '/',
@@ -113,13 +120,24 @@ export default function Intents() {
   const [checkedIntentName, setCheckedIntentName] = React.useState();
   const [newIntentName, setNewIntentName] = React.useState(Object.keys(clusterData)[0]);
   const [loading, setLoading] = useState(false);
-  const [updateInputParam,setUpdateInputParam]=useState(getInputParams())
+  const [updateInputParam, setUpdateInputParam] = useState(getInputParams())
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
   const handleCloseSnackBar = () => {
     setSnackBar({ type: "error", show: false, message: "" })
   };
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = React.useState();
 
+  const handlePopperClick = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
+  };
+  const [maxmin, setMaxmin] = useState(updateInputParam["maxMinLengthCluster"])
+  const [clusterMinCount, setClusterMinCount] = useState(parseInt(updateInputParam["eachClusterMinCount"]))
+ 
   function reset() {
     const intentData = getIntentValue()
     setClusterData(intentData)
@@ -167,26 +185,25 @@ export default function Intents() {
     ]);
 
     //update value in the intent after merge
-
     var updatedValue = (clusterData[selectedClusterName] + "," + clusterData[newValue[newValue.length - 1]]).split(',')
     //Remove duplicates
     updatedValue = updatedValue.filter((item, index) => updatedValue.indexOf(item) === index)
-    setClusterData({ ...clusterData, [selectedClusterName]: updatedValue })
-
+    setClusterData({ ...clusterData, [selectedClusterName]: updatedValue,[newValue[newValue.length - 1]]:undefined})
     newValue.splice(selectedClusterName, 1);
     mergedClusters[selectedClusterName] = newValue;
     setMergedClusters(mergedClusters);
     getFilteredClusterNames();
   }
-
   const getFilteredClusterNames = () => {
     const mergedClusts = [].concat.apply([], (Object.values(mergedClusters)));
     const filClusterNames = (Object.keys(clusterData)).filter(function (el) {
       return (mergedClusts).indexOf(el) < 0;
     });
-    setClusterNames(filClusterNames);
+    setClusterNames(filClusterNames);      
   }
+  
   const updateClusterName = (newIntentName, selectedClusterName) => {
+    console.log(newIntentName,selectedClusterName)
     clusterNames[clusterNames.indexOf(selectedClusterName)] = newIntentName
     clusterData[newIntentName] = clusterData[selectedClusterName]
     mergedClusters[newIntentName] = mergedClusters[selectedClusterName]
@@ -209,21 +226,29 @@ export default function Intents() {
           ([key, val]) => !deleteIntentKey.includes(key)
         )
       ));
-
-
     }
   }
 
   const handleSubmit = e => {
-    setIntentValue(clusterData)
+    var updatedClusterData = (Object.fromEntries(
+      Object.entries(clusterData).filter(
+        ([key, val]) => {
+          if(val != undefined){
+            return clusterData[key]
+          }})
+    ));
+    setClusterData(updatedClusterData)
+    setIntentValue(updatedClusterData)
     history.push({
       pathname: '/createBot',
     });
   }
-  const onMinMaxChange = (val) => {
-    var updatedValue={...updateInputParam,"maxMinLengthCluster":val}; 
-    setUpdateInputParam(updatedValue)
+  
+  const onIntentSettingsChange = () => {
+    var updatedValue = { ...updateInputParam, "maxMinLengthCluster": maxmin,"eachClusterMinCount":clusterMinCount };
+    setUpdateInputParam(updatedValue);
     setInputParams(updatedValue);
+    setOpen(false)
     setLoading(true);
     getIntents().then(result => {
       setLoading(false);
@@ -231,12 +256,9 @@ export default function Intents() {
     }).catch(errmessage => {
       setSnackBar({ type: "error", show: true, message: errmessage });
       setLoading(false);
-    });  
+    });
   }
-  
-
-  
-
+ 
   return (
     <div>
       {loading &&
@@ -244,6 +266,48 @@ export default function Intents() {
           <CircularProgress thickness={5} style={{ position: 'fixed', top: '50%', left: '50%', margin: '-50px 0px 0px -50px' }} />
         </Backdrop>
       }
+
+      <Popper style={{zIndex:"999"}} open={open} anchorEl={anchorEl} placement={placement} transition>
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={350}>
+            <Paper style={{ padding: "2em" }}>
+              <CSlider2
+                value={maxmin.split("/")[0] * 100}
+                onChange={(val) => { setMaxmin(val) }}
+                min={maxmin.split("/")[1] * 100 + 10} />
+              <br />
+              <Box>
+                <Typography style={appTheme.textDefault}>Each Cluster Min Count</Typography>
+                <Box style={{ marginTop: "5px" }}>
+                    <Fab style={{ boxShadow: "none" }} size="small" color={appStyle.colorBlueGreyDark}
+                    aria-label="add" className={classes.margin}>
+                      <AddIcon fontSize="small" onClick={() => { setClusterMinCount(clusterMinCount + 1); }}/>
+                  </Fab>
+                  <span style={{ margin: "0 1em", fontWeight: "600" }}>{clusterMinCount}</span>
+                  <Fab style={{ boxShadow: "none" }} size="small" color={appStyle.colorBlueGreyDark}
+                    aria-label="reduce" className={classes.margin}>
+                     <RemoveIcon fontSize="small" onClick={() => { setClusterMinCount(Math.max(clusterMinCount - 1, 2)); }}/>
+                  </Fab>
+                </Box>
+              </Box>
+              <br /><br />
+              <Box display="flex">
+                  <Box flexGrow={1}>
+                      <CButton type="small" onClick={onIntentSettingsChange} name="Done" />
+                  </Box>
+                  <Box>
+                  <CButton type="small"
+                      onClick={()=>{
+                            setMaxmin(updateInputParam["maxMinLengthCluster"])
+                            setClusterMinCount(updateInputParam["eachClusterMinCount"])
+                            setOpen(false)}} 
+                      name="Cancel"/>
+                  </Box>
+              </Box>           
+            </Paper>
+          </Fade>
+        )}
+      </Popper>
 
       <Box style={{
         position: "absolute", cursor: "pointer",
@@ -288,14 +352,9 @@ export default function Intents() {
                       <Typography style={appTheme.textHeader}>Identify Intents</Typography>
                     </Box>
                     <Box alignSelf="center" >
-                      {updateInputParam["maxMinLengthCluster"]?
-                        <CSlider2                    
-                        value={updateInputParam["maxMinLengthCluster"].split("/")[0] * 100}
-                        onChange={onMinMaxChange}
-                        min={updateInputParam["maxMinLengthCluster"].split("/")[1] * 100 + 10} />
-                      :""
-                      }
-                      
+                      <SettingsIcon onClick={handlePopperClick('left-start')}
+                        style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
+                        fontSize="small" />
                     </Box>
                   </Box>
                 </div>

@@ -28,7 +28,19 @@ const appTheme = {
         padding: '0 40px',
         boxShadow: '0 3px 5px 2px rgba(79, 84, 87, 0.3)',
         fontFamily: appStyle.fontFamilyWorkSans,
-        fontWeight: "500"
+        textTransform: 'capitalize',
+        fontWeight: "500",
+        // width:"100%"
+    },
+    buttonSmall: {
+        //   background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
+        background: 'linear-gradient(65deg, ' + appStyle.colorBlueGreyDark + ' 100%, #CFCCB9 90%)',
+        borderRadius: 40,
+        color: '#FFF',
+        padding: '4px 15px',
+        fontFamily: appStyle.fontFamilyWorkSans,
+        textTransform: 'capitalize',
+        fontSize: appStyle.fontSizeSmall
     },
     textSmall: {
         color: appStyle.colorGreyLight,
@@ -40,7 +52,7 @@ const appTheme = {
     textSmallWhite: {
         color: "#FFF",
         fontSize: appStyle.fontSizeSmall,
-        textTransform: 'capitalize',
+        // textTransform: 'capitalize',
         fontFamily: appStyle.fontFamilyWorkSans,
         fontWeight: "400"
     },

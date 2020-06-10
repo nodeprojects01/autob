@@ -66,7 +66,7 @@ function paramFormatter(callApi) {
             "output_utterances_type": value.outputUtterance,
             "max_utterances_similarity": parseFloat(max),
             "min_utterances_similarity": parseFloat(min),
-            "each_cluster_min_length": 2
+            "each_cluster_min_length": value.eachClusterMinCount
         }
     };
     return data

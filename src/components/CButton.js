@@ -12,6 +12,16 @@ const StyledButton = withStyles({
 
 export default function CButton(props) {
     return (
-        <StyledButton style={props.style} onClick={props.onClick}>{props.name}</StyledButton>
+        <div>
+            {props.fullWidth?
+            <Button fullWidth style={props.type == "small" ? appTheme.buttonSmall : appTheme.buttonDefault}
+                onClick={props.onClick}> {props.name} </Button>
+            :
+            <Button  style={props.type == "small" ? appTheme.buttonSmall : appTheme.buttonDefault}
+            onClick={props.onClick}> {props.name} </Button>
+
+        }   
+        </div>
+           
     )
 }

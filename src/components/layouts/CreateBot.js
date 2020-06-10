@@ -121,14 +121,14 @@ export default function Layout() {
                         // boxShadow:"rgb(68, 105, 123, 0.6) -7px -5px 15px"
                     }}>
 
-                        <div style={{ padding: "2em", height: "80vh" }}>
+                        <div style={{ padding: "2em", height: "80vh"}} >
                             <div>
                                 <Typography style={appTheme.textHeader}>Here You Go!</Typography>
                             </div>
 
                             <div style={{ margin: "2em" }}>
                                 <Box >
-                                    <CButton name="Download Excel File" onClick={downloadExcelFile} style={{ width: "100%" }} />
+                                    <CButton name="Download Excel File" fullWidth onClick={downloadExcelFile} />
                                 </Box>
                                 <Box textAlign="center" m={3}>
                                     <Typography style={appTheme.textDefault}>OR</Typography>
@@ -142,10 +142,10 @@ export default function Layout() {
                                     </Box>
                                     <Grid container spacing={2}>
                                         <Grid item lg={6}>
-                                            <CButton onClick={onDownload} style={{ width: "100%" }} name="LEX" />
+                                            <CButton onClick={onDownload} fullWidth name="LEX" />
                                         </Grid>
                                         <Grid item lg={6}>
-                                            <CButton onClick={() => { console.log("New Page") }} style={{ width: "100%" }} name="LUIS" />
+                                            <CButton onClick={() => { console.log("New Page") }} fullWidth name="LUIS" />
                                         </Grid>
                                     </Grid>
                                 </Box>
