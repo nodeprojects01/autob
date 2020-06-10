@@ -52,7 +52,7 @@ const appTheme = {
     textSmallWhite: {
         color: "#FFF",
         fontSize: appStyle.fontSizeSmall,
-        textTransform: 'capitalize',
+        // textTransform: 'capitalize',
         fontFamily: appStyle.fontFamilyWorkSans,
         fontWeight: "400"
     },
