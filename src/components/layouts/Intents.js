@@ -262,7 +262,7 @@ export default function Intents() {
         </Backdrop>
       }
 
-      <Popper open={open} anchorEl={anchorEl} placement={placement} transition>
+      <Popper style={{zIndex:"999"}} open={open} anchorEl={anchorEl} placement={placement} transition>
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={350}>
             <Paper style={{ padding: "2em" }}>

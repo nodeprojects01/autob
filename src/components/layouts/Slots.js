@@ -22,6 +22,8 @@ import Popper from '@material-ui/core/Popper';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Fade from '@material-ui/core/Fade';
 import Paper from '@material-ui/core/Paper';
+import CTextField from '../CTextField';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles((theme) => ({
   backdrop: {
@@ -44,6 +46,7 @@ export default function Slots() {
     setSnackBar({ type: "error", show: false, message: "" })
   };
   const handleClick = (event, value) => {
+    console.log("mode > ", value);
     var mode
     (value == 0) ? (mode = 'loose') : ((value == 50) ? (mode = 'moderate') : (mode = 'strict'))
     if (previousValues.autoGenerateSynonymMode != mode) {
@@ -62,10 +65,10 @@ export default function Slots() {
   React.useEffect(() => {
     const globalParams = getInputParams();
     if (Object.keys(globalParams).length == 0) {
-          window.onload = function() {
-            history.push({
-              pathname: '/',
-            });
+      window.onload = function () {
+        history.push({
+          pathname: '/',
+        });
       }
     }
   }, []);
@@ -121,7 +124,7 @@ export default function Slots() {
     var disabledSlotRemove = values.filter((data) => {
       if (!disableValue.includes(data.value)) {
         return data
-      }    
+      }
     })
     setValues(disabledSlotRemove);
     setSlotValue(disabledSlotRemove);
@@ -136,19 +139,19 @@ export default function Slots() {
       .catch(errmessage => { setSnackBar({ type: "error", show: true, message: errmessage }); setLoading(false) })
   }
   console.log("running slots page")
-  const onSlotSettingsChange=()=>{
-    var updateInputparams={ ...previousValues, autoGenerateSynonymMode: autoGenerateSynonym }
+  const onSlotSettingsChange = () => {
+    var updateInputparams = { ...previousValues, autoGenerateSynonymMode: autoGenerateSynonym }
     setPreviousValues(updateInputparams);
     setOpen(false)
     setInputParams(updateInputparams)
-      setLoading(true)
-      getSlots().then(() => {
-        setValues(getSlotValue())
-        setLoading(false)
-      }).catch(errmessage => {
-        setSnackBar({ type: "error", show: true, message: errmessage });
-        setLoading(false)
-      });
+    setLoading(true)
+    getSlots().then(() => {
+      setValues(getSlotValue())
+      setLoading(false)
+    }).catch(errmessage => {
+      setSnackBar({ type: "error", show: true, message: errmessage });
+      setLoading(false)
+    });
   }
   return (
     <div>
@@ -157,30 +160,52 @@ export default function Slots() {
           <CircularProgress thickness={5} style={{ position: 'fixed', top: '50%', left: '50%', margin: '-50px 0px 0px -50px' }} />
         </Backdrop>
       }
-      <Popper open={open} anchorEl={anchorEl} placement={placement} transition>
+      <Popper style={{ zIndex: "999" }} open={open} anchorEl={anchorEl} placement={placement} transition>
         {({ TransitionProps }) => (
           <Fade {...TransitionProps} timeout={350}>
-            <Paper style={{ padding: "2em" }}>
-            <CSlider value={autoGenerateSynonym} onChange={handleClick}></CSlider>
+            <Paper style={{ padding: "2em", width: "15em", zIndex: "999" }}>
+              <div>
+                <Typography style={appTheme.textSmall}>Synonym Generating Type</Typography>
+              </div>
+              <div>
+                <CTextField
+                  select
+                  name="synonymGenerating"
+                  value={previousValues.synonymGenerating}
+                  onChange={handleClick}
+                >
+                  <MenuItem value={"auto_generate_synonyms"}>Auto Generate Synonyms</MenuItem>
+                  <MenuItem value={"apply_global_synonyms"}>Apply Global Synonyms</MenuItem>
+                </CTextField>
+              </div>
+              <br />
+              {previousValues.synonymGenerating == "auto_generate_synonyms" ?
+                <div>
+                  <div>
+                    <Typography style={appTheme.textSmall}>Auto Generate Synonym Mode</Typography>
+                  </div>
+                  <CSlider value={autoGenerateSynonym} onChange={handleClick}></CSlider>
+                </div>
+                : ""}
               <br /><br />
               <Box display="flex">
-                  <Box flexGrow={1}>
-                      <CButton type="small" onClick={onSlotSettingsChange} name="Done" />
-                  </Box>
-                  <Box>
+                <Box flexGrow={1}>
+                  <CButton type="small" onClick={onSlotSettingsChange} name="Done" />
+                </Box>
+                <Box>
                   <CButton type="small"
-                      onClick={()=>{setAutoGenerateSynonym(previousValues.autoGenerateSynonymMode);setOpen(false)}} 
-                      name="Cancel"/>
-                  </Box>
-              </Box>           
+                    onClick={() => { setAutoGenerateSynonym(previousValues.autoGenerateSynonymMode); setOpen(false) }}
+                    name="Cancel" />
+                </Box>
+              </Box>
             </Paper>
           </Fade>
         )}
       </Popper>
       <Box style={{
         position: "absolute", cursor: "pointer",
-        padding: "5px 7px", background: "#FFF", borderBottomRightRadius:"12px"
-      }} onClick={()=>{
+        padding: "5px 7px", background: "#FFF", borderBottomRightRadius: "12px"
+      }} onClick={() => {
         history.push({
           pathname: '/'
         });
@@ -218,9 +243,9 @@ export default function Slots() {
                       <Typography style={appTheme.textHeader}>Identify Slots</Typography>
                     </Box>
                     <Box alignSelf="center" >
-                         <SettingsIcon onClick={handlePopperClick('left-start')}
-                          style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
-                          fontSize="small" />
+                      <SettingsIcon onClick={handlePopperClick('left-start')}
+                        style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
+                        fontSize="small" />
                     </Box>
                   </Box>
                 </div>

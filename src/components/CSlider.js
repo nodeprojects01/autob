@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiSlider-root':{
         color: appStyle.colorBlueGreyDark
     },
-    width: 200,
+    // width: 200,
     color: appStyle.colorBlueGreyDark
   },
   margin: {
