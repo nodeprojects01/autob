@@ -13,7 +13,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
 import CancelIcon from '@material-ui/icons/Cancel';
 import CheckCircleRoundedIcon from '@material-ui/icons/CheckCircleRounded';
-import Fade from '@material-ui/core/Fade';
 import CTextField from '../CTextField';
 import CAutocomplete from '../CAutocomplete';
 import CButton from '../CButton';
@@ -27,6 +26,13 @@ import {
 } from '../../global/appVariable';
 import HomeIcon from '@material-ui/icons/Home';
 import CSlider2 from '../CSlider2';
+import Popper from '@material-ui/core/Popper';
+import SettingsIcon from '@material-ui/icons/Settings';
+import Fade from '@material-ui/core/Fade';
+import Paper from '@material-ui/core/Paper';
+import Fab from '@material-ui/core/Fab';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -96,7 +102,7 @@ export default function Intents() {
   const history = useHistory();
   const classes = useStyles();
   const intentValues = getIntentValue();
-  if (intentValues==undefined||Object.keys(intentValues).length == 0) {
+  if (intentValues == undefined || Object.keys(intentValues).length == 0) {
     window.onload = function () {
       history.push({
         pathname: '/',
@@ -113,11 +119,20 @@ export default function Intents() {
   const [checkedIntentName, setCheckedIntentName] = React.useState();
   const [newIntentName, setNewIntentName] = React.useState(Object.keys(clusterData)[0]);
   const [loading, setLoading] = useState(false);
-  const [updateInputParam,setUpdateInputParam]=useState(getInputParams())
+  const [updateInputParam, setUpdateInputParam] = useState(getInputParams())
   //Error Handling Snackbar
   const [snackBar, setSnackBar] = useState({ type: "error", show: false, message: "" });
   const handleCloseSnackBar = () => {
     setSnackBar({ type: "error", show: false, message: "" })
+  };
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [open, setOpen] = React.useState(false);
+  const [placement, setPlacement] = React.useState();
+
+  const handlePopperClick = (newPlacement) => (event) => {
+    setAnchorEl(event.currentTarget);
+    setOpen((prev) => placement !== newPlacement || !prev);
+    setPlacement(newPlacement);
   };
 
   function reset() {
@@ -220,8 +235,9 @@ export default function Intents() {
       pathname: '/createBot',
     });
   }
+
   const onMinMaxChange = (val) => {
-    var updatedValue={...updateInputParam,"maxMinLengthCluster":val}; 
+    var updatedValue = { ...updateInputParam, "maxMinLengthCluster": val };
     setUpdateInputParam(updatedValue)
     setInputParams(updatedValue);
     setLoading(true);
@@ -231,11 +247,13 @@ export default function Intents() {
     }).catch(errmessage => {
       setSnackBar({ type: "error", show: true, message: errmessage });
       setLoading(false);
-    });  
+    });
   }
-  
 
-  
+  const onIntentSettingsChange = (val) => {
+    var updatedValue = { ...updateInputParam, "eachClusterMinCount": val };
+    setUpdateInputParam(updatedValue);
+  }
 
   return (
     <div>
@@ -244,6 +262,36 @@ export default function Intents() {
           <CircularProgress thickness={5} style={{ position: 'fixed', top: '50%', left: '50%', margin: '-50px 0px 0px -50px' }} />
         </Backdrop>
       }
+
+      <Popper open={open} anchorEl={anchorEl} placement={placement} transition>
+        {({ TransitionProps }) => (
+          <Fade {...TransitionProps} timeout={350}>
+            <Paper style={{ padding: "2em" }}>
+              <CSlider2
+                value={updateInputParam["maxMinLengthCluster"].split("/")[0] * 100}
+                onChange={onMinMaxChange}
+                min={updateInputParam["maxMinLengthCluster"].split("/")[1] * 100 + 10} />
+              <br />
+              <Box>
+                <Typography style={appTheme.textDefault}>Each Cluster Min Count</Typography>
+                <Box style={{ marginTop: "5px" }}>
+                  <Fab style={{ boxShadow: "none" }} size="small" color={appStyle.colorBlueGreyDark}
+                    aria-label="add" className={classes.margin}>
+                    <AddIcon />
+                  </Fab>
+                  <span style={{ margin: "0 1em", fontWeight: "600" }}>{updateInputParam["eachClusterMinCount"]}</span>
+                  <Fab style={{ boxShadow: "none" }} size="small" color={appStyle.colorBlueGreyDark}
+                    aria-label="add" className={classes.margin}>
+                    <RemoveIcon />
+                  </Fab>
+                </Box>
+              </Box>
+              <br /><br />
+              <CButton type="small" onClick={onIntentSettingsChange} name="Done" />
+            </Paper>
+          </Fade>
+        )}
+      </Popper>
 
       <Box style={{
         position: "absolute", cursor: "pointer",
@@ -288,14 +336,17 @@ export default function Intents() {
                       <Typography style={appTheme.textHeader}>Identify Intents</Typography>
                     </Box>
                     <Box alignSelf="center" >
-                      {updateInputParam["maxMinLengthCluster"]?
+                      {/* {updateInputParam["maxMinLengthCluster"]?
                         <CSlider2                    
                         value={updateInputParam["maxMinLengthCluster"].split("/")[0] * 100}
                         onChange={onMinMaxChange}
                         min={updateInputParam["maxMinLengthCluster"].split("/")[1] * 100 + 10} />
                       :""
-                      }
-                      
+                      } */}
+
+                      <SettingsIcon onClick={handlePopperClick('left-start')}
+                        style={{ cursor: "pointer", "color": appStyle.colorGreyLight }}
+                        fontSize="small" />
                     </Box>
                   </Box>
                 </div>

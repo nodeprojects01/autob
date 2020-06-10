@@ -27,8 +27,8 @@ div .MuiSnackbarContent-root{
 }
 
 .MuiSlider-markLabel {
-font-size: 0.6rem !important;
-top: 20px !important;
+font-size: 0.85rem !important;
+top: 25px !important;
 }
 
 /* button.MuiAutocomplete-clearIndicatorDirty{

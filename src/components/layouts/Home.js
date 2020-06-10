@@ -41,6 +41,7 @@ export default function Layout() {
         outputUtterance: 'alphanumeric',
         maxMinLengthCluster: '0.4/0.1',
         uploadJSONFileHidden: '',
+        eachClusterMinCount: 2,
         customVisible: false
     })
 
