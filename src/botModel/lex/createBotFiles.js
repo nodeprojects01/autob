@@ -1,9 +1,10 @@
 import { saveAs } from 'file-saver';
 import { getInputParams, getSlotValue, getIntentValue } from '../../global/appVariable';
 var JSZip = require("jszip");
-var zip = new JSZip();
+var zip;
 
 function createBotFiles() {
+    zip = new JSZip();
     createBot()
     createSlot();
     createIntent();
@@ -104,9 +105,12 @@ function getUtteraceData(utteranceList, allSlotArray) {
             slotSynonymsArray.map((slotSynonym) => {
                 let matchArray = (oneUtterance.match(new RegExp('\\b' + slotSynonym + '\\b', 'i')) || [])
                 if (matchArray.length > 0 && (onlyOneoccurance == 0)) {
-                    onlyOneoccurance += 1
-                    slotNamesCount[slotName] += 1
-                    oneUtterance = oneUtterance.replace(new RegExp('\\b' + slotSynonym + '\\b', 'i'), "{" + slotName + "}", 1);
+                    const bracedSynonym = "{" + slotSynonym + "}";
+                    if (oneUtterance.indexOf(bracedSynonym) == -1) {
+                        onlyOneoccurance += 1
+                        slotNamesCount[slotName] += 1
+                        oneUtterance = oneUtterance.replace(new RegExp('\\b' + slotSynonym + '\\b', 'i'), "{" + slotName + "}", 1);
+                    }
                 }
             })
         }
